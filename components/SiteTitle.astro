@@ -1,0 +1,37 @@
+---
+// The wordmark, as hypha.pub's: Hypha's mark, then "hypha" and, in
+// graphite, the project's Starlight title after a dot, as hypha.pub is
+// "hypha.pub".
+import mark from "../assets/hypha.webp";
+
+const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+---
+
+<a href={siteTitleHref} class="wordmark" aria-label={`hypha.${siteTitle}, home`}>
+  <img src={mark.src} alt="" width="52" height="84" />
+  <span translate="no">hypha<span class="site">.{siteTitle}</span></span>
+</a>
+
+<style>
+  .wordmark {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--paper);
+    text-decoration: none;
+  }
+  img {
+    width: auto;
+    height: 1.75rem;
+  }
+  span {
+    font-size: 1.125rem;
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: -0.01em;
+  }
+  .site {
+    color: var(--graphite);
+  }
+</style>

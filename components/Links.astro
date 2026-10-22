@@ -1,0 +1,42 @@
+---
+// The project's links, as hypha.pub's header sets its own: an icon and a
+// word, in graphite. Another site opens in a tab of its own, so the reader
+// keeps their place.
+import Archive from "@lucide/astro/icons/archive";
+import BookOpen from "@lucide/astro/icons/book-open";
+import CodeXml from "@lucide/astro/icons/code-xml";
+import Globe from "@lucide/astro/icons/globe";
+import Layers from "@lucide/astro/icons/layers";
+import Rss from "@lucide/astro/icons/rss";
+import config from "virtual:starlight-theme-hypha/config";
+import Icon from "./Icon.astro";
+
+const drawn = { archive: Archive, "book-open": BookOpen, "code-xml": CodeXml, globe: Globe, layers: Layers, rss: Rss };
+---
+
+{
+  config.links.map((link) => (
+    <a href={link.href} target="_blank" rel="noopener">
+      {link.icon && <Icon icon={drawn[link.icon]} />}
+      {link.label}
+    </a>
+  ))
+}
+
+<style>
+  a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--graphite);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25;
+    white-space: nowrap;
+    text-decoration: none;
+    transition: color 120ms var(--ease-state);
+  }
+  a:hover {
+    color: var(--paper);
+  }
+</style>
