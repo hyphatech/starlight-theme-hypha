@@ -11,8 +11,8 @@ export const configSchema = z
     // theme turns with it. 225 is a reference's blue, told from a post's warm
     // ground at a glance.
     hue: z.number().min(0).max(360).default(225),
-    // The links at the end of the header, at the foot of a phone's menu and
-    // in the footer. Another site opens in a tab of its own.
+    // The links at the end of the header and at the foot of a phone's menu.
+    // Another site opens in a tab of its own.
     links: z
       .array(
         z.object({

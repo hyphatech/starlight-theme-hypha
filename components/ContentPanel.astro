@@ -1,7 +1,6 @@
 ---
 // A part of the page -- its title, then its text -- without Starlight's own
-// width or padding: the grid gives both. The title is set off from the text
-// as hypha.pub's post's header is.
+// width or padding: the grid gives both.
 ---
 
 <div class="content-panel"><slot /></div>
@@ -11,11 +10,11 @@
     margin-top: 1.5rem;
   }
   .content-panel + .content-panel {
-    margin-top: 2.25rem;
+    margin-top: 1.75rem;
   }
   @media (min-width: 48rem) {
     .content-panel + .content-panel {
-      margin-top: 3rem;
+      margin-top: 2rem;
     }
   }
 </style>

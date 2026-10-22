@@ -43,7 +43,7 @@
      below the header's rule: hypha.pub's post's top on a phone, hyphatech.io's
      section's wider, a reference wanting its first line sooner than a post. */
   --page-top: 3.5rem;
-  /* Headings' sizes, which their spacing is reckoned in. */
+  /* Headings' sizes. */
   --h2: clamp(1.5rem, 2.4vw, 1.875rem);
   --h3: 1.3125rem;
 }
@@ -318,25 +318,26 @@ starlight-toc a[aria-current="true"]:hover {
   color: var(--paper);
 }
 /* A heading's space is its wrapper's, which holds its anchor link: the
-   heading inside takes none, or the two would add up. As a post's, more
-   above than below, and a heading straight under another close to it. */
+   heading inside takes none, or the two would add up. Closer than a post's:
+   a reference is scanned, its sections short. More above than below, and a
+   heading straight under another close to it. */
 .sl-markdown-content .sl-heading-wrapper :is(h2, h3, h4) {
   margin: 0;
 }
 .sl-markdown-content .sl-heading-wrapper.level-h2 {
-  margin-top: calc(2.4 * var(--h2));
+  margin-top: 3rem;
 }
 .sl-markdown-content .sl-heading-wrapper.level-h3 {
-  margin-top: calc(2.2 * var(--h3));
+  margin-top: 2rem;
 }
 .sl-markdown-content .sl-heading-wrapper.level-h4 {
-  margin-top: 2em;
+  margin-top: 1.5rem;
 }
 .sl-markdown-content .sl-heading-wrapper.level-h2 + :not(.example) {
-  margin-top: calc(0.75 * var(--h2));
+  margin-top: 1rem;
 }
 .sl-markdown-content .sl-heading-wrapper:is(.level-h3, .level-h4) + :not(.example) {
-  margin-top: 1rem;
+  margin-top: 0.75rem;
 }
 .sl-markdown-content a:not(:where(.not-content *)) {
   color: var(--paper);
@@ -384,7 +385,7 @@ starlight-toc a[aria-current="true"]:hover {
 .sl-markdown-content hr:not(:where(.not-content *)) {
   border: 0;
   border-top: 1px solid var(--rule);
-  margin-block: 3em;
+  margin-block: 2.5rem;
 }
 .sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
   font-family: var(--font-mono);
@@ -427,14 +428,9 @@ starlight-toc a[aria-current="true"]:hover {
 }
 
 /* Previous and next as hypha.pub's Read next: a panel on a rule, its title
-   in the slab, its direction a label, set as far below the text. */
+   in the slab, its direction a label, set apart from the text. */
 .pagination-links {
-  margin-top: 4rem;
-}
-@media (min-width: 48rem) {
-  .pagination-links {
-    margin-top: 5rem;
-  }
+  margin-top: 3rem;
 }
 .pagination-links a {
   border: 1px solid var(--rule);

@@ -12,8 +12,9 @@ make setup    # the dependencies, by Bun
 make test     # the plugin's options, the night's contrast at every hue, and
               # the example's build
 make lint     # the plugin's types
-make example  # the example site, built into _build/example
-make serve    # the example, served as it changes
+make build    # the example site, built into _build/example
+make preview  # the built example, served as a host would, search included
+make serve    # the example, served as it changes, without search
 ```
 
 ## Layout
@@ -24,10 +25,10 @@ libs/config         the options and their defaults
 libs/vite           the options, as a virtual module the components import
 libs/color          the night as hex, for the browser's theme-color
 components/         the parts of Starlight's page the theme takes over, and
-                    its own: Links, SiteFooter, Icon
+                    its own: Links, Icon
 styles/theme.css    the look: hypha.pub's tokens and roles on Starlight's
 styles/code-theme   hypha.pub's code theme
-assets/hypha.webp   Hypha's mark, in the wordmark and the footer
+assets/hypha.webp   Hypha's mark, in the wordmark
 example/            a site on the theme, for the test and a look at a change
 test/               the plugin's config, contrast, and the example's build
 ```

@@ -9,7 +9,6 @@ test("the example builds in the theme's frame", async () => {
   expect(html).toContain(":root{--hue:225}");
   expect(html).toContain('aria-label="hypha.example, home"');
   expect(html).toContain('class="site-header');
-  expect(html).toContain('class="site-footer');
   expect(html).toContain("https://github.com/hyphatech/starlight-theme-hypha");
   expect(html).toContain('<meta name="theme-color" content="#0B0C0F"');
 }, 120_000);

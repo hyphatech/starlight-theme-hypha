@@ -13,6 +13,21 @@ From GitHub, at a tag:
 bun add github:hyphatech/starlight-theme-hypha#v0.1.0
 ```
 
+To try a change to the theme in a project before it is tagged, link it:
+
+```sh
+cd starlight-theme-hypha && bun link
+cd <project> && bun link starlight-theme-hypha
+```
+
+and, while it is linked, keep Vite on the link's path, which Astro would
+otherwise read as a path inside the project:
+
+```js
+// astro.config.mjs
+export default defineConfig({ vite: { resolve: { preserveSymlinks: true } } });
+```
+
 Then add it to Starlight's plugins:
 
 ```js
@@ -39,7 +54,7 @@ starlight({
 | Option | Default | What it sets |
 |---|---|---|
 | `hue` | `225` | The night's hue, in degrees: every surface, line and text colour turns with it |
-| `links` | `[]` | The links in the header, at the foot of a phone's menu, and in the footer |
+| `links` | `[]` | The links in the header and at the foot of a phone's menu |
 
 A link's `icon` is one of `archive`, `book-open`, `code-xml`, `globe`,
 `layers` and `rss`, or none.
