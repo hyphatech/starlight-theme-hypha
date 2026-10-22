@@ -201,6 +201,15 @@ site-search dialog {
 .sidebar-content details[data-closing] > summary .caret {
   transform: none;
 }
+/* Under tabs the sidebar holds the open tab's group alone, its label the
+   tab's: the group's heading goes, and its pages start on the page's top
+   line. */
+.sidebar-content[data-tabbed] .top-level > li > details > summary {
+  display: none;
+}
+.sidebar-content[data-tabbed] .top-level > li > details > ul {
+  margin-top: 0;
+}
 .sidebar-content .top-level > li + li {
   margin-top: 1.75rem;
 }

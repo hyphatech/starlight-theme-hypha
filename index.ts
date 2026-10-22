@@ -65,7 +65,8 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
   return {
     name: "starlight-theme-hypha",
     hooks: {
-      "config:setup"({ config: starlight, updateConfig, addIntegration }) {
+      "config:setup"({ config: starlight, updateConfig, addIntegration, addRouteMiddleware }) {
+        if (config.tabs) addRouteMiddleware({ entrypoint: "starlight-theme-hypha/route-middleware" });
         const head = starlight.head ?? [];
         const hasThemeColor = head.some((entry) => entry.tag === "meta" && entry.attrs?.name === "theme-color");
         updateConfig({

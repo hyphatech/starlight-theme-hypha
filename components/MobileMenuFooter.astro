@@ -2,15 +2,24 @@
 // The header's links at the foot of the navigation's sheet, where a phone's
 // header has no room for them; wider, the header shows them.
 import config from "virtual:starlight-theme-hypha/config";
+import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
 ---
 
-{config.links.length > 0 && <nav class="elsewhere" aria-label="Elsewhere"><Links /></nav>}
+{
+  (config.links.length > 0 || config.github) && (
+    <nav class="elsewhere" aria-label="Elsewhere">
+      <Links />
+      <GitHub />
+    </nav>
+  )
+}
 
 <style>
   .elsewhere {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 1.5rem;
     margin-top: 2rem;
     border-top: 1px solid var(--rule);

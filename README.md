@@ -40,6 +40,8 @@ starlight({
   plugins: [
     hypha({
       hue: 225,
+      github: "hyphatech/solidtype",
+      tabs: true,
       links: [
         { label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" },
         { label: "GitHub", href: "https://github.com/hyphatech/solidtype", icon: "code-xml" },
@@ -54,12 +56,19 @@ starlight({
 | Option | Default | What it sets |
 |---|---|---|
 | `hue` | `225` | The night's hue, in degrees: every surface, line and text colour turns with it |
+| `github` | none | The repository, as `owner/name`: the header links to it with its latest version, its stars and its forks |
+| `tabs` | `false` | Each top-level entry of the sidebar a tab under the header; the sidebar shows the open tab's pages |
 | `links` | `[]` | The links in the header and at the foot of a phone's menu |
 
 A link's `icon` is one of `archive`, `book-open`, `code-xml`, `globe`,
 `layers` and `rss`, or none.
 
 The header's wordmark is "hypha." and Starlight's own `title`.
+
+The repository's version, stars and forks are asked of GitHub's API by the
+reader's browser, once a session, so they stay current between builds; its
+version is the latest release's tag, or its newest tag, without a leading
+`v`.
 
 ## Changing more
 

@@ -23,9 +23,11 @@ make serve    # the example, served as it changes, without search
 index.ts            the plugin: its options read, Starlight's config changed
 libs/config         the options and their defaults
 libs/vite           the options, as a virtual module the components import
+libs/route-middleware
+                    the sidebar split into tabs, where `tabs` is on
 libs/color          the night as hex, for the browser's theme-color
 components/         the parts of Starlight's page the theme takes over, and
-                    its own: Links, Icon
+                    its own: Links, GitHub, Tabs, Icon
 styles/theme.css    the look: hypha.pub's tokens and roles on Starlight's
 styles/code-theme   hypha.pub's code theme
 assets/hypha.webp   Hypha's mark, in the wordmark

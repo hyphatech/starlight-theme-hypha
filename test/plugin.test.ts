@@ -1,16 +1,18 @@
 import { describe, expect, test } from "bun:test";
 import hypha from "../index";
+import { onRequest } from "../libs/route-middleware";
 import { nightHex } from "../libs/color";
 
 // The plugin's config:setup, run against a Starlight config, returning what
 // it asked Starlight to change.
 function setup(options: Parameters<typeof hypha>[0], starlight: Record<string, unknown> = {}) {
-  const updates: Record<string, any> = {};
+  const updates: Record<string, any> = { middleware: [] };
   const plugin = hypha(options);
   (plugin.hooks["config:setup"] as Function)({
     config: { title: "x", ...starlight },
     updateConfig: (u: object) => Object.assign(updates, u),
     addIntegration: () => {},
+    addRouteMiddleware: (m: { entrypoint: string }) => updates.middleware.push(m.entrypoint),
   });
   return updates;
 }
@@ -44,7 +46,13 @@ describe("the plugin", () => {
     expect(setup({}, { expressiveCode: false }).expressiveCode).toBe(false);
   });
 
+  test("splits the sidebar into tabs only when asked", () => {
+    expect(setup({}).middleware).toEqual([]);
+    expect(setup({ tabs: true }).middleware).toEqual(["starlight-theme-hypha/route-middleware"]);
+  });
+
   test("refuses an option it does not know the shape of", () => {
+    expect(() => hypha({ github: "https://github.com/hyphatech/x" })).toThrow(/github/);
     expect(() => hypha({ hue: 400 })).toThrow(/hue/);
     expect(() => hypha({ links: [{ label: "x", href: "x", icon: "star" as never }] })).toThrow(/links/);
   });
@@ -82,4 +90,29 @@ test("the night's text reads at every hue", () => {
     expect(contrast(hsl(h, 0.1, 0.58), night)).toBeGreaterThan(5.5);
     expect(contrast(hsl(h, 0.15, 0.9), night)).toBeGreaterThan(14);
   }
+});
+
+// A sidebar of two groups and a page, with the current page in the second.
+const link = (label: string, href: string, isCurrent = false) => ({ type: "link", label, href, isCurrent, badge: undefined, attrs: {} });
+const group = (label: string, entries: unknown[]) => ({ type: "group", label, entries, collapsed: true, badge: undefined });
+
+describe("the tabs", () => {
+  test("are the sidebar's top-level entries, the sidebar the open tab's group alone", () => {
+    const locals: any = {
+      starlightRoute: {
+        sidebar: [
+          group("Start here", [link("Getting Started", "/")]),
+          group("Reference", [group("Options", [link("Hue", "/hue/"), link("Tabs", "/tabs/", true)])]),
+          link("Changes", "/changes/"),
+        ],
+      },
+    };
+    onRequest({ locals } as never, async () => {});
+    expect(locals.hyphaTabs).toEqual([
+      { label: "Start here", href: "/", isCurrent: false },
+      { label: "Reference", href: "/hue/", isCurrent: true },
+      { label: "Changes", href: "/changes/", isCurrent: false },
+    ]);
+    expect(locals.starlightRoute.sidebar.map((e: any) => [e.label, e.collapsed])).toEqual([["Reference", false]]);
+  });
 });

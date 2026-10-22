@@ -11,6 +11,15 @@ export const configSchema = z
     // theme turns with it. 225 is a reference's blue, told from a post's warm
     // ground at a glance.
     hue: z.number().min(0).max(360).default(225),
+    // The project's repository on GitHub, as `owner/name`: the header links to
+    // it with its latest version, its stars and its forks.
+    github: z
+      .string()
+      .regex(/^[\w.-]+\/[\w.-]+$/, "owner/name")
+      .optional(),
+    // Each top-level entry of the sidebar a tab under the header, the sidebar
+    // then showing the open tab's pages alone.
+    tabs: z.boolean().default(false),
     // The links at the end of the header and at the foot of a phone's menu.
     // Another site opens in a tab of its own.
     links: z

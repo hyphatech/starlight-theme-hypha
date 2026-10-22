@@ -7,6 +7,7 @@ import Search from "@astrojs/starlight/components/Search.astro";
 import Icon from "./Icon.astro";
 import SiteTitle from "./SiteTitle.astro";
 import config from "virtual:starlight-theme-hypha/config";
+import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
 
 const { hasSidebar } = Astro.locals.starlightRoute;
@@ -16,7 +17,14 @@ const { hasSidebar } = Astro.locals.starlightRoute;
   <SiteTitle />
   <div class="end print:hidden">
     <Search />
-    {config.links.length > 0 && <nav class="links" aria-label="Site"><Links /></nav>}
+    {
+      (config.links.length > 0 || config.github) && (
+        <nav class="links" aria-label="Site">
+          <Links />
+          <GitHub />
+        </nav>
+      )
+    }
     {
       hasSidebar && (
         <button type="button" popovertarget="starlight__sidebar" class="menu" aria-label={Astro.locals.t("menuButton.accessibleLabel")}>

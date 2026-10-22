@@ -1,17 +1,20 @@
 ---
-// The page on hypha.pub's grid: a header across the window over a rule, and
+// The page on hypha.pub's grid: a header across the window over a rule, the
+// sections' tabs in it where the theme's `tabs` is on, and
 // beneath it the page's width, 72rem, the navigation in its margin and the
 // page in the rest. On a phone the navigation is a sheet over the page,
 // opened from the header. Starlight's scripts find the sheet by its id,
 // which keeps its scroll and its open groups from page to page.
 import X from "@lucide/astro/icons/x";
 import Icon from "./Icon.astro";
+import Tabs from "./Tabs.astro";
 
 const { hasSidebar } = Astro.locals.starlightRoute;
+const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
 ---
 
 <div class="page">
-  <header class="site-header"><slot name="header" /></header>
+  <header class="site-header"><slot name="header" /><Tabs /></header>
   <div class="grid">
     {
       hasSidebar && (
@@ -81,7 +84,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
                 <Icon icon={X} size="md" />
               </button>
             </div>
-            <div class="sidebar-content">
+            <div class="sidebar-content" data-tabbed={tabbed ? "" : undefined}>
               <slot name="sidebar" />
             </div>
           </sl-sidebar-pane>

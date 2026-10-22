@@ -6,11 +6,11 @@ import type { AstroComponent } from "@lucide/astro";
 
 interface Props {
   icon: AstroComponent;
-  size?: "sm" | "md" | "lg";
+  size?: "xs" | "sm" | "md" | "lg";
   class?: string;
 }
 
-const ICON_PX = { sm: 16, md: 20, lg: 24 } as const;
+const ICON_PX = { xs: 12, sm: 16, md: 20, lg: 24 } as const;
 const LINE_PX = 1.35;
 
 const { icon: Drawn, size = "sm", class: className } = Astro.props;

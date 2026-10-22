@@ -3,8 +3,9 @@ import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
 import hypha from "starlight-theme-hypha";
 
-// A site on the theme, for its test and a look at a change: two pages
-// with what a reference holds -- headings, a table, code, a list.
+// A site on the theme, for its test and a look at a change: two sections,
+// as tabs, of pages with what a reference holds -- headings, a table, code,
+// a list -- and the theme's repository in the header.
 const repository = fileURLToPath(new URL("..", import.meta.url));
 
 export default defineConfig({
@@ -15,10 +16,9 @@ export default defineConfig({
       favicon: "/favicon-32.png",
       plugins: [
         hypha({
-          links: [
-            { label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" },
-            { label: "GitHub", href: "https://github.com/hyphatech/starlight-theme-hypha", icon: "code-xml" },
-          ],
+          github: "hyphatech/starlight-theme-hypha",
+          tabs: true,
+          links: [{ label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" }],
         }),
       ],
       sidebar: [
