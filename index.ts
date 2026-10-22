@@ -7,6 +7,8 @@ import { vitePluginHyphaTheme } from "./libs/vite";
 
 export type { HyphaThemeUserConfig };
 
+const sheet = "starlight-theme-hypha/styles/theme.css";
+
 // The parts of Starlight's page the theme takes over: the page's frame is
 // hypha.pub's grid, not Starlight's. A project's own override of one wins.
 const components = {
@@ -68,8 +70,9 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
         const hasThemeColor = head.some((entry) => entry.tag === "meta" && entry.attrs?.name === "theme-color");
         updateConfig({
           // The theme's first, so a project's own sheet can change any of its
-          // tokens after it.
-          customCss: ["starlight-theme-hypha/styles/theme.css", ...(starlight.customCss ?? [])],
+          // tokens after it; where the project names the theme's sheet itself,
+          // that is where it goes, after a sheet whose tokens share its names.
+          customCss: starlight.customCss?.includes(sheet) ? starlight.customCss : [sheet, ...(starlight.customCss ?? [])],
           components: { ...components, ...starlight.components },
           head: [
             { tag: "style", content: `:root{--hue:${config.hue}}` },

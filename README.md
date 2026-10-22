@@ -66,7 +66,16 @@ The header's wordmark is "hypha." and Starlight's own `title`.
 The theme's sheet comes before the project's `customCss`, so a project's sheet
 can set any of its tokens -- `--night`, `--paper`, `--graphite`, `--rule`,
 `--accent-mark`, `--panel`, `--raised`, the grid's `--page`, `--measure` and
-`--margin` -- on `:root`. A component the project overrides in Starlight's
+`--margin` -- on `:root`. A sheet that would undo the theme's -- Tailwind's, through
+`@astrojs/starlight-tailwind`, defines its own `--font-sans` -- goes before
+it: name the theme's sheet in `customCss` after it, and the plugin keeps that
+order.
+
+```js
+customCss: ["./src/tailwind.css", "starlight-theme-hypha/styles/theme.css", "./src/own.css"],
+```
+
+A component the project overrides in Starlight's
 `components` wins over the theme's.
 
 The favicon is the project's: Starlight's `favicon`, from its `public/`.

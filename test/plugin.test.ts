@@ -35,6 +35,11 @@ describe("the plugin", () => {
     expect(u.components.PageFrame).toBe("starlight-theme-hypha/components/PageFrame.astro");
   });
 
+  test("keeps its sheet where the project names it", () => {
+    const own = ["./tailwind.css", "starlight-theme-hypha/styles/theme.css", "./own.css"];
+    expect(setup({}, { customCss: own }).customCss).toEqual(own);
+  });
+
   test("leaves Expressive Code off when the project turns it off", () => {
     expect(setup({}, { expressiveCode: false }).expressiveCode).toBe(false);
   });
