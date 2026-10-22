@@ -70,6 +70,27 @@ reader's browser, once a session, so they stay current between builds; its
 version is the latest release's tag, or its newest tag, without a leading
 `v`.
 
+## A landing page
+
+Starlight's own: a page with `template: splash` and a `hero` in its
+frontmatter, and `<CardGrid>` and `<Card>` beneath. The theme sets the hero as
+hyphatech.io opens -- the title in the slab at display size, the tagline as its
+lede, `primary` and `secondary` actions as its buttons -- and the cards as
+panels on a rule, across the page's width.
+
+```mdx
+---
+title: solidtype
+template: splash
+hero:
+  title: Solid, typed, for OCaml.
+  tagline: Components in OCaml's JSX, compiled as Solid compiles its own.
+  actions:
+    - { text: Get started, link: /getting-started/, variant: primary, icon: right-arrow }
+    - { text: HeroUI's ports, link: /heroui/coverage/, variant: secondary }
+---
+```
+
 ## Changing more
 
 The theme's sheet comes before the project's `customCss`, so a project's sheet

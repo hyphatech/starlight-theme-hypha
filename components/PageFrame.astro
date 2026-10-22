@@ -16,7 +16,7 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
 
 <div class="page">
   <header class="site-header"><slot name="header" /><Tabs /><PhoneNav /></header>
-  <div class="grid">
+  <div class:list={["grid", { "no-sidebar": !hasSidebar }]}>
     {
       hasSidebar && (
         <nav class="sidebar print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
@@ -154,7 +154,7 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
      on its own when it is longer than the window. Its padding, taken back
      by its margin, is room for a link's focus ring. */
   @media (min-width: 48rem) {
-    .grid {
+    .grid:not(.no-sidebar) {
       display: grid;
       grid-template-columns: calc(var(--margin) - var(--column-gap)) minmax(0, 1fr);
       column-gap: var(--column-gap);

@@ -1,26 +1,33 @@
 ---
-title: Getting Started
+title: Hypha's look for Starlight
 description: A Starlight site in Hypha's look, from one plugin.
+template: splash
+hero:
+  title: Every Hypha project's documentation, in one look.
+  tagline: hypha.pub's grid, faces and night for Starlight, with the project's own hue, links and repository.
+  actions:
+    - text: Get started
+      link: /getting-started/
+      variant: primary
+      icon: right-arrow
+    - text: Read the options
+      link: /reference/
+      variant: secondary
 ---
 
-The theme sets Starlight on hypha.pub's grid: the navigation in the page's
-margin, the text at its measure, the page's contents beside it.
+import { Card, CardGrid } from "@astrojs/starlight/components";
 
-## Install
-
-Add the plugin to Starlight's own list, with the project's links.
-
-```js title="astro.config.mjs"
-starlight({
-  title: "example",
-  plugins: [hypha({ links: [{ label: "GitHub", href: "https://github.com/hyphatech/example", icon: "code-xml" }] })],
-});
-```
-
-### The hue
-
-The night turns on one number, `hue`, in degrees. Every surface, line and
-text colour follows it.
-
-- 225, a reference's blue, is the default.
-- Any other sets a project apart.
+<CardGrid>
+  <Card title="One plugin" icon="puzzle">
+    Add it to Starlight's plugins and the site is set as a post on hypha.pub is.
+  </Card>
+  <Card title="The project's own hue" icon="setting">
+    One number turns every surface, line and text colour, readable at any hue.
+  </Card>
+  <Card title="Tabs and a repository" icon="github">
+    The sidebar's sections as tabs, and the repository's version and stars in the header.
+  </Card>
+  <Card title="Search" icon="magnifier">
+    Starlight's own, on Pagefind, in the theme's quiet field.
+  </Card>
+</CardGrid>

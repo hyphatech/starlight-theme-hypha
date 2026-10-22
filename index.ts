@@ -15,6 +15,7 @@ const components = {
   ContentPanel: "starlight-theme-hypha/components/ContentPanel.astro",
   Footer: "starlight-theme-hypha/components/Footer.astro",
   Header: "starlight-theme-hypha/components/Header.astro",
+  Hero: "starlight-theme-hypha/components/Hero.astro",
   MobileMenuFooter: "starlight-theme-hypha/components/MobileMenuFooter.astro",
   PageFrame: "starlight-theme-hypha/components/PageFrame.astro",
   PageSidebar: "starlight-theme-hypha/components/PageSidebar.astro",

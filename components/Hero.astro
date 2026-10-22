@@ -1,0 +1,155 @@
+---
+// A landing page's opening, as hyphatech.io's: the title in the slab at
+// display size, the tagline beneath as its lede, in graphite, and its
+// actions as hyphatech.io's buttons -- `primary` filled with ink, `secondary`
+// a panel on a rule, `minimal` a link. An image, where the page gives one,
+// stands beside it from the width that has room.
+import { Image } from "astro:assets";
+import { Icon } from "@astrojs/starlight/components";
+
+// The id Starlight's own title takes, which its table of contents links to.
+const PAGE_TITLE_ID = "_top";
+const { data } = Astro.locals.starlightRoute.entry;
+const { title = data.title, tagline, image, actions = [] } = data.hero ?? {};
+
+let art: ImageMetadata | undefined;
+let html: string | undefined;
+if (image) {
+  if ("file" in image) art = image.file;
+  else if ("dark" in image) art = image.dark;
+  else html = image.html;
+}
+---
+
+<div class:list={["hero", { pictured: art || html }]}>
+  <div class="copy">
+    <h1 id={PAGE_TITLE_ID} data-page-title set:html={title} />
+    {tagline && <p class="tagline" set:html={tagline} />}
+    {
+      actions.length > 0 && (
+        <div class="actions">
+          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant }) => (
+            <a href={link} class:list={["action", variant, className]} {...attrs}>
+              {text}
+              {icon?.type === "icon" && <Icon name={icon.name} size="1rem" />}
+              {icon?.type === "raw" && <Fragment set:html={icon.html} />}
+            </a>
+          ))}
+        </div>
+      )
+    }
+  </div>
+  {art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" width={400} height={400} class="art" />}
+  {html && <div class="art" set:html={html} />}
+</div>
+
+<style>
+  .hero {
+    display: grid;
+    gap: 3rem;
+    align-items: center;
+    padding-block: 3rem 2rem;
+  }
+  .copy {
+    min-width: 0;
+  }
+  /* hyphatech.io's display title: a long one sets in two lines on a laptop. */
+  h1 {
+    max-width: 48rem;
+    font-family: var(--font-serif);
+    font-size: clamp(2.375rem, 5.6vw, 4.5rem);
+    font-weight: 400;
+    font-variant-numeric: lining-nums tabular-nums;
+    line-height: 1.03;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+    color: var(--paper);
+  }
+  .tagline {
+    margin-top: 1.75rem;
+    max-width: 34rem;
+    font-family: var(--font-serif);
+    font-size: clamp(1.125rem, 1.6vw, 1.25rem);
+    line-height: 1.5;
+    text-wrap: pretty;
+    color: var(--graphite);
+  }
+  .actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-top: 2.5rem;
+  }
+  /* hyphatech.io's btn-primary and btn: a control's type, the clear border
+     keeping its edge where forced colours drop the fill. */
+  .action {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-control);
+    padding-inline: 1.25rem;
+    background: var(--panel);
+    color: var(--graphite);
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.25;
+    text-decoration: none;
+    transition:
+      opacity 120ms var(--ease-state),
+      border-color 120ms var(--ease-state),
+      background-color 120ms var(--ease-state),
+      color 120ms var(--ease-state);
+  }
+  .action:hover {
+    border-color: var(--graphite);
+    background: var(--raised);
+    color: var(--paper);
+  }
+  .action.primary {
+    border-color: transparent;
+    background: var(--paper);
+    color: var(--night);
+  }
+  .action.primary:hover {
+    background: var(--paper);
+    color: var(--night);
+    opacity: 0.85;
+  }
+  .action.minimal {
+    border: none;
+    padding-inline: 0.5rem;
+    background: none;
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in oklab, var(--graphite) 50%, transparent);
+    text-underline-offset: 4px;
+  }
+  .action.minimal:hover {
+    background: none;
+    text-decoration-color: var(--paper);
+  }
+  @media (pointer: coarse) {
+    .action {
+      height: 2.75rem;
+    }
+  }
+  .art {
+    justify-self: center;
+    width: min(70%, 20rem);
+    height: auto;
+  }
+  @media (min-width: 48rem) {
+    .hero {
+      padding-block: 4rem 3rem;
+    }
+  }
+  @media (min-width: 64rem) {
+    .hero.pictured {
+      grid-template-columns: 7fr 4fr;
+    }
+    .art {
+      width: min(100%, 24rem);
+    }
+  }
+</style>

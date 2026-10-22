@@ -27,7 +27,8 @@ libs/route-middleware
                     the sidebar split into tabs, where `tabs` is on
 libs/color          the night as hex, for the browser's theme-color
 components/         the parts of Starlight's page the theme takes over, and
-                    its own: Links, GitHub, Tabs, PhoneNav, Icon
+                    its own: Links, GitHub, Tabs, PhoneNav, Icon; Hero, a
+                    landing page's opening
 styles/theme.css    the look: hypha.pub's tokens and roles on Starlight's
 styles/code-theme   hypha.pub's code theme
 assets/hypha.webp   Hypha's mark, in the wordmark

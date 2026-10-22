@@ -11,5 +11,7 @@ test("the example builds in the theme's frame", async () => {
   expect(html).toContain('class="site-header');
   expect(html).toContain('data-github="hyphatech/starlight-theme-hypha"');
   expect(html).toContain('aria-label="Sections"');
+  expect(html).toContain('class="hero');
+  expect(html).toContain("Every Hypha project's documentation");
   expect(html).toContain('<meta name="theme-color" content="#0B0C0F"');
 }, 120_000);

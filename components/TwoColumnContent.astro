@@ -5,7 +5,7 @@
 // Narrower, the page goes without them, as a post does.
 ---
 
-<div class="columns">
+<div class:list={["columns", { "with-contents": Astro.locals.starlightRoute.toc }]}>
   <div class="main-pane"><slot /></div>
   {
     Astro.locals.starlightRoute.toc && (
@@ -22,11 +22,16 @@
     max-width: var(--measure);
     isolation: isolate;
   }
+  /* A landing page is the page's whole width: its hero and its cards, its
+     text still at the measure. */
+  :global([data-has-hero]) .main-pane {
+    max-width: none;
+  }
   .contents {
     display: none;
   }
   @media (min-width: 80rem) {
-    .columns {
+    .columns.with-contents {
       display: grid;
       grid-template-columns: minmax(0, var(--measure)) var(--sidebar);
       column-gap: var(--column-gap);
