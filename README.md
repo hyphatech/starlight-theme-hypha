@@ -41,7 +41,7 @@ starlight({
     hypha({
       hue: 225,
       github: "hyphatech/solidtype",
-      tabs: true,
+      tabs: { "Start here": "rocket", HeroUI: "component" },
       links: [
         { label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" },
         { label: "GitHub", href: "https://github.com/hyphatech/solidtype", icon: "code-xml" },
@@ -57,11 +57,14 @@ starlight({
 |---|---|---|
 | `hue` | `225` | The night's hue, in degrees: every surface, line and text colour turns with it |
 | `github` | none | The repository, as `owner/name`: the header links to it with its latest version, its stars and its forks |
-| `tabs` | `false` | Each top-level entry of the sidebar a tab under the header; the sidebar shows the open tab's pages |
+| `tabs` | `false` | Each top-level entry of the sidebar a tab under the header; the sidebar shows the open tab's pages. `true`, or each tab's icon by its entry's label: `{ "Start here": "rocket", Reference: "book-open" }` |
 | `links` | `[]` | The links in the header, on a phone in its second row |
 
-A link's `icon` is one of `archive`, `book-open`, `code-xml`, `globe`,
-`layers` and `rss`, or none.
+A link's or a tab's icon is lucide's, by its name, one of `archive`, `blocks`,
+`book-open`, `boxes`, `code-xml`, `component`, `compass`, `file-text`, `globe`,
+`graduation-cap`, `house`, `layers`, `library`, `list-checks`, `map`,
+`newspaper`, `play`, `puzzle`, `rocket`, `rss`, `scroll-text`, `settings`,
+`terminal` and `wrench`, or none.
 
 The header's wordmark is "hypha." and Starlight's own `title`.
 

@@ -2,14 +2,8 @@
 // The project's links, as hypha.pub's header sets its own: an icon and a
 // word, in graphite. Another site opens in a tab of its own, so the reader
 // keeps their place.
-import Archive from "@lucide/astro/icons/archive";
-import BookOpen from "@lucide/astro/icons/book-open";
-import CodeXml from "@lucide/astro/icons/code-xml";
-import Globe from "@lucide/astro/icons/globe";
-import Layers from "@lucide/astro/icons/layers";
-import Rss from "@lucide/astro/icons/rss";
 import config from "virtual:starlight-theme-hypha/config";
-import Icon from "./Icon.astro";
+import NamedIcon from "./NamedIcon.astro";
 
 interface Props {
   // Each link in a list item of its own, for a list around them.
@@ -17,14 +11,13 @@ interface Props {
 }
 
 const { listed = false } = Astro.props;
-const drawn = { archive: Archive, "book-open": BookOpen, "code-xml": CodeXml, globe: Globe, layers: Layers, rss: Rss };
 ---
 
 {
   config.links.map((link) => {
     const a = (
       <a href={link.href} target="_blank" rel="noopener">
-        {link.icon && <Icon icon={drawn[link.icon]} />}
+        {link.icon && <NamedIcon name={link.icon} />}
         {link.label}
       </a>
     );

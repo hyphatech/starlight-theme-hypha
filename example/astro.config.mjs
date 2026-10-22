@@ -17,7 +17,7 @@ export default defineConfig({
       plugins: [
         hypha({
           github: "hyphatech/starlight-theme-hypha",
-          tabs: true,
+          tabs: { "Start here": "rocket", Reference: "book-open" },
           links: [{ label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" }],
         }),
       ],

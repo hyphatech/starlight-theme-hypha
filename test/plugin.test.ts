@@ -49,10 +49,12 @@ describe("the plugin", () => {
   test("splits the sidebar into tabs only when asked", () => {
     expect(setup({}).middleware).toEqual([]);
     expect(setup({ tabs: true }).middleware).toEqual(["starlight-theme-hypha/route-middleware"]);
+    expect(setup({ tabs: { Reference: "book-open" } }).middleware).toEqual(["starlight-theme-hypha/route-middleware"]);
   });
 
   test("refuses an option it does not know the shape of", () => {
     expect(() => hypha({ github: "https://github.com/hyphatech/x" })).toThrow(/github/);
+    expect(() => hypha({ tabs: { Reference: "star" as never } })).toThrow(/tabs/);
     expect(() => hypha({ hue: 400 })).toThrow(/hue/);
     expect(() => hypha({ links: [{ label: "x", href: "x", icon: "star" as never }] })).toThrow(/links/);
   });

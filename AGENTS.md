@@ -29,8 +29,8 @@ libs/color          the night as hex, for the browser's theme-color
 libs/github         a repository's version, stars and forks, asked at build
                     time and again in the browser
 components/         the parts of Starlight's page the theme takes over, and
-                    its own: Links, GitHub, Tabs, PhoneNav, Icon; Hero, a
-                    landing page's opening
+                    its own: Links, GitHub, Tabs, PhoneNav, Icon, NamedIcon;
+                    Hero, a landing page's opening
 styles/theme.css    the look: hypha.pub's tokens and roles on Starlight's
 styles/code-theme   hypha.pub's code theme
 assets/hypha.webp   Hypha's mark, in the wordmark
@@ -57,7 +57,7 @@ test/               the plugin's config, contrast, and the example's build
 - **The options are plain data.** A link names its icon from a fixed set
   rather than passing a component, since the options reach the components
   through a virtual module as JSON. Adding an icon is a name in
-  `libs/config.ts` and an import in `components/Links.astro`.
+  `libs/config.ts` and an import in `components/NamedIcon.astro`.
 
 ## Releases
 

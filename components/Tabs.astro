@@ -1,29 +1,41 @@
 ---
-// The sidebar's sections as tabs under the header, on the page's width from
-// the wordmark's line, the open one marked on the header's rule in ink. A
-// phone has them in its second row, with the links.
+// The sidebar's sections as tabs under the header, a row of their own between
+// rules as a phone's second row is, on the page's width from the wordmark's
+// line, each with its icon where the project names one, the open one marked
+// on the header's rule in ink. A phone has them in its second row, with the
+// links.
+import config from "virtual:starlight-theme-hypha/config";
+import NamedIcon from "./NamedIcon.astro";
+
 const tabs = Astro.locals.hyphaTabs ?? [];
+const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[label] : undefined);
 ---
 
 {
   tabs.length > 0 && (
-    <nav class="tabs print:hidden" aria-label="Sections">
-      <ul>
-        {tabs.map((tab) => (
-          <li>
-            <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined}>
-              {tab.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
+    <div class="row print:hidden">
+      <nav class="tabs" aria-label="Sections">
+        <ul>
+          {tabs.map((tab) => (
+            <li>
+              <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined}>
+                {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
+                {tab.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    </div>
   )
 }
 
 <style>
-  .tabs {
+  .row {
     display: none;
+    border-top: 1px solid var(--rule);
+  }
+  .tabs {
     margin-inline: auto;
     max-width: var(--page);
     margin-bottom: -1px;
@@ -46,6 +58,7 @@ const tabs = Astro.locals.hyphaTabs ?? [];
   a {
     display: flex;
     align-items: center;
+    gap: 0.5rem;
     height: 3rem;
     border-bottom: 1px solid transparent;
     color: var(--graphite);
@@ -70,7 +83,7 @@ const tabs = Astro.locals.hyphaTabs ?? [];
     outline-offset: -2px;
   }
   @media (min-width: 48rem) {
-    .tabs {
+    .row {
       display: block;
     }
   }

@@ -3,7 +3,8 @@ import { z } from "astro/zod";
 // The icons a link may take, by lucide's name for each. A link names one
 // rather than passing a component, so the options stay plain data that
 // reaches the components through a virtual module.
-export const icons = ["archive", "book-open", "code-xml", "globe", "layers", "rss"] as const;
+export const icons = ["archive", "blocks", "book-open", "boxes", "code-xml", "component", "compass", "file-text", "globe", "graduation-cap", "house", "layers", "library", "list-checks", "map", "newspaper", "play", "puzzle", "rocket", "rss", "scroll-text", "settings", "terminal", "wrench"] as const;
+export type IconName = (typeof icons)[number];
 
 export const configSchema = z
   .object({
@@ -18,8 +19,9 @@ export const configSchema = z
       .regex(/^[\w.-]+\/[\w.-]+$/, "owner/name")
       .optional(),
     // Each top-level entry of the sidebar a tab under the header, the sidebar
-    // then showing the open tab's pages alone.
-    tabs: z.boolean().default(false),
+    // then showing the open tab's pages alone: `true`, or each tab's icon by
+    // its entry's label.
+    tabs: z.union([z.boolean(), z.record(z.string(), z.enum(icons))]).default(false),
     // The links at the end of the header, on a phone in its second row.
     // Another site opens in a tab of its own.
     links: z

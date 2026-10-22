@@ -7,8 +7,10 @@
 import config from "virtual:starlight-theme-hypha/config";
 import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
+import NamedIcon from "./NamedIcon.astro";
 
 const tabs = Astro.locals.hyphaTabs ?? [];
+const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[label] : undefined);
 const shown = tabs.length > 0 || config.links.length > 0 || config.github !== undefined;
 ---
 
@@ -19,6 +21,7 @@ const shown = tabs.length > 0 || config.links.length > 0 || config.github !== un
         {tabs.map((tab) => (
           <li>
             <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined}>
+              {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
               {tab.label}
             </a>
           </li>
