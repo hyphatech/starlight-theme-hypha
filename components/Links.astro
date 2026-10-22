@@ -11,16 +11,25 @@ import Rss from "@lucide/astro/icons/rss";
 import config from "virtual:starlight-theme-hypha/config";
 import Icon from "./Icon.astro";
 
+interface Props {
+  // Each link in a list item of its own, for a list around them.
+  listed?: boolean;
+}
+
+const { listed = false } = Astro.props;
 const drawn = { archive: Archive, "book-open": BookOpen, "code-xml": CodeXml, globe: Globe, layers: Layers, rss: Rss };
 ---
 
 {
-  config.links.map((link) => (
-    <a href={link.href} target="_blank" rel="noopener">
-      {link.icon && <Icon icon={drawn[link.icon]} />}
-      {link.label}
-    </a>
-  ))
+  config.links.map((link) => {
+    const a = (
+      <a href={link.href} target="_blank" rel="noopener">
+        {link.icon && <Icon icon={drawn[link.icon]} />}
+        {link.label}
+      </a>
+    );
+    return listed ? <li>{a}</li> : a;
+  })
 }
 
 <style>

@@ -20,7 +20,7 @@ export const configSchema = z
     // Each top-level entry of the sidebar a tab under the header, the sidebar
     // then showing the open tab's pages alone.
     tabs: z.boolean().default(false),
-    // The links at the end of the header and at the foot of a phone's menu.
+    // The links at the end of the header, on a phone in its second row.
     // Another site opens in a tab of its own.
     links: z
       .array(

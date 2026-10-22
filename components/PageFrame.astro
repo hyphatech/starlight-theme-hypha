@@ -7,6 +7,7 @@
 // which keeps its scroll and its open groups from page to page.
 import X from "@lucide/astro/icons/x";
 import Icon from "./Icon.astro";
+import PhoneNav from "./PhoneNav.astro";
 import Tabs from "./Tabs.astro";
 
 const { hasSidebar } = Astro.locals.starlightRoute;
@@ -14,7 +15,7 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
 ---
 
 <div class="page">
-  <header class="site-header"><slot name="header" /><Tabs /></header>
+  <header class="site-header"><slot name="header" /><Tabs /><PhoneNav /></header>
   <div class="grid">
     {
       hasSidebar && (

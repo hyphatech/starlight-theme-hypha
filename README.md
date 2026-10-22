@@ -58,7 +58,7 @@ starlight({
 | `hue` | `225` | The night's hue, in degrees: every surface, line and text colour turns with it |
 | `github` | none | The repository, as `owner/name`: the header links to it with its latest version, its stars and its forks |
 | `tabs` | `false` | Each top-level entry of the sidebar a tab under the header; the sidebar shows the open tab's pages |
-| `links` | `[]` | The links in the header and at the foot of a phone's menu |
+| `links` | `[]` | The links in the header, on a phone in its second row |
 
 A link's `icon` is one of `archive`, `book-open`, `code-xml`, `globe`,
 `layers` and `rss`, or none.

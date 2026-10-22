@@ -1,7 +1,7 @@
 ---
 // The sidebar's sections as tabs under the header, on the page's width from
-// the wordmark's line, the open one marked on the header's rule in ink. On a
-// phone they scroll sideways, as hypha.pub's navigation does there.
+// the wordmark's line, the open one marked on the header's rule in ink. A
+// phone has them in its second row, with the links.
 const tabs = Astro.locals.hyphaTabs ?? [];
 ---
 
@@ -23,6 +23,7 @@ const tabs = Astro.locals.hyphaTabs ?? [];
 
 <style>
   .tabs {
+    display: none;
     margin-inline: auto;
     max-width: var(--page);
     margin-bottom: -1px;
@@ -67,5 +68,10 @@ const tabs = Astro.locals.hyphaTabs ?? [];
   /* Inside the row, where the window's edge would cut it. */
   a:focus-visible {
     outline-offset: -2px;
+  }
+  @media (min-width: 48rem) {
+    .tabs {
+      display: block;
+    }
   }
 </style>

@@ -8,11 +8,18 @@ import Star from "@lucide/astro/icons/star";
 import Tag from "@lucide/astro/icons/tag";
 import config from "virtual:starlight-theme-hypha/config";
 import Icon from "./Icon.astro";
+
+interface Props {
+  // On one line, the facts after the name, for a row as tall as a link.
+  inline?: boolean;
+}
+
+const { inline = false } = Astro.props;
 ---
 
 {
   config.github && (
-    <a href={`https://github.com/${config.github}`} target="_blank" rel="noopener" class="github" data-github={config.github} aria-label={`${config.github} on GitHub`}>
+    <a href={`https://github.com/${config.github}`} target="_blank" rel="noopener" class:list={["github", { inline }]} data-github={config.github} aria-label={`${config.github} on GitHub`}>
       <svg viewBox="0 0 16 16" width="20" height="20" aria-hidden="true" class="mark">
         <path
           fill="currentColor"
@@ -140,5 +147,14 @@ import Icon from "./Icon.astro";
   }
   .facts > span[hidden] {
     display: none;
+  }
+  .inline .mark {
+    width: 16px;
+    height: 16px;
+  }
+  .inline .text {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
   }
 </style>
