@@ -14,6 +14,7 @@ const sheet = "starlight-theme-hypha/styles/theme.css";
 const components = {
   ContentPanel: "starlight-theme-hypha/components/ContentPanel.astro",
   Footer: "starlight-theme-hypha/components/Footer.astro",
+  Head: "starlight-theme-hypha/components/Head.astro",
   Header: "starlight-theme-hypha/components/Header.astro",
   Hero: "starlight-theme-hypha/components/Hero.astro",
   MobileMenuFooter: "starlight-theme-hypha/components/MobileMenuFooter.astro",
@@ -31,7 +32,11 @@ const codeTheme = () =>
   ExpressiveCodeTheme.fromJSONString(readFileSync(new URL("./styles/code-theme.json", import.meta.url), "utf-8"));
 
 // Code as hypha.pub sets it: a panel on a rule, no shadow.
+// Its styles in the page, where the first block is, rather than linked: a
+// stylesheet linked in the body is one a browser may draw past, and the
+// code would show unset until it came.
 const expressiveCode = {
+  emitExternalStylesheet: false,
   useStarlightUiThemeColors: false,
   styleOverrides: {
     borderRadius: "var(--radius-panel)",

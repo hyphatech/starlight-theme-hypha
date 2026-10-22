@@ -10,7 +10,10 @@ import Icon from "./Icon.astro";
 import PhoneNav from "./PhoneNav.astro";
 import Tabs from "./Tabs.astro";
 
-const { hasSidebar } = Astro.locals.starlightRoute;
+const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
+// An empty sidebar keeps its margin, so the page stands where its
+// neighbours' do, with nothing in it.
+const navigable = hasSidebar && sidebar.length > 0;
 const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
 ---
 
@@ -18,7 +21,10 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
   <header class="site-header"><slot name="header" /><Tabs /><PhoneNav /></header>
   <div class:list={["grid", { "no-sidebar": !hasSidebar }]}>
     {
-      hasSidebar && (
+      hasSidebar && !navigable && <div class="sidebar" aria-hidden="true" />
+    }
+    {
+      navigable && (
         <nav class="sidebar print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
           <script>
             // On a phone the navigation is a popover, which opens and closes

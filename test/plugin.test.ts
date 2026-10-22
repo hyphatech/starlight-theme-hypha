@@ -115,4 +115,14 @@ describe("the tabs", () => {
     ]);
     expect(locals.starlightRoute.sidebar.map((e: any) => [e.label, e.collapsed])).toEqual([["Reference", false]]);
   });
+
+  test("leave the only page of its tab without a sidebar", () => {
+    const locals: any = {
+      starlightRoute: {
+        sidebar: [group("Start here", [link("Getting Started", "/")]), group("Reference", [link("Options", "/options/", true)])],
+      },
+    };
+    onRequest({ locals } as never, async () => {});
+    expect(locals.starlightRoute.sidebar).toEqual([]);
+  });
 });

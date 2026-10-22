@@ -11,7 +11,7 @@ import config from "virtual:starlight-theme-hypha/config";
 import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
 
-const { hasSidebar } = Astro.locals.starlightRoute;
+const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
 ---
 
 <div class="bar">
@@ -27,7 +27,7 @@ const { hasSidebar } = Astro.locals.starlightRoute;
       )
     }
     {
-      hasSidebar && (
+      hasSidebar && sidebar.length > 0 && (
         <button type="button" popovertarget="starlight__sidebar" class="menu" aria-label={Astro.locals.t("menuButton.accessibleLabel")}>
           <Icon icon={Menu} size="md" />
         </button>

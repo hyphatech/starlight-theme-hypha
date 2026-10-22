@@ -109,7 +109,10 @@
   scroll-padding-top: 2rem;
 }
 
+/* The scrollbar's room is kept from the start, so the page does not move
+   sideways when it comes. */
 html {
+  scrollbar-gutter: stable;
   background: var(--night);
   -webkit-font-smoothing: antialiased;
   scrollbar-color: var(--rule) var(--night);

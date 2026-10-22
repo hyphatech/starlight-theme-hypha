@@ -1,0 +1,12 @@
+---
+// Starlight's head, and the theme's three faces asked for from it, so they
+// come with the page's sheet rather than after it: text set first in a
+// fallback and then in its face changes width, and the header moves.
+import Default from "@astrojs/starlight/components/Head.astro";
+import sans400 from "@fontsource/inter-tight/files/inter-tight-latin-400-normal.woff2?url";
+import sans500 from "@fontsource/inter-tight/files/inter-tight-latin-500-normal.woff2?url";
+import serif from "@fontsource-variable/roboto-slab/files/roboto-slab-latin-wght-normal.woff2?url";
+---
+
+<Default />
+{[sans400, sans500, serif].map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
