@@ -24,25 +24,25 @@ const words = {
   more: pagefind.load_more ?? "Load more results",
   dev: t("search.devWarning"),
 };
-const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raised px-1 font-sans text-[0.6875rem] text-ink";
+const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center hypha:rounded-control hypha:bg-raised hypha:px-1 hypha:font-sans hypha:text-[0.6875rem] hypha:text-ink";
 ---
 
 {
   starlight.pagefind && (
-    <hypha-search class="contents" data-words={JSON.stringify(words)} data-strip-trailing-slash={project.trailingSlash === "never" ? "" : undefined}>
+    <hypha-search class="hypha:contents" data-words={JSON.stringify(words)} data-strip-trailing-slash={project.trailingSlash === "never" ? "" : undefined}>
       {/* On a phone a square, as the menu's button beside it. */}
       <button
         type="button"
-        class="open flex size-11 cursor-pointer items-center justify-center gap-2 rounded-control border border-rule bg-panel p-0 font-sans text-[0.875rem]/none font-medium text-graphite transition-colors hover:border-graphite hover:text-ink min-[50rem]:h-10 min-[50rem]:w-72 min-[50rem]:justify-start min-[50rem]:ps-3 min-[50rem]:pe-2"
+        class="open hypha:flex hypha:size-11 hypha:cursor-pointer hypha:items-center hypha:justify-center hypha:gap-2 hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:p-0 hypha:font-sans hypha:text-[0.875rem]/none hypha:font-medium hypha:text-graphite hypha:transition-colors hypha:hover:border-graphite hypha:hover:text-ink hypha:min-[50rem]:h-10 hypha:min-[50rem]:w-72 hypha:min-[50rem]:justify-start hypha:min-[50rem]:ps-3 hypha:min-[50rem]:pe-2"
         disabled
         aria-label={t("search.label")}
         aria-keyshortcuts="Control+K"
       >
         <Icon icon={Magnifier} />
-        <span class="hidden min-[50rem]:block" aria-hidden="true">
+        <span class="hypha:hidden hypha:min-[50rem]:block" aria-hidden="true">
           {t("search.label")}
         </span>
-        <kbd class="shortcut ms-auto hidden gap-[0.25em] rounded-control bg-raised px-1.5 py-1 font-sans text-[0.6875rem] *:font-sans min-[50rem]:flex" aria-hidden="true">
+        <kbd class="shortcut hypha:ms-auto hypha:hidden hypha:gap-[0.25em] hypha:rounded-control hypha:bg-raised hypha:px-1.5 hypha:py-1 hypha:font-sans hypha:text-[0.6875rem] hypha:*:font-sans hypha:min-[50rem]:flex" aria-hidden="true">
           <kbd>{t("search.ctrlKey")}</kbd>
           <kbd>K</kbd>
         </kbd>
@@ -62,9 +62,9 @@ const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raise
       {/* On a phone the whole screen. It goes quicker than it comes. */}
       <dialog
         aria-label={t("search.label")}
-        class="m-0 h-dvh max-h-dvh w-full max-w-full flex-col focus-visible:outline-none! overflow-hidden border-0 bg-panel p-0 text-ink transition-[opacity,translate] duration-200 ease-glide open:flex starting:open:-translate-y-2 starting:open:opacity-0 data-closing:-translate-y-1 data-closing:opacity-0 data-closing:duration-120 data-closing:ease-state motion-reduce:transition-none min-[50rem]:inset-y-auto min-[50rem]:top-0 min-[50rem]:mx-auto min-[50rem]:mt-20 min-[50rem]:h-auto min-[50rem]:max-h-[min(36rem,100dvh_-_8rem)] min-[50rem]:w-[min(40rem,100%_-_2*var(--gutter))] min-[50rem]:rounded-panel min-[50rem]:border min-[50rem]:border-rule backdrop:bg-ivory/72 backdrop:backdrop-blur-[3px] backdrop:transition-opacity backdrop:duration-180 backdrop:ease-glide starting:open:backdrop:opacity-0 data-closing:backdrop:opacity-0 data-closing:backdrop:duration-120 data-closing:backdrop:ease-state motion-reduce:backdrop:transition-none"
+        class="hypha:m-0 hypha:h-dvh hypha:max-h-dvh hypha:w-full hypha:max-w-full hypha:flex-col hypha:focus-visible:outline-none! hypha:overflow-hidden hypha:border-0 hypha:bg-panel hypha:p-0 hypha:text-ink hypha:transition-[opacity,translate] hypha:duration-200 hypha:ease-glide hypha:open:flex hypha:starting:open:-translate-y-2 hypha:starting:open:opacity-0 hypha:data-closing:-translate-y-1 hypha:data-closing:opacity-0 hypha:data-closing:duration-120 hypha:data-closing:ease-state hypha:motion-reduce:transition-none hypha:min-[50rem]:inset-y-auto hypha:min-[50rem]:top-0 hypha:min-[50rem]:mx-auto hypha:min-[50rem]:mt-20 hypha:min-[50rem]:h-auto hypha:min-[50rem]:max-h-[min(36rem,100dvh_-_8rem)] hypha:min-[50rem]:w-[min(40rem,100%_-_2*var(--hypha-gutter))] hypha:min-[50rem]:rounded-panel hypha:min-[50rem]:border hypha:min-[50rem]:border-rule hypha:backdrop:bg-ivory/72 hypha:backdrop:backdrop-blur-[3px] hypha:backdrop:transition-opacity hypha:backdrop:duration-180 hypha:backdrop:ease-glide hypha:starting:open:backdrop:opacity-0 hypha:data-closing:backdrop:opacity-0 hypha:data-closing:backdrop:duration-120 hypha:data-closing:backdrop:ease-state hypha:motion-reduce:backdrop:transition-none"
       >
-        <div class="flex h-14 shrink-0 items-center gap-3 border-b border-rule ps-5 pe-3 text-graphite">
+        <div class="hypha:flex hypha:h-14 hypha:shrink-0 hypha:items-center hypha:gap-3 hypha:border-b hypha:border-rule hypha:ps-5 hypha:pe-3 hypha:text-graphite">
           <Icon icon={Magnifier} size="md" />
           {/* The caret is the field's focus; the page's ring would box it twice. */}
           <input
@@ -79,49 +79,49 @@ const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raise
             autocapitalize="off"
             spellcheck="false"
             enterkeyhint="search"
-            class="h-full min-w-0 flex-1 border-0 bg-transparent font-sans text-base/none font-normal text-ink caret-accent outline-0 placeholder:text-graphite focus-visible:outline-none!"
+            class="hypha:h-full hypha:min-w-0 hypha:flex-1 hypha:border-0 hypha:bg-transparent hypha:font-sans hypha:text-base/none hypha:font-normal hypha:text-ink hypha:caret-accent hypha:outline-0 hypha:placeholder:text-graphite hypha:focus-visible:outline-none!"
           />
           <button
             type="button"
-            class="cursor-pointer border-0 bg-transparent p-2 font-sans text-[0.875rem]/none font-medium text-ink min-[50rem]:hidden"
+            class="hypha:cursor-pointer hypha:border-0 hypha:bg-transparent hypha:p-2 hypha:font-sans hypha:text-[0.875rem]/none hypha:font-medium hypha:text-ink hypha:min-[50rem]:hidden"
             data-close
           >
             {t("search.cancelLabel")}
           </button>
         </div>
-        <p class="status m-0 shrink-0 px-5 pt-3.5 pb-1.5 text-[0.75rem] font-medium whitespace-pre-line text-graphite empty:hidden" role="status" />
+        <p class="status hypha:m-0 hypha:shrink-0 hypha:px-5 hypha:pt-3.5 hypha:pb-1.5 hypha:text-[0.75rem] hypha:font-medium hypha:whitespace-pre-line hypha:text-graphite hypha:empty:hidden" role="status" />
         <div
-          class="results min-h-0 flex-[0_1_auto] overflow-y-auto overscroll-contain px-2 pb-2 [scrollbar-color:var(--color-rule)_transparent] [scrollbar-width:thin] empty:hidden"
+          class="results hypha:min-h-0 hypha:flex-[0_1_auto] hypha:overflow-y-auto hypha:overscroll-contain hypha:px-2 hypha:pb-2 hypha:[scrollbar-color:var(--hypha-color-rule)_transparent] hypha:[scrollbar-width:thin] hypha:empty:hidden"
           id="hypha-search-results"
           role="listbox"
           aria-label={t("search.label")}
         />
         <button
           type="button"
-          class="more mx-5 mb-3 shrink-0 cursor-pointer border-0 bg-transparent px-0 py-2 text-start font-sans text-[0.8125rem]/none font-medium text-graphite transition-colors hover:text-ink"
+          class="more hypha:mx-5 hypha:mb-3 hypha:shrink-0 hypha:cursor-pointer hypha:border-0 hypha:bg-transparent hypha:px-0 hypha:py-2 hypha:text-start hypha:font-sans hypha:text-[0.8125rem]/none hypha:font-medium hypha:text-graphite hypha:transition-colors hypha:hover:text-ink"
           hidden
         >
           {words.more}
         </button>
         {/* The keys, where there is a keyboard to press them on. */}
-        <footer class="hidden shrink-0 gap-5 border-t border-rule px-5 py-2.5 text-[0.75rem] text-graphite *:inline-flex *:items-center *:gap-1 min-[50rem]:flex" aria-hidden="true">
+        <footer class="hypha:hidden hypha:shrink-0 hypha:gap-5 hypha:border-t hypha:border-rule hypha:px-5 hypha:py-2.5 hypha:text-[0.75rem] hypha:text-graphite hypha:*:inline-flex hypha:*:items-center hypha:*:gap-1 hypha:min-[50rem]:flex" aria-hidden="true">
           <span>
             <kbd class={key}>
               <Icon icon={ArrowUp} size="xs" />
             </kbd>
-            <kbd class:list={[key, "me-0.5"]}>
+            <kbd class:list={[key, "hypha:me-0.5"]}>
               <Icon icon={ArrowDown} size="xs" />
             </kbd>
             to choose
           </span>
           <span>
-            <kbd class:list={[key, "me-0.5"]}>
+            <kbd class:list={[key, "hypha:me-0.5"]}>
               <Icon icon={CornerDownLeft} size="xs" />
             </kbd>
             to open
           </span>
           <span>
-            <kbd class:list={[key, "me-0.5"]}>esc</kbd>
+            <kbd class:list={[key, "hypha:me-0.5"]}>esc</kbd>
             to close
           </span>
         </footer>
@@ -227,20 +227,20 @@ const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raise
         option.href = href(row.url);
         option.setAttribute("role", "option");
         option.setAttribute("aria-selected", "false");
-        option.className = "grid gap-0.5 rounded-control px-3 py-2.5 text-graphite no-underline transition-colors aria-selected:bg-raised";
+        option.className = "hypha:grid hypha:gap-0.5 hypha:rounded-control hypha:px-3 hypha:py-2.5 hypha:text-graphite hypha:no-underline hypha:transition-colors hypha:aria-selected:bg-raised";
         if (row.trail.length > 0) {
           const trail = document.createElement("span");
-          trail.className = "truncate text-xs/[1.5]";
+          trail.className = "hypha:truncate hypha:text-xs/[1.5]";
           trail.textContent = row.trail.join(" / ");
           option.append(trail);
         }
         const title = document.createElement("span");
-        title.className = "text-[0.9375rem]/[1.4] font-medium text-ink";
+        title.className = "hypha:text-[0.9375rem]/[1.4] hypha:font-medium hypha:text-ink";
         title.textContent = row.title;
         // Pagefind's excerpt is escaped, with the words found in <mark>.
         const excerpt = document.createElement("span");
         excerpt.className =
-          "line-clamp-2 text-[0.8125rem]/[1.55] wrap-anywhere [&_mark]:bg-transparent [&_mark]:text-ink [&_mark]:underline [&_mark]:decoration-accent [&_mark]:decoration-1 [&_mark]:underline-offset-3";
+          "hypha:line-clamp-2 hypha:text-[0.8125rem]/[1.55] hypha:wrap-anywhere hypha:[&_mark]:bg-transparent hypha:[&_mark]:text-ink hypha:[&_mark]:underline hypha:[&_mark]:decoration-accent hypha:[&_mark]:decoration-1 hypha:[&_mark]:underline-offset-3";
         excerpt.innerHTML = row.excerpt;
         option.append(title, excerpt);
         return option;
@@ -289,7 +289,7 @@ const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raise
       // Closed after it has faded: a closed dialog leaves the page at once.
       const show = () => {
         delete dialog.dataset.closing;
-        document.documentElement.classList.add("overflow-hidden");
+        document.documentElement.classList.add("hypha:overflow-hidden");
         dialog.showModal();
         input.focus();
         input.select();
@@ -307,7 +307,7 @@ const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raise
         setTimeout(done, 200);
       };
 
-      dialog.addEventListener("close", () => document.documentElement.classList.remove("overflow-hidden"));
+      dialog.addEventListener("close", () => document.documentElement.classList.remove("hypha:overflow-hidden"));
       open.addEventListener("click", show);
       open.disabled = false;
       dialog.querySelector("[data-close]")!.addEventListener("click", hide);

@@ -1,5 +1,0 @@
-/* For a project's own Tailwind sheet: the tokens, and the theme's components
-   to build. One build on a page; two undo each other's utilities. */
-
-@import "./tokens.css";
-@source "../components";

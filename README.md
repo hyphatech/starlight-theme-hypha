@@ -5,7 +5,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
 ## Install
 
 ```sh
-bun add github:hyphatech/starlight-theme-hypha#v0.2.2
+bun add github:hyphatech/starlight-theme-hypha#v0.3.0
 ```
 
 ```js
@@ -24,21 +24,29 @@ export default defineConfig({
 });
 ```
 
-### With Tailwind
+### Beside a project's own styles
 
-A project without Tailwind needs nothing more. A project on Tailwind 4
-imports the theme into its own Tailwind sheet, so the page has one Tailwind
-build:
+The theme brings its own Tailwind build, every utility and every variable
+under its prefix, `hypha:` and `--hypha-`. A project on Tailwind, or with a
+design system of its own, needs nothing more: its classes and variables
+share no name with the theme's, so neither restyles the other, and the
+project's Tailwind plugin builds the theme's sheet beside its own.
+
+All of the theme's styles are in its cascade layer, `hypha`, after
+Starlight's and before a project's Tailwind layers, in the order Starlight's
+guide to Tailwind gives with the theme's added:
 
 ```css
-@layer base, starlight, theme, components, utilities;
-@import "@astrojs/starlight-tailwind";
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities);
-@import "starlight-theme-hypha/styles/tailwind.css";
+@layer base, starlight, hypha, theme, components, utilities;
 ```
 
-Without that import the build warns, and the theme's components go unstyled.
+So the theme restyles Starlight, and a project's styles, layered after it
+or unlayered, win over the theme's. A project that states its own order
+names `hypha` after `starlight`.
+
+A page's own block marked `not-content` -- a demo of the project's
+components, say -- is left alone by the theme's styles for the text, as by
+Starlight's.
 
 ## Options
 
@@ -144,27 +152,27 @@ export const widget = () => "one";
 
 ## Customising
 
-The theme's tokens are CSS custom properties. Set any of them on `:root` in
-a sheet in Starlight's `customCss`:
+The theme's tokens are CSS custom properties, each named under the theme's
+prefix. Set any of them on `:root` in a sheet in Starlight's `customCss`:
 
 | Token | Default | Used for |
 |---|---|---|
-| `--color-ivory` | `hsl(hue 15% 5%)` | The background |
-| `--color-ink` | `hsl(hue 15% 90%)` | Text |
-| `--color-graphite` | `hsl(hue 10% 58%)` | Secondary text and icons |
-| `--color-rule` | `hsl(hue 14% 17%)` | Lines and borders |
-| `--color-accent` | `hsl(hue+6 72% 72%)` | Focus, selection and search matches |
-| `--color-panel` | ink 4% over ivory | Code, cards and controls |
-| `--color-raised` | ink 7% over ivory | Inline code and the current item |
-| `--font-sans` | Inter Tight | Text |
-| `--font-serif` | Roboto Slab | Headings |
-| `--font-mono` | the system's | Code |
-| `--radius-control` | `4px` | Buttons and fields |
-| `--radius-panel` | `10px` | Panels |
-| `--container-page` | `72rem` | The page's width |
-| `--measure` | `42rem` | The text's width |
-| `--margin` | `11.5rem`, a sixth of the page from `64rem` | The navigation's column |
-| `--gutter` | `1rem`, `1.5rem` from `40rem` | The page's side padding |
+| `--hypha-color-ivory` | `hsl(hue 15% 5%)` | The background |
+| `--hypha-color-ink` | `hsl(hue 15% 90%)` | Text |
+| `--hypha-color-graphite` | `hsl(hue 10% 58%)` | Secondary text and icons |
+| `--hypha-color-rule` | `hsl(hue 14% 17%)` | Lines and borders |
+| `--hypha-color-accent` | `hsl(hue+6 72% 72%)` | Focus, selection and search matches |
+| `--hypha-color-panel` | ink 4% over ivory | Code, cards and controls |
+| `--hypha-color-raised` | ink 7% over ivory | Inline code and the current item |
+| `--hypha-font-sans` | Inter Tight | Text |
+| `--hypha-font-serif` | Roboto Slab | Headings |
+| `--hypha-font-mono` | the system's | Code |
+| `--hypha-radius-control` | `4px` | Buttons and fields |
+| `--hypha-radius-panel` | `10px` | Panels |
+| `--hypha-container-page` | `72rem` | The page's width |
+| `--hypha-measure` | `42rem` | The text's width |
+| `--hypha-margin` | `11.5rem`, a sixth of the page from `64rem` | The navigation's column |
+| `--hypha-gutter` | `1rem`, `1.5rem` from `40rem` | The page's side padding |
 
 A component set in Starlight's `components` overrides the theme's.
 

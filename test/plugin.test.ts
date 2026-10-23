@@ -23,8 +23,8 @@ function setup(options: Parameters<typeof hypha>[0], starlight: Record<string, u
 
 describe("the plugin", () => {
   test("sets the night's hue, 225 unless given", () => {
-    expect(setup(undefined).head[0]).toEqual({ tag: "style", content: ":root{--hue:225}" });
-    expect(setup({ hue: 35 }).head[0]).toEqual({ tag: "style", content: ":root{--hue:35}" });
+    expect(setup(undefined).head[0]).toEqual({ tag: "style", content: ":root{--hypha-hue:225}" });
+    expect(setup({ hue: 35 }).head[0]).toEqual({ tag: "style", content: ":root{--hypha-hue:35}" });
   });
 
   test("gives the browser the night as theme-color, unless the project does", () => {
@@ -44,11 +44,12 @@ describe("the plugin", () => {
   test("keeps its sheet where the project names it", () => {
     const own = ["./tailwind.css", "starlight-theme-hypha/styles/theme.css", "./own.css"];
     const tailwind = { plugins: [{ name: "@tailwindcss/vite:scan" }] };
-    expect(setup({}, { customCss: own }, tailwind).customCss).toEqual(own);
-    expect(setup({}, { customCss: own }).customCss).toEqual(["./tailwind.css", "starlight-theme-hypha/styles/standalone.css", "starlight-theme-hypha/styles/theme.css", "./own.css"]);
+    const sheets = ["./tailwind.css", "starlight-theme-hypha/styles/standalone.css", "starlight-theme-hypha/styles/theme.css", "./own.css"];
+    expect(setup({}, { customCss: own }, tailwind).customCss).toEqual(sheets);
+    expect(setup({}, { customCss: own }).customCss).toEqual(sheets);
   });
 
-  test("builds the theme with Tailwind, unless the project builds it in its own", () => {
+  test("builds the theme's own sheet, with the project's Tailwind where it has one", () => {
     // The Vite plugins the theme's integration adds to the project's.
     const plugins = (vite: object) => {
       let integration: any;
@@ -67,11 +68,10 @@ describe("the plugin", () => {
     const tailwind = { plugins: [[{ name: "@tailwindcss/vite:scan" }], { name: "other" }] };
     expect(plugins({})).toContain("@tailwindcss/vite:scan");
     expect(plugins(tailwind)).not.toContain("@tailwindcss/vite:scan");
-    // On the project's Tailwind, its own sheet must import the theme's.
+    // The theme's build is its own, prefixed, beside the project's.
     const u = setup({}, {}, tailwind);
-    expect(u.customCss).toEqual(["starlight-theme-hypha/styles/theme.css"]);
-    expect(u.warnings[0]).toContain("starlight-theme-hypha/styles/tailwind.css");
-    expect(setup({}).warnings).toEqual([]);
+    expect(u.customCss).toEqual(["starlight-theme-hypha/styles/standalone.css", "starlight-theme-hypha/styles/theme.css"]);
+    expect(u.warnings).toEqual([]);
   });
 
   test("turns Pagefind off with search", () => {
@@ -138,6 +138,74 @@ test("the night's text reads at every hue", () => {
     expect(night.toUpperCase()).toBe(nightHex(h));
     expect(contrast(hsl(h, 0.1, 0.58), night)).toBeGreaterThan(5.5);
     expect(contrast(hsl(h, 0.15, 0.9), night)).toBeGreaterThan(14);
+  }
+});
+
+// A selector of theme.css that reaches into a page's content below its own
+// children -- `.sl-markdown-content .card`, not `.sl-markdown-content > p` --
+// skips what a page marks `not-content`, as Starlight's own rules do: there a
+// project shows its own components, whose classes, `.card` among them, the
+// theme's would otherwise restyle.
+test("the sheet leaves a page's not-content alone", async () => {
+  const sheet = await Bun.file(new URL("../styles/theme.css", import.meta.url)).text();
+  // A selector list split at its top-level commas, never one inside `:is()`.
+  const split = (list: string) => {
+    const parts = [""];
+    let depth = 0;
+    for (const c of list) {
+      if (c === "(") depth++;
+      if (c === ")") depth--;
+      if (c === "," && depth === 0) parts.push("");
+      else parts[parts.length - 1] += c;
+    }
+    return parts.map((s) => s.trim());
+  };
+  const selectors = [...sheet.replace(/\/\*[\s\S]*?\*\//g, "").matchAll(/([^{}]+)\{/g)].flatMap((m) => split(m[1]!));
+  const reaching = selectors.filter((s) => /\.sl-markdown-content\s+[^>\s]/.test(s));
+  expect(reaching.length).toBeGreaterThan(0);
+  expect(reaching.filter((s) => !s.includes(":where(.not-content *)"))).toEqual([]);
+});
+
+// Every variable the theme's sheets declare by hand is its own, `--hypha-`,
+// or one of Starlight's it sets, `--sl-`; its Tailwind tokens are prefixed by
+// the build. A project's design system, or a palette of the theme's, then
+// changes one without the other.
+test("the sheets declare only the theme's own variables", async () => {
+  for (const name of ["theme.css", "tokens.css"]) {
+    const sheet = await Bun.file(new URL(`../styles/${name}`, import.meta.url)).text();
+    const outsideTheme = sheet.replace(/\/\*[\s\S]*?\*\//g, "").replace(/@theme[^{]*\{[^}]*\}/g, "");
+    const declared = [...outsideTheme.matchAll(/(?:^|[;{\s])(--[a-z0-9-]+)\s*:/g)].map((m) => m[1]!);
+    expect(declared.length).toBeGreaterThan(0);
+    expect(declared.filter((v) => !/^--(hypha|sl)-/.test(v))).toEqual([]);
+  }
+});
+
+// Every rule of the theme's sheets is in its layer, `hypha`, so a project's
+// styles win over it; what stands outside is Tailwind's own, which the build
+// places in `hypha.theme` and `hypha.utilities`.
+test("the sheets keep their rules in the theme's layer", async () => {
+  for (const name of ["theme.css", "tokens.css", "standalone.css"]) {
+    const sheet = (await Bun.file(new URL(`../styles/${name}`, import.meta.url)).text()).replace(/\/\*[\s\S]*?\*\//g, "");
+    // The sheet's top-level statements and blocks, each by its prelude.
+    const top: string[] = [];
+    let depth = 0;
+    let prelude = "";
+    for (const c of sheet) {
+      if (c === "{") {
+        if (depth === 0) top.push(prelude.trim());
+        depth++;
+      } else if (c === "}") {
+        depth--;
+        prelude = "";
+      } else if (depth === 0) {
+        if (c === ";") {
+          top.push(prelude.trim());
+          prelude = "";
+        } else prelude += c;
+      }
+    }
+    const outside = top.filter((p) => p && !/^@(layer hypha$|layer [\w.,\s]+$|theme\b|utility\b|import\b|source\b)/.test(p));
+    expect(outside).toEqual([]);
   }
 });
 

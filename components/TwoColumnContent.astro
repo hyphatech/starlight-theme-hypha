@@ -7,13 +7,13 @@ const splash = Astro.locals.starlightRoute.entry.data.template === "splash";
 
 <div
   class:list={[
-    Astro.locals.starlightRoute.toc && "xl:grid xl:grid-cols-[minmax(0,var(--measure))_var(--sidebar)] xl:gap-x-(--column-gap)",
+    Astro.locals.starlightRoute.toc && "hypha:xl:grid hypha:xl:grid-cols-[minmax(0,var(--hypha-measure))_var(--hypha-sidebar)] hypha:xl:gap-x-(--hypha-column-gap)",
   ]}
 >
-  <div class:list={["isolate min-w-0", splash ? "max-w-none" : "max-w-(--measure)"]}><slot /></div>
+  <div class:list={["hypha:isolate hypha:min-w-0", splash ? "hypha:max-w-none" : "hypha:max-w-(--hypha-measure)"]}><slot /></div>
   {
     Astro.locals.starlightRoute.toc && (
-      <aside class="hidden xl:block print:hidden">
+      <aside class="hypha:hidden hypha:xl:block hypha:print:hidden">
         <slot name="right-sidebar" />
       </aside>
     )

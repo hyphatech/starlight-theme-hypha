@@ -1,7 +1,8 @@
 ---
 // A phone's second row, as hyphatech.io's: the tabs, the links, then the
 // repository, each set apart by a rule, the open tab on `raised`. Too wide,
-// it scrolls under a finger.
+// it scrolls under a finger. Its height is fixed, a touch's link inside it,
+// so the header's is known to Starlight's anchors.
 import config from "virtual:starlight-theme-hypha/config";
 import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
@@ -15,19 +16,19 @@ const github = config.github !== undefined;
 
 {
   (tabs.length > 0 || links || github) && (
-    <nav class="border-t border-rule md:hidden print:hidden" aria-label="Site">
-      <ul class="no-scrollbar m-0 mx-auto flex max-w-page list-none items-center gap-0.5 overflow-x-auto px-1.5 py-2 *:shrink-0 min-[22.5rem]:gap-1 min-[22.5rem]:px-2 sm:px-4">
+    <nav class="site-phone-nav hypha:border-t hypha:border-rule hypha:md:hidden hypha:print:hidden" aria-label="Site">
+      <ul class="hypha:no-scrollbar hypha:m-0 hypha:mx-auto hypha:flex hypha:max-w-page hypha:list-none hypha:h-14 hypha:items-center hypha:gap-0.5 hypha:overflow-x-auto hypha:px-1.5 hypha:*:shrink-0 hypha:min-[22.5rem]:gap-1 hypha:min-[22.5rem]:px-2 hypha:sm:px-4">
         {tabs.map((tab) => (
           <li>
-            <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined} class="row-link">
+            <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined} class="hypha:row-link">
               {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
               {tab.label}
             </a>
           </li>
         ))}
-        {tabs.length > 0 && (links || github) && <li class="mx-2 my-2.5 w-px self-stretch bg-rule" aria-hidden="true" />}
+        {tabs.length > 0 && (links || github) && <li class="hypha:mx-2 hypha:h-4.5 hypha:w-px hypha:bg-rule" aria-hidden="true" />}
         <Links row="phone" />
-        {links && github && <li class="mx-2 my-2.5 w-px self-stretch bg-rule" aria-hidden="true" />}
+        {links && github && <li class="hypha:mx-2 hypha:h-4.5 hypha:w-px hypha:bg-rule" aria-hidden="true" />}
         {github && (
           <li>
             <GitHub row />

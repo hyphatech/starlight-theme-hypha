@@ -18,7 +18,7 @@ const section = (Astro.locals.hyphaTrail ?? trail(Astro.locals.starlightRoute.si
       {/* Less a tenth of an em: the slab's capitals, not its box, on the top line. */}
       <h1
         id={PAGE_TITLE_ID}
-        class="mt-[calc(var(--page-top)_-_0.1em)] max-w-2xl font-serif text-[clamp(2.375rem,4.8vw,3.5rem)] leading-[1.05] font-normal tracking-[-0.02em] text-balance text-ink lining-nums tabular-nums"
+        class="hypha:mt-[calc(var(--hypha-page-top)_-_0.1em)] hypha:max-w-2xl hypha:font-serif hypha:text-[clamp(2.375rem,4.8vw,3.5rem)] hypha:leading-[1.05] hypha:font-normal hypha:tracking-[-0.02em] hypha:text-balance hypha:text-ink hypha:lining-nums hypha:tabular-nums"
       >
         {title}
       </h1>
@@ -27,7 +27,7 @@ const section = (Astro.locals.hyphaTrail ?? trail(Astro.locals.starlightRoute.si
           {section}
         </span>
       )}
-      {description && <p class="t-lede mt-5 max-w-2xl text-graphite md:mt-6">{description}</p>}
+      {description && <p class="hypha:t-lede hypha:mt-5 hypha:max-w-2xl hypha:text-graphite hypha:md:mt-6">{description}</p>}
     </>
   )
 }

@@ -1,448 +1,461 @@
 /* Starlight's tokens from tokens.css, and the parts of Starlight's page the
-   theme does not render, whose markup takes no classes. Unlayered, so it
-   wins over Starlight's own. */
+   theme does not render, whose markup takes no classes. In the theme's
+   layer, `hypha`, so it wins over Starlight's own, and a project's styles,
+   in a layer after it or none, win over it. */
 
-/* Headings' sizes, which their spacing is reckoned in. */
-:root {
-  --h2: clamp(1.5rem, 2.4vw, 1.875rem);
-  --h3: 1.3125rem;
-}
+@layer hypha {
+  /* Headings' sizes, which their spacing is reckoned in. */
+  :root {
+    --hypha-h2: clamp(1.5rem, 2.4vw, 1.875rem);
+    --hypha-h3: 1.3125rem;
+  }
 
-/* Starlight's grays run from text to ground. */
-:root,
-:root[data-theme="dark"] {
-  color-scheme: dark;
+  /* Starlight's grays run from text to ground. */
+  :root,
+  :root[data-theme="dark"] {
+    color-scheme: dark;
 
-  --sl-color-white: var(--color-ink);
-  --sl-color-gray-1: var(--color-ink);
-  --sl-color-gray-2: var(--color-ink);
-  --sl-color-gray-3: var(--color-graphite);
-  --sl-color-gray-4: var(--color-graphite);
-  --sl-color-gray-5: var(--color-rule);
-  --sl-color-gray-6: var(--color-raised);
-  --sl-color-gray-7: var(--color-panel);
-  --sl-color-black: var(--color-ivory);
+    --sl-color-white: var(--hypha-color-ink);
+    --sl-color-gray-1: var(--hypha-color-ink);
+    --sl-color-gray-2: var(--hypha-color-ink);
+    --sl-color-gray-3: var(--hypha-color-graphite);
+    --sl-color-gray-4: var(--hypha-color-graphite);
+    --sl-color-gray-5: var(--hypha-color-rule);
+    --sl-color-gray-6: var(--hypha-color-raised);
+    --sl-color-gray-7: var(--hypha-color-panel);
+    --sl-color-black: var(--hypha-color-ivory);
 
-  --sl-color-accent-low: var(--color-raised);
-  --sl-color-accent: var(--color-accent);
-  --sl-color-accent-high: var(--color-ink);
+    --sl-color-accent-low: var(--hypha-color-raised);
+    --sl-color-accent: var(--hypha-color-accent);
+    --sl-color-accent-high: var(--hypha-color-ink);
 
-  --sl-color-text: var(--color-ink);
-  --sl-color-text-accent: var(--color-ink);
-  --sl-color-text-invert: var(--color-ivory);
-  --sl-color-bg: var(--color-ivory);
-  --sl-color-bg-nav: var(--color-ivory);
-  --sl-color-bg-sidebar: var(--color-ivory);
-  --sl-color-bg-inline-code: var(--color-raised);
-  --sl-color-bg-accent: var(--color-ink);
-  --sl-color-hairline-light: var(--color-rule);
-  --sl-color-hairline: var(--color-rule);
-  --sl-color-hairline-shade: var(--color-rule);
-  --sl-color-backdrop-overlay: color-mix(in oklab, var(--color-ivory) 80%, transparent);
+    --sl-color-text: var(--hypha-color-ink);
+    --sl-color-text-accent: var(--hypha-color-ink);
+    --sl-color-text-invert: var(--hypha-color-ivory);
+    --sl-color-bg: var(--hypha-color-ivory);
+    --sl-color-bg-nav: var(--hypha-color-ivory);
+    --sl-color-bg-sidebar: var(--hypha-color-ivory);
+    --sl-color-bg-inline-code: var(--hypha-color-raised);
+    --sl-color-bg-accent: var(--hypha-color-ink);
+    --sl-color-hairline-light: var(--hypha-color-rule);
+    --sl-color-hairline: var(--hypha-color-rule);
+    --sl-color-hairline-shade: var(--hypha-color-rule);
+    --sl-color-backdrop-overlay: color-mix(in oklab, var(--hypha-color-ivory) 80%, transparent);
 
-  --sl-font: var(--font-sans);
-  --sl-font-mono: var(--font-mono);
-  --sl-line-height: 1.7;
+    --sl-font: var(--hypha-font-sans);
+    --sl-font-mono: var(--hypha-font-mono);
+    --sl-line-height: 1.7;
 
-  /* The page's own frame lays it out; Starlight's measures are spent. */
-  --sl-nav-height: 4rem;
-  --sl-mobile-toc-height: 0rem;
-  --sl-main-pad: 0;
+    /* The page's own frame lays it out; Starlight's measures are spent,
+       but for the header's height, which its anchors clear: the first row
+       and the header's rule, and the second row below where there is one. */
+    --sl-nav-height: calc(4rem + 1px);
+    --sl-mobile-toc-height: 0rem;
+    --sl-main-pad: 0;
+  }
+  :root:has(.site-header .site-phone-nav) {
+    --sl-nav-height: calc(4rem + 1px + 3.5rem + 1px);
+  }
+  @media (width >= 48rem) {
+    :root:has(.site-header .site-phone-nav) {
+      --sl-nav-height: calc(4rem + 1px);
+    }
+    :root:has(.site-header .site-tabs) {
+      --sl-nav-height: calc(4rem + 1px + 3rem);
+    }
+  }
 
-  /* Anchors land clear of the window's edge: the header scrolls away. */
-  scroll-padding-top: 2rem;
-}
+  /* The scrollbar's room is kept, so the page does not move sideways. */
+  html {
+    scrollbar-gutter: stable;
+    background: var(--hypha-color-ivory);
+    -webkit-font-smoothing: antialiased;
+    scrollbar-color: var(--hypha-color-rule) var(--hypha-color-ivory);
+  }
+  body {
+    background: var(--hypha-color-ivory);
+    color: var(--hypha-color-ink);
+    font-family: var(--hypha-font-sans);
+  }
+  ::selection {
+    background: var(--hypha-color-accent);
+    color: var(--hypha-color-ivory);
+  }
+  :focus-visible {
+    outline: 2px solid var(--hypha-color-accent);
+    outline-offset: var(--hypha-ring-offset, 3px);
+  }
 
-/* The scrollbar's room is kept, so the page does not move sideways. */
-html {
-  scrollbar-gutter: stable;
-  background: var(--color-ivory);
-  -webkit-font-smoothing: antialiased;
-  scrollbar-color: var(--color-rule) var(--color-ivory);
-}
-body {
-  background: var(--color-ivory);
-  color: var(--color-ink);
-  font-family: var(--font-sans);
-}
-::selection {
-  background: var(--color-accent);
-  color: var(--color-ivory);
-}
-:focus-visible {
-  outline: 2px solid var(--color-accent);
-  outline-offset: var(--ring-offset, 3px);
-}
+  /* The sidebar as hypha.pub's contents: labels in small capitals, links on
+     one rule, the current one marked on it. */
+  .sidebar-content .group-label .large {
+    font-family: var(--hypha-font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hypha-color-graphite);
+  }
+  /* On the page's top line, beside the title's capitals. */
+  .sidebar-content summary {
+    padding: 0;
+    font-size: 0.75rem;
+    line-height: 1.4;
+    color: var(--hypha-color-graphite);
+  }
+  /* Within the line, which a taller caret would stretch. */
+  .sidebar-content summary .caret {
+    width: 1rem;
+    height: 1rem;
+  }
+  /* A group shutting turns its caret back as it starts, not when it is shut. */
+  .sidebar-content details[data-closing] > summary .caret {
+    transform: none;
+  }
+  /* Under tabs the open tab's group stands alone, without its heading. */
+  .sidebar-content[data-tabbed] .top-level > li > details > summary {
+    display: none;
+  }
+  .sidebar-content[data-tabbed] .top-level > li > details > ul {
+    margin-top: 0;
+  }
+  .sidebar-content .top-level > li + li {
+    margin-top: 1.75rem;
+  }
+  .sidebar-content ul ul {
+    margin-top: 0.75rem;
+    border-inline-start: 1px solid var(--hypha-color-rule);
+  }
+  .sidebar-content ul ul li {
+    margin-inline-start: 0;
+    border-inline-start: none;
+    padding-inline-start: 0;
+  }
+  .sidebar-content a {
+    margin-inline-start: -1px;
+    border-inline-start: 1px solid transparent;
+    border-radius: 0;
+    padding: 0.3rem 0 0.3rem 0.75rem;
+    color: var(--hypha-color-graphite);
+    font-size: 0.875rem;
+    line-height: 1.4;
+    transition: color 120ms var(--hypha-ease-state);
+  }
+  .sidebar-content .top-level > li > a {
+    border: none;
+    margin: 0;
+    padding-inline-start: 0;
+  }
+  .sidebar-content a:hover,
+  .sidebar-content a:focus-visible {
+    color: var(--hypha-color-ink);
+  }
+  .sidebar-content a[aria-current="page"],
+  .sidebar-content a[aria-current="page"]:hover,
+  .sidebar-content a[aria-current="page"]:focus {
+    border-inline-start-color: var(--hypha-color-ink);
+    background: none;
+    color: var(--hypha-color-ink);
+    font-weight: 400;
+  }
 
-/* The sidebar as hypha.pub's contents: labels in small capitals, links on
-   one rule, the current one marked on it. */
-.sidebar-content .group-label .large {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-graphite);
-}
-/* On the page's top line, beside the title's capitals. */
-.sidebar-content summary {
-  padding: 0;
-  font-size: 0.75rem;
-  line-height: 1.4;
-  color: var(--color-graphite);
-}
-/* Within the line, which a taller caret would stretch. */
-.sidebar-content summary .caret {
-  width: 1rem;
-  height: 1rem;
-}
-/* A group shutting turns its caret back as it starts, not when it is shut. */
-.sidebar-content details[data-closing] > summary .caret {
-  transform: none;
-}
-/* Under tabs the open tab's group stands alone, without its heading. */
-.sidebar-content[data-tabbed] .top-level > li > details > summary {
-  display: none;
-}
-.sidebar-content[data-tabbed] .top-level > li > details > ul {
-  margin-top: 0;
-}
-.sidebar-content .top-level > li + li {
-  margin-top: 1.75rem;
-}
-.sidebar-content ul ul {
-  margin-top: 0.75rem;
-  border-inline-start: 1px solid var(--color-rule);
-}
-.sidebar-content ul ul li {
-  margin-inline-start: 0;
-  border-inline-start: none;
-  padding-inline-start: 0;
-}
-.sidebar-content a {
-  margin-inline-start: -1px;
-  border-inline-start: 1px solid transparent;
-  border-radius: 0;
-  padding: 0.3rem 0 0.3rem 0.75rem;
-  color: var(--color-graphite);
-  font-size: 0.875rem;
-  line-height: 1.4;
-  transition: color 120ms var(--ease-state);
-}
-.sidebar-content .top-level > li > a {
-  border: none;
-  margin: 0;
-  padding-inline-start: 0;
-}
-.sidebar-content a:hover,
-.sidebar-content a:focus-visible {
-  color: var(--color-ink);
-}
-.sidebar-content a[aria-current="page"],
-.sidebar-content a[aria-current="page"]:hover,
-.sidebar-content a[aria-current="page"]:focus {
-  border-inline-start-color: var(--color-ink);
-  background: none;
-  color: var(--color-ink);
-  font-weight: 400;
-}
+  /* The page's contents, as hypha.pub's. */
+  starlight-toc h2 {
+    font-family: var(--hypha-font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hypha-color-graphite);
+  }
+  starlight-toc h2 {
+    margin-bottom: 1rem;
+    line-height: 1.4;
+  }
+  starlight-toc nav > ul {
+    border-inline-start: 1px solid var(--hypha-color-rule);
+  }
+  starlight-toc a {
+    display: block;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+    margin-inline-start: -1px;
+    border-inline-start: 1px solid transparent;
+    border-radius: 0;
+    padding-block: 0.3rem;
+    color: var(--hypha-color-graphite);
+    font-size: 0.8125rem;
+    line-height: 1.35;
+    transition: color 120ms var(--hypha-ease-state);
+  }
+  starlight-toc a:hover {
+    color: var(--hypha-color-ink);
+  }
+  starlight-toc a[aria-current="true"],
+  starlight-toc a[aria-current="true"]:hover {
+    border-inline-start-color: var(--hypha-color-ink);
+    color: var(--hypha-color-ink);
+  }
 
-/* The page's contents, as hypha.pub's. */
-starlight-toc h2 {
-  font-family: var(--font-sans);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-graphite);
-}
-starlight-toc h2 {
-  margin-bottom: 1rem;
-  line-height: 1.4;
-}
-starlight-toc nav > ul {
-  border-inline-start: 1px solid var(--color-rule);
-}
-starlight-toc a {
-  display: block;
-  text-decoration: none;
-  overflow-wrap: anywhere;
-  margin-inline-start: -1px;
-  border-inline-start: 1px solid transparent;
-  border-radius: 0;
-  padding-block: 0.3rem;
-  color: var(--color-graphite);
-  font-size: 0.8125rem;
-  line-height: 1.35;
-  transition: color 120ms var(--ease-state);
-}
-starlight-toc a:hover {
-  color: var(--color-ink);
-}
-starlight-toc a[aria-current="true"],
-starlight-toc a[aria-current="true"]:hover {
-  border-inline-start-color: var(--color-ink);
-  color: var(--color-ink);
-}
+  /* The page's text, on hypha.pub's prose: smaller than a post's, a
+     reference is scanned as much as read. */
+  .sl-markdown-content {
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    letter-spacing: 0.003em;
+    color: var(--hypha-color-ink);
+    overflow-wrap: break-word;
+  }
+  .sl-markdown-content p:not(:where(.not-content *)) {
+    text-wrap: pretty;
+  }
+  /* Paragraphs and lists a line and a quarter apart, as a post's are. */
+  .sl-markdown-content > :not(.sl-heading-wrapper) + :is(p, ul, ol, blockquote) {
+    margin-top: 1.25em;
+  }
+  .sl-markdown-content :is(h2, h3):not(:where(.not-content *)) {
+    font-family: var(--hypha-font-serif);
+    font-weight: 400;
+    text-wrap: balance;
+    color: var(--hypha-color-ink);
+  }
+  .sl-markdown-content h2:not(:where(.not-content *)) {
+    font-size: var(--hypha-h2);
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+  }
+  .sl-markdown-content h3:not(:where(.not-content *)) {
+    font-size: var(--hypha-h3);
+    line-height: 1.3;
+  }
+  .sl-markdown-content h4:not(:where(.not-content *)) {
+    font-size: 1.0625rem;
+    font-weight: 500;
+    color: var(--hypha-color-ink);
+  }
+  /* A heading's space is its wrapper's, which holds its anchor link. */
+  .sl-markdown-content .sl-heading-wrapper :is(h2, h3, h4):not(:where(.not-content *)) {
+    margin: 0;
+  }
+  .sl-markdown-content .sl-heading-wrapper.level-h2:not(:where(.not-content *)) {
+    margin-top: 3rem;
+  }
+  .sl-markdown-content .sl-heading-wrapper.level-h3:not(:where(.not-content *)) {
+    margin-top: 2rem;
+  }
+  .sl-markdown-content .sl-heading-wrapper.level-h4:not(:where(.not-content *)) {
+    margin-top: 1.5rem;
+  }
+  .sl-markdown-content .sl-heading-wrapper.level-h2 + :not(.not-content):not(:where(.not-content *)) {
+    margin-top: 1rem;
+  }
+  .sl-markdown-content .sl-heading-wrapper:is(.level-h3, .level-h4) + :not(.not-content):not(:where(.not-content *)) {
+    margin-top: 0.75rem;
+  }
+  .sl-markdown-content a:not(:where(.not-content *)) {
+    color: var(--hypha-color-ink);
+    text-decoration-line: underline;
+    text-decoration-color: color-mix(in oklab, var(--hypha-color-ink) 40%, transparent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2em;
+    transition: text-decoration-color 120ms var(--hypha-ease-state);
+  }
+  .sl-markdown-content a:not(:where(.not-content *)):hover {
+    text-decoration-color: var(--hypha-color-ink);
+  }
+  .sl-markdown-content strong:not(:where(.not-content *)) {
+    font-weight: 500;
+  }
+  .sl-markdown-content ul:not(:where(.not-content *)) {
+    list-style: none;
+    padding-inline-start: 1.25em;
+  }
+  .sl-markdown-content ul:not(:where(.not-content *)) > li {
+    position: relative;
+  }
+  .sl-markdown-content ul:not(:where(.not-content *)) > li::before {
+    content: "";
+    position: absolute;
+    left: -1.05em;
+    top: 0.82em;
+    width: 0.45em;
+    height: 1px;
+    background: var(--hypha-color-graphite);
+  }
+  .sl-markdown-content ol:not(:where(.not-content *)) > li::marker {
+    font-family: var(--hypha-font-serif);
+    color: var(--hypha-color-graphite);
+  }
+  .sl-markdown-content blockquote:not(:where(.not-content *)) {
+    border-inline-start: 1px solid var(--hypha-color-rule);
+    padding-inline-start: 1.5rem;
+    font-family: var(--hypha-font-serif);
+    font-size: 1.1875rem;
+    line-height: 1.55;
+    font-style: normal;
+    color: var(--hypha-color-ink);
+  }
+  .sl-markdown-content hr:not(:where(.not-content *)) {
+    border: 0;
+    border-top: 1px solid var(--hypha-color-rule);
+    margin-block: 2.5rem;
+  }
+  .sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
+    font-family: var(--hypha-font-mono);
+    font-size: 0.875em;
+    padding: 0.12em 0.36em;
+    border: none;
+    border-radius: var(--hypha-radius-control);
+    background: var(--hypha-color-raised);
+  }
 
-/* The page's text, on hypha.pub's prose: smaller than a post's, a
-   reference is scanned as much as read. */
-.sl-markdown-content {
-  font-size: 1.0625rem;
-  line-height: 1.7;
-  letter-spacing: 0.003em;
-  color: var(--color-ink);
-  overflow-wrap: break-word;
-}
-.sl-markdown-content p:not(:where(.not-content *)) {
-  text-wrap: pretty;
-}
-/* Paragraphs and lists a line and a quarter apart, as a post's are. */
-.sl-markdown-content > :not(.sl-heading-wrapper) + :is(p, ul, ol, blockquote) {
-  margin-top: 1.25em;
-}
-.sl-markdown-content :is(h2, h3):not(:where(.not-content *)) {
-  font-family: var(--font-serif);
-  font-weight: 400;
-  text-wrap: balance;
-  color: var(--color-ink);
-}
-.sl-markdown-content h2:not(:where(.not-content *)) {
-  font-size: var(--h2);
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-}
-.sl-markdown-content h3:not(:where(.not-content *)) {
-  font-size: var(--h3);
-  line-height: 1.3;
-}
-.sl-markdown-content h4:not(:where(.not-content *)) {
-  font-size: 1.0625rem;
-  font-weight: 500;
-  color: var(--color-ink);
-}
-/* A heading's space is its wrapper's, which holds its anchor link. */
-.sl-markdown-content .sl-heading-wrapper :is(h2, h3, h4) {
-  margin: 0;
-}
-.sl-markdown-content .sl-heading-wrapper.level-h2 {
-  margin-top: 3rem;
-}
-.sl-markdown-content .sl-heading-wrapper.level-h3 {
-  margin-top: 2rem;
-}
-.sl-markdown-content .sl-heading-wrapper.level-h4 {
-  margin-top: 1.5rem;
-}
-.sl-markdown-content .sl-heading-wrapper.level-h2 + :not(.example) {
-  margin-top: 1rem;
-}
-.sl-markdown-content .sl-heading-wrapper:is(.level-h3, .level-h4) + :not(.example) {
-  margin-top: 0.75rem;
-}
-.sl-markdown-content a:not(:where(.not-content *)) {
-  color: var(--color-ink);
-  text-decoration-line: underline;
-  text-decoration-color: color-mix(in oklab, var(--color-ink) 40%, transparent);
-  text-decoration-thickness: 1px;
-  text-underline-offset: 0.2em;
-  transition: text-decoration-color 120ms var(--ease-state);
-}
-.sl-markdown-content a:not(:where(.not-content *)):hover {
-  text-decoration-color: var(--color-ink);
-}
-.sl-markdown-content strong:not(:where(.not-content *)) {
-  font-weight: 500;
-}
-.sl-markdown-content ul:not(:where(.not-content *)) {
-  list-style: none;
-  padding-inline-start: 1.25em;
-}
-.sl-markdown-content ul:not(:where(.not-content *)) > li {
-  position: relative;
-}
-.sl-markdown-content ul:not(:where(.not-content *)) > li::before {
-  content: "";
-  position: absolute;
-  left: -1.05em;
-  top: 0.82em;
-  width: 0.45em;
-  height: 1px;
-  background: var(--color-graphite);
-}
-.sl-markdown-content ol:not(:where(.not-content *)) > li::marker {
-  font-family: var(--font-serif);
-  color: var(--color-graphite);
-}
-.sl-markdown-content blockquote:not(:where(.not-content *)) {
-  border-inline-start: 1px solid var(--color-rule);
-  padding-inline-start: 1.5rem;
-  font-family: var(--font-serif);
-  font-size: 1.1875rem;
-  line-height: 1.55;
-  font-style: normal;
-  color: var(--color-ink);
-}
-.sl-markdown-content hr:not(:where(.not-content *)) {
-  border: 0;
-  border-top: 1px solid var(--color-rule);
-  margin-block: 2.5rem;
-}
-.sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
-  font-family: var(--font-mono);
-  font-size: 0.875em;
-  padding: 0.12em 0.36em;
-  border: none;
-  border-radius: var(--radius-control);
-  background: var(--color-raised);
-}
+  /* Tables ruled by row; a chip stays on one line, the table scrolls. */
+  .sl-markdown-content table:not(:where(.not-content *)) {
+    border-collapse: collapse;
+    font-size: 0.9375rem;
+    font-variant-numeric: tabular-nums;
+  }
+  .sl-markdown-content :is(th, td):not(:where(.not-content *)) {
+    border: none;
+    border-bottom: 1px solid var(--hypha-color-rule);
+    background: transparent;
+    padding: 0.625rem 1rem 0.625rem 0;
+    vertical-align: top;
+  }
+  .sl-markdown-content th:not(:where(.not-content *)) {
+    color: var(--hypha-color-graphite);
+    font-weight: 500;
+    text-align: start;
+  }
+  .sl-markdown-content tr:nth-child(2n):not(:where(.not-content *)) {
+    background: transparent;
+  }
+  .sl-markdown-content td code:not(:where(.not-content *)) {
+    white-space: nowrap;
+  }
+  .sl-markdown-content :is(th, td):last-child:not(:first-child, :where(.not-content *)) {
+    min-width: 10rem;
+    padding-inline-end: 0;
+  }
 
-/* Tables ruled by row; a chip stays on one line, the table scrolls. */
-.sl-markdown-content table:not(:where(.not-content *)) {
-  border-collapse: collapse;
-  font-size: 0.9375rem;
-  font-variant-numeric: tabular-nums;
-}
-.sl-markdown-content :is(th, td):not(:where(.not-content *)) {
-  border: none;
-  border-bottom: 1px solid var(--color-rule);
-  background: transparent;
-  padding: 0.625rem 1rem 0.625rem 0;
-  vertical-align: top;
-}
-.sl-markdown-content th:not(:where(.not-content *)) {
-  color: var(--color-graphite);
-  font-weight: 500;
-  text-align: start;
-}
-.sl-markdown-content tr:nth-child(2n):not(:where(.not-content *)) {
-  background: transparent;
-}
-.sl-markdown-content td code {
-  white-space: nowrap;
-}
-.sl-markdown-content :is(th, td):last-child:not(:first-child, :where(.not-content *)) {
-  min-width: 10rem;
-  padding-inline-end: 0;
-}
+  /* A landing page's text at the measure, under a hero the page's width. */
+  [data-has-hero] .sl-markdown-content > :not(.card-grid, .landing, .features) {
+    max-width: var(--hypha-measure);
+  }
 
-/* A landing page's text at the measure, under a hero the page's width. */
-[data-has-hero] .sl-markdown-content > :not(.card-grid, .landing, .features) {
-  max-width: var(--measure);
-}
+  /* Code's "Copied" as one of hypha.pub's controls, not a tooltip. */
+  .expressive-code .copy .feedback {
+    border: 1px solid var(--hypha-color-rule);
+    border-radius: var(--hypha-radius-control);
+    padding: 0.375rem 0.75rem;
+    margin-inline-end: 0.5rem;
+    font-family: var(--hypha-font-sans);
+    font-size: var(--hypha-text-sm);
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  .expressive-code .copy .feedback::after {
+    display: none;
+  }
 
-/* Code's "Copied" as one of hypha.pub's controls, not a tooltip. */
-.expressive-code .copy .feedback {
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-control);
-  padding: 0.375rem 0.75rem;
-  margin-inline-end: 0.5rem;
-  font-family: var(--font-sans);
-  font-size: var(--text-sm);
-  font-weight: 500;
-  line-height: 1.25;
-}
-.expressive-code .copy .feedback::after {
-  display: none;
-}
+  /* A landing page's code without a title bar; its aside's reads as text on
+     the page, not a panel, a size down so a program's line fits the column. */
+  .landing .expressive-code .frame .header {
+    display: none;
+  }
+  .landing .expressive-code .frame.has-title pre,
+  .landing .expressive-code .frame.is-terminal pre {
+    border-top: var(--ec-brdWd) solid var(--ec-brdCol);
+    border-radius: var(--hypha-radius-panel);
+  }
+  .landing-aside .expressive-code .frame {
+    box-shadow: none;
+  }
+  .landing-aside .expressive-code .frame pre {
+    border: none;
+    background: transparent;
+  }
+  .landing-aside .expressive-code .copy {
+    display: none;
+  }
+  .landing-aside .expressive-code pre > code {
+    padding-inline: 0;
+    font-size: 0.8125rem;
+  }
 
-/* A landing page's code without a title bar; its aside's reads as text on
-   the page, not a panel, a size down so a program's line fits the column. */
-.landing .expressive-code .frame .header {
-  display: none;
-}
-.landing .expressive-code .frame.has-title pre,
-.landing .expressive-code .frame.is-terminal pre {
-  border-top: var(--ec-brdWd) solid var(--ec-brdCol);
-  border-radius: var(--radius-panel);
-}
-.landing-aside .expressive-code .frame {
-  box-shadow: none;
-}
-.landing-aside .expressive-code .frame pre {
-  border: none;
-  background: transparent;
-}
-.landing-aside .expressive-code .copy {
-  display: none;
-}
-.landing-aside .expressive-code pre > code {
-  padding-inline: 0;
-  font-size: 0.8125rem;
-}
+  /* Starlight's cards as hypha.pub's panels, the grid never staggered. */
+  .sl-markdown-content .card-grid:not(:where(.not-content *)) {
+    gap: 1rem;
+  }
+  .sl-markdown-content .card-grid.stagger:not(:where(.not-content *)) {
+    padding-bottom: 0;
+  }
+  .sl-markdown-content .card-grid.stagger:not(:where(.not-content *)) > * {
+    transform: none;
+  }
+  .sl-markdown-content .card:not(:where(.not-content *)) {
+    gap: 0.75rem;
+    border: 1px solid var(--hypha-color-rule);
+    border-radius: var(--hypha-radius-panel);
+    padding: 1.5rem 1.75rem 1.75rem;
+    background: var(--hypha-color-panel);
+  }
+  .sl-markdown-content .card:not(:where(.not-content *)) .title {
+    gap: 0.75rem;
+    font-family: var(--hypha-font-serif);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    color: var(--hypha-color-ink);
+  }
+  .sl-markdown-content .card:not(:where(.not-content *)) .icon {
+    border: none;
+    padding: 0;
+    background: none;
+    color: var(--hypha-color-graphite);
+  }
+  .sl-markdown-content .card:not(:where(.not-content *)) .body {
+    color: var(--hypha-color-graphite);
+    font-size: 1rem;
+    line-height: 1.6;
+  }
 
-/* Starlight's cards as hypha.pub's panels, the grid never staggered. */
-.sl-markdown-content .card-grid {
-  gap: 1rem;
-}
-.sl-markdown-content .card-grid.stagger {
-  padding-bottom: 0;
-}
-.sl-markdown-content .card-grid.stagger > * {
-  transform: none;
-}
-.sl-markdown-content .card {
-  gap: 0.75rem;
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-panel);
-  padding: 1.5rem 1.75rem 1.75rem;
-  background: var(--color-panel);
-}
-.sl-markdown-content .card .title {
-  gap: 0.75rem;
-  font-family: var(--font-serif);
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-  color: var(--color-ink);
-}
-.sl-markdown-content .card .icon {
-  border: none;
-  padding: 0;
-  background: none;
-  color: var(--color-graphite);
-}
-.sl-markdown-content .card .body {
-  color: var(--color-graphite);
-  font-size: 1rem;
-  line-height: 1.6;
-}
+  /* Previous and next as hypha.pub's Read next. */
+  .pagination-links {
+    margin-top: 3rem;
+  }
+  .pagination-links a {
+    border: 1px solid var(--hypha-color-rule);
+    border-radius: var(--hypha-radius-panel);
+    box-shadow: none;
+    padding: 1rem 1.25rem;
+    color: var(--hypha-color-graphite);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background-color 120ms var(--hypha-ease-state);
+  }
+  .pagination-links a:hover {
+    border-color: var(--hypha-color-rule);
+    background: var(--hypha-color-panel);
+  }
+  .pagination-links .link-title {
+    display: inline-block;
+    margin-top: 0.375rem;
+    font-family: var(--hypha-font-serif);
+    font-size: clamp(1.25rem, 2vw, 1.5rem);
+    font-weight: 400;
+    line-height: 1.2;
+    letter-spacing: -0.005em;
+    text-transform: none;
+    color: var(--hypha-color-ink);
+  }
 
-/* Previous and next as hypha.pub's Read next. */
-.pagination-links {
-  margin-top: 3rem;
-}
-.pagination-links a {
-  border: 1px solid var(--color-rule);
-  border-radius: var(--radius-panel);
-  box-shadow: none;
-  padding: 1rem 1.25rem;
-  color: var(--color-graphite);
-  font-size: 0.75rem;
-  font-weight: 500;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  transition: background-color 120ms var(--ease-state);
-}
-.pagination-links a:hover {
-  border-color: var(--color-rule);
-  background: var(--color-panel);
-}
-.pagination-links .link-title {
-  display: inline-block;
-  margin-top: 0.375rem;
-  font-family: var(--font-serif);
-  font-size: clamp(1.25rem, 2vw, 1.5rem);
-  font-weight: 400;
-  line-height: 1.2;
-  letter-spacing: -0.005em;
-  text-transform: none;
-  color: var(--color-ink);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  * {
-    transition-duration: 0ms !important;
+  @media (prefers-reduced-motion: reduce) {
+    * {
+      transition-duration: 0ms !important;
+    }
   }
 }

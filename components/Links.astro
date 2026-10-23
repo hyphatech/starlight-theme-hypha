@@ -10,7 +10,7 @@ interface Props {
 }
 
 const { row } = Astro.props;
-const look = { tabs: "tab-link", phone: "row-link" }[row ?? ""] ?? "bar-link";
+const look = { tabs: "hypha:tab-link", phone: "hypha:row-link" }[row ?? ""] ?? "hypha:bar-link";
 const external = (href: string) => /^https?:\/\//.test(href);
 ---
 
@@ -22,6 +22,6 @@ const external = (href: string) => /^https?:\/\//.test(href);
         {link.label}
       </a>
     );
-    return row ? <li class="shrink-0">{a}</li> : a;
+    return row ? <li class="hypha:shrink-0">{a}</li> : a;
   })
 }

@@ -10,16 +10,16 @@ import SiteTitle from "./SiteTitle.astro";
 const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
 ---
 
-<div class="mx-auto flex h-16 max-w-page items-center gap-6 px-(--gutter)">
+<div class="hypha:mx-auto hypha:flex hypha:h-16 hypha:max-w-page hypha:items-center hypha:gap-6 hypha:px-(--hypha-gutter)">
   <SiteTitle />
-  <div class="ms-auto flex items-center gap-2 md:gap-6 print:hidden">
+  <div class="hypha:ms-auto hypha:flex hypha:items-center hypha:gap-2 hypha:md:gap-6 hypha:print:hidden">
     <Search />
     {
       hasSidebar && sidebar.length > 0 && (
         <button
           type="button"
           popovertarget="starlight__sidebar"
-          class="grid size-11 cursor-pointer place-items-center rounded-control border border-rule bg-panel text-graphite transition-colors hover:border-graphite hover:text-ink md:hidden"
+          class="hypha:grid hypha:size-11 hypha:cursor-pointer hypha:place-items-center hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:text-graphite hypha:transition-colors hypha:hover:border-graphite hypha:hover:text-ink hypha:md:hidden"
           aria-label={Astro.locals.t("menuButton.accessibleLabel")}
         >
           <Icon icon={Menu} size="md" />

@@ -30,44 +30,44 @@ const { title, tagline, image, actions = [] } = Astro.props;
 const aside = Astro.slots.has("aside");
 
 const looks = {
-  primary: "btn-primary no-underline",
-  secondary: "btn no-underline",
-  minimal: "link inline-flex h-10 gap-2 px-2 pointer-coarse:h-11",
+  primary: "hypha:btn-primary hypha:no-underline",
+  secondary: "hypha:btn hypha:no-underline",
+  minimal: "hypha:link hypha:inline-flex hypha:h-10 hypha:gap-2 hypha:px-2 hypha:pointer-coarse:h-11",
 };
 
 const art = image?.file ?? image?.dark ?? image?.light;
 const html = art ? undefined : image?.html;
-const artLook = "h-auto w-[min(70%,20rem)] justify-self-center lg:w-[min(100%,24rem)]";
+const artLook = "hypha:h-auto hypha:w-[min(70%,20rem)] hypha:justify-self-center hypha:lg:w-[min(100%,24rem)]";
 ---
 
 <div
   class:list={[
-    "landing not-content grid grid-cols-[minmax(0,1fr)] items-center gap-12 pt-12 pb-8 md:pt-16 md:pb-12",
-    aside ? "lg:grid-cols-2 lg:gap-16" : (art || html) && "lg:grid-cols-[7fr_4fr]",
+    "landing not-content hypha:grid hypha:grid-cols-[minmax(0,1fr)] hypha:items-center hypha:gap-12 hypha:pt-12 hypha:pb-8 hypha:md:pt-16 hypha:md:pb-12",
+    aside ? "hypha:lg:grid-cols-2 hypha:lg:gap-16" : (art || html) && "hypha:lg:grid-cols-[7fr_4fr]",
   ]}
 >
-  <div class="min-w-0">
-    {aside && art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" class="mb-10 h-auto w-[min(100%,20rem)]" />}
+  <div class="hypha:min-w-0">
+    {aside && art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" class="hypha:mb-10 hypha:h-auto hypha:w-[min(100%,20rem)]" />}
     <h1
       id={PAGE_TITLE_ID}
       data-page-title
       class:list={[
-        aside ? "font-serif text-[clamp(2rem,3.6vw,3rem)] leading-[1.1] font-normal tracking-[-0.02em] text-balance" : "t-display max-w-3xl",
-        "text-ink lining-nums tabular-nums",
+        aside ? "hypha:font-serif hypha:text-[clamp(2rem,3.6vw,3rem)] hypha:leading-[1.1] hypha:font-normal hypha:tracking-[-0.02em] hypha:text-balance" : "hypha:t-display hypha:max-w-3xl",
+        "hypha:text-ink hypha:lining-nums hypha:tabular-nums",
       ]}
       set:html={title}
     />
-    {tagline && <p class="t-lede mt-7 max-w-[34rem] text-pretty text-graphite" set:html={tagline} />}
+    {tagline && <p class="hypha:t-lede hypha:mt-7 hypha:max-w-[34rem] hypha:text-pretty hypha:text-graphite" set:html={tagline} />}
     {
       Astro.slots.has("default") && (
-        <div class="mt-8 max-w-[34rem]">
+        <div class="hypha:mt-8 hypha:max-w-[34rem]">
           <slot />
         </div>
       )
     }
     {
       actions.length > 0 && (
-        <div class="mt-10 flex flex-wrap gap-3">
+        <div class="hypha:mt-10 hypha:flex hypha:flex-wrap hypha:gap-3">
           {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant = "primary" }) => {
             const drawn = typeof icon === "string" ? { type: "icon" as const, name: icon } : icon;
             return (
@@ -84,7 +84,7 @@ const artLook = "h-auto w-[min(70%,20rem)] justify-self-center lg:w-[min(100%,24
   </div>
   {
     aside ? (
-      <div class="landing-aside min-w-0">
+      <div class="landing-aside hypha:min-w-0">
         <slot name="aside" />
       </div>
     ) : (

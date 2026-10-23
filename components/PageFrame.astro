@@ -1,6 +1,6 @@
 ---
-// hypha.pub's grid: the header across the window, then the page's width
-// with the navigation in its margin. On a phone the navigation is a sheet
+// hypha.pub's grid: the header across the window, staying as the page
+// scrolls, then the page's width with the navigation in its margin. On a phone the navigation is a sheet
 // over the page; Starlight's scripts find it by its id.
 import X from "@lucide/astro/icons/x";
 import config from "virtual:starlight-theme-hypha/config";
@@ -21,11 +21,11 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
 
 <div>
   {/* Not `.header`, which a page's own styles may take: HeroUI's do. */}
-  <header class="site-header border-b border-rule"><slot name="header" /><Tabs /><PhoneNav /></header>
+  <header class="site-header hypha:sticky hypha:top-0 hypha:z-(--sl-z-index-navbar) hypha:border-b hypha:border-rule hypha:bg-ivory"><slot name="header" /><Tabs /><PhoneNav /></header>
   <div
     class:list={[
-      "mx-auto max-w-page px-(--gutter)",
-      hasSidebar && "md:grid md:grid-cols-[calc(var(--margin)_-_var(--column-gap))_minmax(0,1fr)] md:gap-x-(--column-gap)",
+      "hypha:mx-auto hypha:max-w-page hypha:px-(--hypha-gutter)",
+      hasSidebar && "hypha:md:grid hypha:md:grid-cols-[calc(var(--hypha-margin)_-_var(--hypha-column-gap))_minmax(0,1fr)] hypha:md:gap-x-(--hypha-column-gap)",
     ]}
   >
     {
@@ -33,7 +33,7 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
     }
     {
       navigable && (
-        <nav class="print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
+        <nav class="hypha:print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
           <script>
             // A popover on a phone, part of the page wider. While it is open,
             // the page behind it takes no focus.
@@ -95,30 +95,30 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
           <sl-sidebar-pane
             popover=""
             id="starlight__sidebar"
-            class="fixed inset-0 z-(--sl-z-index-menu) m-0 h-full max-h-none w-full max-w-none overflow-y-auto border-0 bg-ivory p-0 text-inherit md:no-scrollbar md:sticky md:inset-auto md:top-0 md:z-auto md:-mx-1.5 md:block md:h-auto md:max-h-dvh md:bg-transparent md:px-1.5"
+            class="hypha:fixed hypha:inset-0 hypha:z-(--sl-z-index-menu) hypha:m-0 hypha:h-full hypha:max-h-none hypha:w-full hypha:max-w-none hypha:overflow-y-auto hypha:border-0 hypha:bg-ivory hypha:p-0 hypha:text-inherit hypha:md:no-scrollbar hypha:md:sticky hypha:md:inset-auto hypha:md:top-(--sl-nav-height) hypha:md:z-auto hypha:md:-mx-1.5 hypha:md:block hypha:md:h-auto hypha:md:max-h-[calc(100dvh_-_var(--sl-nav-height))] hypha:md:bg-transparent hypha:md:px-1.5"
           >
-            <div class="flex h-16 items-center justify-between gap-4 border-b border-rule px-(--gutter) md:hidden">
-              <span class="t-control flex min-w-0 items-center gap-2 text-ink">
+            <div class="hypha:flex hypha:h-16 hypha:items-center hypha:justify-between hypha:gap-4 hypha:border-b hypha:border-rule hypha:px-(--hypha-gutter) hypha:md:hidden">
+              <span class="hypha:t-control hypha:flex hypha:min-w-0 hypha:items-center hypha:gap-2 hypha:text-ink">
                 {openIcon && <NamedIcon name={openIcon} />}
-                <span class="truncate">{open?.label}</span>
+                <span class="hypha:truncate">{open?.label}</span>
               </span>
               <button
                 type="button"
                 popovertarget="starlight__sidebar"
                 popovertargetaction="hide"
                 aria-label="Close the menu"
-                class="grid size-11 cursor-pointer place-items-center rounded-control border border-rule bg-panel text-graphite"
+                class="hypha:grid hypha:size-11 hypha:cursor-pointer hypha:place-items-center hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:text-graphite"
               >
                 <Icon icon={X} size="md" />
               </button>
             </div>
-            <div class="sidebar-content px-(--gutter) pt-8 pb-12 md:px-0 md:pt-(--page-top) md:pb-8" data-tabbed={tabbed ? "" : undefined}>
+            <div class="sidebar-content hypha:px-(--hypha-gutter) hypha:pt-8 hypha:pb-12 hypha:md:px-0 hypha:md:pt-(--hypha-page-top) hypha:md:pb-8" data-tabbed={tabbed ? "" : undefined}>
               <slot name="sidebar" />
             </div>
           </sl-sidebar-pane>
         </nav>
       )
     }
-    <div class="main-frame min-w-0"><slot /></div>
+    <div class="main-frame hypha:min-w-0"><slot /></div>
   </div>
 </div>

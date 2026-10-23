@@ -1,8 +1,14 @@
-/* The theme's own Tailwind build, for a project without one. No preflight,
-   which would reset Starlight's page. */
+/* The theme's Tailwind build, its own on any page. Every utility and variable
+   is prefixed, `hypha:` and `--hypha-`, so a project's own Tailwind build or
+   design system shares no name with it, and neither can change the other.
+   All of it is in the theme's layer, `hypha`, above Starlight's and below a
+   project's Tailwind layers, so the theme restyles Starlight and a project's
+   own styles win over the theme's. No preflight, which would reset
+   Starlight's page. */
 
-@layer base, starlight, theme, components, utilities;
+@layer base, starlight, hypha, theme, components, utilities;
 
-@import "tailwindcss/theme.css" layer(theme);
-@import "tailwindcss/utilities.css" layer(utilities) source(none);
-@import "./tailwind.css";
+@import "tailwindcss/theme.css" layer(hypha.theme) prefix(hypha);
+@import "tailwindcss/utilities.css" layer(hypha.utilities) source(none);
+@import "./tokens.css";
+@source "../components";

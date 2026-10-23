@@ -1,4 +1,4 @@
-import { existsSync, readFileSync } from "node:fs";
+import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { ExpressiveCodeTheme } from "@astrojs/starlight/expressive-code";
 import tailwindcss from "@tailwindcss/vite";
@@ -10,10 +10,9 @@ import { vitePluginHyphaTheme } from "./libs/vite";
 export type { HyphaThemeUserConfig };
 
 const sheet = "starlight-theme-hypha/styles/theme.css";
-// A project on Tailwind imports `tailwindSheet` into its own build; one
-// without gets `standalone`.
+// The theme's own Tailwind build, prefixed, on every page: a project's build
+// beside it shares no name with it.
 const standalone = "starlight-theme-hypha/styles/standalone.css";
-const tailwindSheet = "starlight-theme-hypha/styles/tailwind.css";
 
 // A project's own override of one wins.
 const components = {
@@ -42,26 +41,26 @@ const codeTheme = () =>
 const expressiveCode = {
   useStarlightUiThemeColors: false,
   styleOverrides: {
-    borderRadius: "var(--radius-panel)",
-    borderColor: "var(--color-rule)",
-    codeBackground: "var(--color-panel)",
-    codeFontFamily: "var(--font-mono)",
+    borderRadius: "var(--hypha-radius-panel)",
+    borderColor: "var(--hypha-color-rule)",
+    codeBackground: "var(--hypha-color-panel)",
+    codeFontFamily: "var(--hypha-font-mono)",
     codeFontSize: "0.875rem",
     codeLineHeight: "1.65",
-    uiFontFamily: "var(--font-sans)",
+    uiFontFamily: "var(--hypha-font-sans)",
     frames: {
       shadowColor: "transparent",
-      editorTabBarBackground: "var(--color-panel)",
-      editorActiveTabBackground: "var(--color-panel)",
+      editorTabBarBackground: "var(--hypha-color-panel)",
+      editorActiveTabBackground: "var(--hypha-color-panel)",
       editorActiveTabIndicatorTopColor: "transparent",
-      editorActiveTabIndicatorBottomColor: "var(--color-ink)",
-      editorActiveTabForeground: "var(--color-graphite)",
-      editorTabBarBorderBottomColor: "var(--color-rule)",
-      terminalTitlebarBackground: "var(--color-panel)",
-      terminalTitlebarBorderBottomColor: "var(--color-rule)",
-      terminalBackground: "var(--color-panel)",
-      tooltipSuccessBackground: "var(--color-raised)",
-      tooltipSuccessForeground: "var(--color-ink)",
+      editorActiveTabIndicatorBottomColor: "var(--hypha-color-ink)",
+      editorActiveTabForeground: "var(--hypha-color-graphite)",
+      editorTabBarBorderBottomColor: "var(--hypha-color-rule)",
+      terminalTitlebarBackground: "var(--hypha-color-panel)",
+      terminalTitlebarBorderBottomColor: "var(--hypha-color-rule)",
+      terminalBackground: "var(--hypha-color-panel)",
+      tooltipSuccessBackground: "var(--hypha-color-raised)",
+      tooltipSuccessForeground: "var(--hypha-color-ink)",
     },
   },
 };
@@ -71,14 +70,6 @@ function hasTailwind(plugins: unknown): boolean {
   if (Array.isArray(plugins)) return plugins.some(hasTailwind);
   const name = (plugins as { name?: unknown } | null)?.name;
   return typeof name === "string" && name.startsWith("@tailwindcss/vite");
-}
-
-// Only the sheets the project names, not what they import in turn.
-function importsTheme(customCss: string[], root: URL): boolean {
-  return customCss.some((path) => {
-    const file = new URL(path, root);
-    return path.startsWith(".") && existsSync(file) && readFileSync(file, "utf-8").includes(tailwindSheet);
-  });
 }
 
 export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): StarlightPlugin {
@@ -91,15 +82,12 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
   return {
     name: "starlight-theme-hypha",
     hooks: {
-      "config:setup"({ config: starlight, astroConfig, logger, updateConfig, addIntegration, addRouteMiddleware }) {
+      "config:setup"({ config: starlight, astroConfig, updateConfig, addIntegration, addRouteMiddleware }) {
         if (config.tabs) addRouteMiddleware({ entrypoint: "starlight-theme-hypha/route-middleware" });
-        // One Tailwind build on a page: two undo each other's utilities.
+        // A project on Tailwind builds the theme's sheet with its own plugin.
         const onTailwind = hasTailwind(astroConfig.vite?.plugins);
         const own = starlight.customCss ?? [];
-        if (onTailwind && !importsTheme(own, astroConfig.root)) {
-          logger.warn(`The project builds with Tailwind: import "${tailwindSheet}" into its Tailwind sheet, or the theme's components go unstyled.`);
-        }
-        const sheets = onTailwind ? [sheet] : [standalone, sheet];
+        const sheets = [standalone, sheet];
         const head = starlight.head ?? [];
         const hasThemeColor = head.some((entry) => entry.tag === "meta" && entry.attrs?.name === "theme-color");
         updateConfig({
@@ -109,7 +97,7 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
           components: { ...components, ...starlight.components },
           ...(config.search ? {} : { pagefind: false }),
           head: [
-            { tag: "style", content: `:root{--hue:${config.hue}}` },
+            { tag: "style", content: `:root{--hypha-hue:${config.hue}}` },
             ...(hasThemeColor ? [] : [{ tag: "meta" as const, attrs: { name: "theme-color", content: nightHex(config.hue) } }]),
             ...head,
           ],

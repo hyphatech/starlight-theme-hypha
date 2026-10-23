@@ -11,9 +11,9 @@ const name = config.brand ? `${config.brand}.${siteTitle}` : siteTitle;
 const logo = logos.dark;
 ---
 
-<a href={siteTitleHref} class="wordmark flex shrink-0 items-center gap-2 text-ink no-underline pointer-coarse:min-h-11" aria-label={`${name}, home`}>
-  {logo && <img src={logo.src} alt="" width={logo.width} height={logo.height} class="h-7 w-auto" />}
-  <span translate="no" class:list={["text-lg/none font-medium tracking-[-0.01em]", { "sr-only": starlight.logo?.replacesTitle }]}>
-    {config.brand ? (<>{config.brand}<span class="text-graphite">.{siteTitle}</span></>) : siteTitle}
+<a href={siteTitleHref} class="wordmark hypha:flex hypha:shrink-0 hypha:items-center hypha:gap-2 hypha:text-ink hypha:no-underline hypha:pointer-coarse:min-h-11" aria-label={`${name}, home`}>
+  {logo && <img src={logo.src} alt="" width={logo.width} height={logo.height} class="hypha:h-7 hypha:w-auto" />}
+  <span translate="no" class:list={["hypha:text-lg/none hypha:font-medium hypha:tracking-[-0.01em]", { "hypha:sr-only": starlight.logo?.replacesTitle }]}>
+    {config.brand ? (<>{config.brand}<span class="hypha:text-graphite">.{siteTitle}</span></>) : siteTitle}
   </span>
 </a>

@@ -16,20 +16,20 @@ interface Props {
 const { title, icon, href, linkText = "Read more" } = Astro.props;
 ---
 
-<article class="row-span-3 grid grid-rows-subgrid gap-y-4 rounded-panel border border-rule bg-panel p-6">
-  <h3 class="flex items-center gap-3 border-b border-rule pb-4 font-serif text-lg leading-tight font-normal text-ink">
-    {icon && <span class="text-graphite"><NamedIcon name={icon} size="md" /></span>}
+<article class="hypha:row-span-3 hypha:grid hypha:grid-rows-subgrid hypha:gap-y-4 hypha:rounded-panel hypha:border hypha:border-rule hypha:bg-panel hypha:p-6">
+  <h3 class="hypha:flex hypha:items-center hypha:gap-3 hypha:border-b hypha:border-rule hypha:pb-4 hypha:font-serif hypha:text-lg hypha:leading-tight hypha:font-normal hypha:text-ink">
+    {icon && <span class="hypha:text-graphite"><NamedIcon name={icon} size="md" /></span>}
     {title}
   </h3>
   <div
-    class="leading-relaxed text-graphite [&_code]:rounded-control [&_code]:bg-raised [&_code]:px-[0.36em] [&_code]:py-[0.12em] [&_code]:font-mono [&_code]:text-[0.875em]"
+    class="hypha:leading-relaxed hypha:text-graphite hypha:[&_code]:rounded-control hypha:[&_code]:bg-raised hypha:[&_code]:px-[0.36em] hypha:[&_code]:py-[0.12em] hypha:[&_code]:font-mono hypha:[&_code]:text-[0.875em]"
   >
     <slot />
   </div>
-  <div class="self-end">
+  <div class="hypha:self-end">
     {
       href && (
-        <a href={href} class="btn mt-2 no-underline">
+        <a href={href} class="hypha:btn hypha:mt-2 hypha:no-underline">
           {linkText}
           <Icon icon={ArrowRight} />
         </a>

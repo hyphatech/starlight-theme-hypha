@@ -15,22 +15,22 @@ const github = config.github !== undefined;
 
 {
   (tabs.length > 0 || links || github) && (
-    <div class="hidden border-t border-rule md:block print:hidden">
-      <nav class="mx-auto -mb-px max-w-page" aria-label="Sections">
-        <ul class="no-scrollbar m-0 flex list-none items-center gap-6 overflow-x-auto px-(--gutter) py-0">
+    <div class="site-tabs hypha:hidden hypha:border-t hypha:border-rule hypha:md:block hypha:print:hidden">
+      <nav class="hypha:mx-auto hypha:-mb-px hypha:max-w-page" aria-label="Sections">
+        <ul class="hypha:no-scrollbar hypha:m-0 hypha:flex hypha:list-none hypha:items-center hypha:gap-6 hypha:overflow-x-auto hypha:px-(--hypha-gutter) hypha:py-0">
           {tabs.map((tab) => (
-            <li class="shrink-0">
-              <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined} class="tab-link">
+            <li class="hypha:shrink-0">
+              <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined} class="hypha:tab-link">
                 {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
                 {tab.label}
               </a>
             </li>
           ))}
-          {(links || github) && <li class="ms-auto" aria-hidden="true" />}
+          {(links || github) && <li class="hypha:ms-auto" aria-hidden="true" />}
           <Links row="tabs" />
-          {links && github && <li class="h-5 w-px shrink-0 bg-rule" aria-hidden="true" />}
+          {links && github && <li class="hypha:h-5 hypha:w-px hypha:shrink-0 hypha:bg-rule" aria-hidden="true" />}
           {github && (
-            <li class="flex shrink-0">
+            <li class="hypha:flex hypha:shrink-0">
               <GitHub />
             </li>
           )}

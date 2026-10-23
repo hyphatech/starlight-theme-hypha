@@ -1,9 +1,9 @@
 ---
-// The page's contents, sticky beside the text. Its padding, taken back by
+// The page's contents, sticky beside the text, under the header. Its padding, taken back by
 // its margin, is room for a link's focus ring.
 import TableOfContents from "@astrojs/starlight/components/TableOfContents.astro";
 ---
 
-<div class="no-scrollbar sticky top-0 -mx-1.5 max-h-dvh overflow-y-auto px-1.5 pt-(--page-top) pb-8">
+<div class="hypha:no-scrollbar hypha:sticky hypha:top-(--sl-nav-height) hypha:-mx-1.5 hypha:max-h-[calc(100dvh_-_var(--sl-nav-height))] hypha:overflow-y-auto hypha:px-1.5 hypha:pt-(--hypha-page-top) hypha:pb-8">
   <TableOfContents />
 </div>
