@@ -41,6 +41,12 @@ test("the example builds in the theme's frame", async () => {
   expect(code).toMatch(/data-pagefind-meta="section"[^>]*>Start here</);
   expect(code).toMatch(/<link[^>]*ec\.[^>]*\.css/);
   expect(code).not.toContain("set:html");
+  // Code's "Copied" is the theme's control, ink on the raised ground.
+  const ec = await Promise.all(
+    [...code.matchAll(/<link[^>]*href="([^"]*ec\.[^"]+\.css)"/g)].map(([, href]) => Bun.file(new URL(`../_build/example${href}`, import.meta.url)).text()),
+  );
+  expect(ec.join("")).toMatch(/tooltipSuccessBg:var\(--color-raised\)/);
+  expect(css).toContain(".expressive-code .copy .feedback");
   // A splash page without a hero opens with its own landing: one title,
   // its program beside it, its features three to a row.
   const landing = await Bun.file(new URL("../_build/example/landing/index.html", import.meta.url)).text();

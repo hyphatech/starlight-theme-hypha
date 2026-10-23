@@ -60,6 +60,8 @@ const expressiveCode = {
       terminalTitlebarBackground: "var(--color-panel)",
       terminalTitlebarBorderBottomColor: "var(--color-rule)",
       terminalBackground: "var(--color-panel)",
+      tooltipSuccessBackground: "var(--color-raised)",
+      tooltipSuccessForeground: "var(--color-ink)",
     },
   },
 };
