@@ -1,20 +1,33 @@
 ---
 // A page's title as hypha.pub heads a post, its description the lede.
-// The groups the page is in go to search's index as its results' trail.
+// The groups the page is in go to search's index as its results' trail. A
+// splash page without a hero opens with its own `<Landing>`, which holds
+// its title.
 import { trail } from "../libs/trail";
 
 // Starlight's own title's id, which it does not export.
 const PAGE_TITLE_ID = "_top";
-const { title, description } = Astro.locals.starlightRoute.entry.data;
+const { title, description, template, hero } = Astro.locals.starlightRoute.entry.data;
+const own = template === "splash" && !hero;
 const section = (Astro.locals.hyphaTrail ?? trail(Astro.locals.starlightRoute.sidebar)).join(" / ");
 ---
 
-{/* Less a tenth of an em: the slab's capitals, not its box, on the top line. */}
-<h1
-  id={PAGE_TITLE_ID}
-  class="mt-[calc(var(--page-top)_-_0.1em)] max-w-2xl font-serif text-[clamp(2.375rem,4.8vw,3.5rem)] leading-[1.05] font-normal tracking-[-0.02em] text-balance text-ink lining-nums tabular-nums"
->
-  {title}
-</h1>
-{section && <span hidden data-pagefind-meta="section" data-pagefind-ignore>{section}</span>}
-{description && <p class="t-lede mt-5 max-w-2xl text-graphite md:mt-6">{description}</p>}
+{
+  !own && (
+    <>
+      {/* Less a tenth of an em: the slab's capitals, not its box, on the top line. */}
+      <h1
+        id={PAGE_TITLE_ID}
+        class="mt-[calc(var(--page-top)_-_0.1em)] max-w-2xl font-serif text-[clamp(2.375rem,4.8vw,3.5rem)] leading-[1.05] font-normal tracking-[-0.02em] text-balance text-ink lining-nums tabular-nums"
+      >
+        {title}
+      </h1>
+      {section && (
+        <span hidden data-pagefind-meta="section" data-pagefind-ignore>
+          {section}
+        </span>
+      )}
+      {description && <p class="t-lede mt-5 max-w-2xl text-graphite md:mt-6">{description}</p>}
+    </>
+  )
+}

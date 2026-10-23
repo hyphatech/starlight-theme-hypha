@@ -5,7 +5,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
 ## Install
 
 ```sh
-bun add github:hyphatech/starlight-theme-hypha#v0.1.1
+bun add github:hyphatech/starlight-theme-hypha#v0.2.0
 ```
 
 ```js
@@ -64,10 +64,11 @@ starlightThemeHypha({
 The header's logo and title are Starlight's own `logo` and `title`.
 
 Icons are [Lucide](https://lucide.dev)'s: `archive`, `blocks`, `book-open`,
-`boxes`, `code-xml`, `component`, `compass`, `file-text`, `globe`,
-`graduation-cap`, `house`, `layers`, `library`, `list-checks`, `map`,
-`newspaper`, `play`, `puzzle`, `rocket`, `rss`, `scroll-text`, `settings`,
-`terminal` and `wrench`.
+`boxes`, `braces`, `code-xml`, `compass`, `component`, `file-text`,
+`globe`, `graduation-cap`, `house`, `layers`, `library`, `list-checks`,
+`map`, `newspaper`, `play`, `puzzle`, `rocket`, `rss`, `scroll-text`,
+`settings`, `shield-check`, `sparkles`, `terminal`, `wand-sparkles`,
+`waves-horizontal`, `wrench` and `zap`.
 
 The repository's version, stars and forks are fetched from GitHub at build
 time and cached for an hour; if GitHub fails, the last fetched values are
@@ -95,6 +96,51 @@ hero:
     - { text: Reference, link: /reference/, variant: secondary }
 ---
 ```
+
+A splash page without a `hero` opens with its own `<Landing>`, which takes
+the hero's props and holds the page's title. What it holds goes under the
+tagline, and its `aside` slot beside the text, its code as text on the page
+rather than a panel; beside an aside, the image is the mark above the title.
+`<Features>` sets `<Feature>`s three to a row, each with an icon from the
+list above and a link at its foot.
+
+````mdx
+---
+title: Acme
+template: splash
+---
+
+import Landing from "starlight-theme-hypha/components/Landing.astro";
+import Features from "starlight-theme-hypha/components/Features.astro";
+import Feature from "starlight-theme-hypha/components/Feature.astro";
+import mark from "../../assets/mark.svg";
+
+<Landing
+  title="Widgets, written once."
+  tagline="Everything about Acme's widgets."
+  image={{ file: mark, alt: "Acme" }}
+  actions={[{ text: "Get started", link: "/guides/", icon: "right-arrow" }]}
+>
+
+```sh
+bun add widgets
+```
+
+<Fragment slot="aside">
+
+```js
+export const widget = () => "one";
+```
+
+</Fragment>
+</Landing>
+
+<Features>
+  <Feature title="Fast" icon="zap" href="/guides/speed/" linkText="Speed">
+    Nothing runs in the browser but search.
+  </Feature>
+</Features>
+````
 
 ## Customising
 

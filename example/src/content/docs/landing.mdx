@@ -1,0 +1,42 @@
+---
+title: Landing
+description: A splash page that opens with its own landing.
+template: splash
+---
+
+import Landing from "starlight-theme-hypha/components/Landing.astro";
+import Features from "starlight-theme-hypha/components/Features.astro";
+import Feature from "starlight-theme-hypha/components/Feature.astro";
+import mark from "starlight-theme-hypha/assets/hypha.webp";
+
+<Landing
+  title="Widgets, written once."
+  tagline="A splash page's own opening, its program beside it."
+  image={{ file: mark, alt: "Hypha" }}
+  actions={[{ text: "Get started", link: "/getting-started/", icon: "right-arrow" }]}
+>
+
+```sh
+bun add widgets
+```
+
+<Fragment slot="aside">
+
+```js
+export const widget = () => "one";
+```
+
+</Fragment>
+</Landing>
+
+<Features>
+  <Feature title="One plugin" icon="puzzle" href="/getting-started/" linkText="Install">
+    Add it to Starlight's plugins.
+  </Feature>
+  <Feature title="Any hue" icon="sparkles">
+    One number turns every colour.
+  </Feature>
+  <Feature title="Fast" icon="zap">
+    Nothing runs in the browser but search.
+  </Feature>
+</Features>

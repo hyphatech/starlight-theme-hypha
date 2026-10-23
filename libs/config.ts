@@ -2,7 +2,7 @@ import { z } from "astro/zod";
 
 // Plain data: the options reach the components as JSON through a virtual
 // module, so a link names its icon rather than passing a component.
-export const icons = ["archive", "blocks", "book-open", "boxes", "code-xml", "component", "compass", "file-text", "globe", "graduation-cap", "house", "layers", "library", "list-checks", "map", "newspaper", "play", "puzzle", "rocket", "rss", "scroll-text", "settings", "terminal", "wrench"] as const;
+export const icons = ["archive", "blocks", "book-open", "boxes", "braces", "code-xml", "compass", "component", "file-text", "globe", "graduation-cap", "house", "layers", "library", "list-checks", "map", "newspaper", "play", "puzzle", "rocket", "rss", "scroll-text", "settings", "shield-check", "sparkles", "terminal", "wand-sparkles", "waves-horizontal", "wrench", "zap"] as const;
 export type IconName = (typeof icons)[number];
 
 const repo = z.string().regex(/^[\w.-]+\/[\w.-]+$/, "owner/name");

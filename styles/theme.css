@@ -327,8 +327,33 @@ starlight-toc a[aria-current="true"]:hover {
 }
 
 /* A landing page's text at the measure, under a hero the page's width. */
-[data-has-hero] .sl-markdown-content > :not(.card-grid) {
+[data-has-hero] .sl-markdown-content > :not(.card-grid, .landing, .features) {
   max-width: var(--measure);
+}
+
+/* A landing page's code without a title bar; its aside's reads as text on
+   the page, not a panel, a size down so a program's line fits the column. */
+.landing .expressive-code .frame .header {
+  display: none;
+}
+.landing .expressive-code .frame.has-title pre,
+.landing .expressive-code .frame.is-terminal pre {
+  border-top: var(--ec-brdWd) solid var(--ec-brdCol);
+  border-radius: var(--radius-panel);
+}
+.landing-aside .expressive-code .frame {
+  box-shadow: none;
+}
+.landing-aside .expressive-code .frame pre {
+  border: none;
+  background: transparent;
+}
+.landing-aside .expressive-code .copy {
+  display: none;
+}
+.landing-aside .expressive-code pre > code {
+  padding-inline: 0;
+  font-size: 0.8125rem;
 }
 
 /* Starlight's cards as hypha.pub's panels, the grid never staggered. */

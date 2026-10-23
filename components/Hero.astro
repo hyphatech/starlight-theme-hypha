@@ -1,49 +1,9 @@
 ---
-// A landing page's opening, as hyphatech.io's: a display title, its
-// tagline as the lede, and its actions as hyphatech.io's buttons.
-import { Image } from "astro:assets";
-import { Icon } from "@astrojs/starlight/components";
+// A landing page's opening, from its frontmatter's `hero`.
+import Landing from "./Landing.astro";
 
-// Starlight's own title's id, which its table of contents links to.
-const PAGE_TITLE_ID = "_top";
 const { data } = Astro.locals.starlightRoute.entry;
 const { title = data.title, tagline, image, actions = [] } = data.hero ?? {};
-
-const looks = {
-  primary: "btn-primary no-underline",
-  secondary: "btn no-underline",
-  minimal: "link inline-flex h-10 gap-2 px-2 pointer-coarse:h-11",
-};
-
-const artLook = "h-auto w-[min(70%,20rem)] justify-self-center lg:w-[min(100%,24rem)]";
-
-let art: ImageMetadata | undefined;
-let html: string | undefined;
-if (image) {
-  if ("file" in image) art = image.file;
-  else if ("dark" in image) art = image.dark;
-  else html = image.html;
-}
 ---
 
-<div class:list={["hero grid items-center gap-12 pt-12 pb-8 md:pt-16 md:pb-12", (art || html) && "lg:grid-cols-[7fr_4fr]"]}>
-  <div class="min-w-0">
-    <h1 id={PAGE_TITLE_ID} data-page-title class="t-display max-w-3xl text-ink lining-nums tabular-nums" set:html={title} />
-    {tagline && <p class="t-lede mt-7 max-w-[34rem] text-pretty text-graphite" set:html={tagline} />}
-    {
-      actions.length > 0 && (
-        <div class="mt-10 flex flex-wrap gap-3">
-          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant }) => (
-            <a href={link} class:list={[looks[variant], className]} {...attrs}>
-              {text}
-              {icon?.type === "icon" && <Icon name={icon.name} size="1rem" />}
-              {icon?.type === "raw" && <Fragment set:html={icon.html} />}
-            </a>
-          ))}
-        </div>
-      )
-    }
-  </div>
-  {art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" width={400} height={400} class={artLook} />}
-  {html && <div class={artLook} set:html={html} />}
-</div>
+<Landing title={title} tagline={tagline} image={image} actions={actions} />

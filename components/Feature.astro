@@ -1,0 +1,39 @@
+---
+// A feature: its icon and title over a rule, what it is, and a link to
+// read more held to the card's foot, so the links of a row line up.
+import ArrowRight from "@lucide/astro/icons/arrow-right";
+import type { IconName } from "../libs/config";
+import Icon from "./Icon.astro";
+import NamedIcon from "./NamedIcon.astro";
+
+interface Props {
+  title: string;
+  icon?: IconName;
+  href?: string;
+  linkText?: string;
+}
+
+const { title, icon, href, linkText = "Read more" } = Astro.props;
+---
+
+<article class="flex flex-col rounded-panel border border-rule bg-panel p-6">
+  <h3 class="flex items-center gap-3 border-b border-rule pb-4 font-serif text-xl leading-tight font-normal text-ink">
+    {icon && <span class="text-graphite"><NamedIcon name={icon} size="md" /></span>}
+    {title}
+  </h3>
+  <div
+    class="mt-4 leading-relaxed text-graphite [&_code]:rounded-control [&_code]:bg-raised [&_code]:px-[0.36em] [&_code]:py-[0.12em] [&_code]:font-mono [&_code]:text-[0.875em]"
+  >
+    <slot />
+  </div>
+  {
+    href && (
+      <div class="mt-auto pt-6">
+        <a href={href} class="btn no-underline">
+          {linkText}
+          <Icon icon={ArrowRight} />
+        </a>
+      </div>
+    )
+  }
+</article>

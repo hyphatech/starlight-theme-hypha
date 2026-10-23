@@ -1,0 +1,97 @@
+---
+// A landing page's opening, as hyphatech.io's: a display title, its tagline
+// as the lede, what the page puts in the slot -- an install command, say --
+// and its actions as hyphatech.io's buttons. Beside it, the page's `aside`,
+// or else its image as art; beside an aside, the image is the mark above
+// the title. The night is the theme's only scheme, so of a pair of images
+// the dark one shows.
+import { Image } from "astro:assets";
+import { Icon } from "@astrojs/starlight/components";
+import type { StarlightIcon } from "@astrojs/starlight/types";
+
+interface Action {
+  text: string;
+  link: string;
+  variant?: "primary" | "secondary" | "minimal";
+  icon?: StarlightIcon | { type: "icon"; name: StarlightIcon } | { type: "raw"; html: string };
+  attrs?: Record<string, string | number | boolean>;
+}
+
+interface Props {
+  title: string;
+  tagline?: string;
+  image?: { file?: ImageMetadata; dark?: ImageMetadata; light?: ImageMetadata; html?: string; alt?: string };
+  actions?: Action[];
+}
+
+// Starlight's own title's id, which its table of contents links to.
+const PAGE_TITLE_ID = "_top";
+const { title, tagline, image, actions = [] } = Astro.props;
+const aside = Astro.slots.has("aside");
+
+const looks = {
+  primary: "btn-primary no-underline",
+  secondary: "btn no-underline",
+  minimal: "link inline-flex h-10 gap-2 px-2 pointer-coarse:h-11",
+};
+
+const art = image?.file ?? image?.dark ?? image?.light;
+const html = art ? undefined : image?.html;
+const artLook = "h-auto w-[min(70%,20rem)] justify-self-center lg:w-[min(100%,24rem)]";
+---
+
+<div
+  class:list={[
+    "landing not-content grid grid-cols-[minmax(0,1fr)] items-center gap-12 pt-12 pb-8 md:pt-16 md:pb-12",
+    aside ? "lg:grid-cols-2 lg:gap-16" : (art || html) && "lg:grid-cols-[7fr_4fr]",
+  ]}
+>
+  <div class="min-w-0">
+    {aside && art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" class="mb-10 h-auto w-[min(100%,20rem)]" />}
+    <h1
+      id={PAGE_TITLE_ID}
+      data-page-title
+      class:list={[
+        aside ? "font-serif text-[clamp(2rem,3.6vw,3rem)] leading-[1.1] font-normal tracking-[-0.02em] text-balance" : "t-display max-w-3xl",
+        "text-ink lining-nums tabular-nums",
+      ]}
+      set:html={title}
+    />
+    {tagline && <p class="t-lede mt-7 max-w-[34rem] text-pretty text-graphite" set:html={tagline} />}
+    {
+      Astro.slots.has("default") && (
+        <div class="mt-8 max-w-[34rem]">
+          <slot />
+        </div>
+      )
+    }
+    {
+      actions.length > 0 && (
+        <div class="mt-10 flex flex-wrap gap-3">
+          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant = "primary" }) => {
+            const drawn = typeof icon === "string" ? { type: "icon" as const, name: icon } : icon;
+            return (
+              <a href={link} class:list={[looks[variant], className]} {...attrs}>
+                {text}
+                {drawn?.type === "icon" && <Icon name={drawn.name} size="1rem" />}
+                {drawn?.type === "raw" && <Fragment set:html={drawn.html} />}
+              </a>
+            );
+          })}
+        </div>
+      )
+    }
+  </div>
+  {
+    aside ? (
+      <div class="landing-aside min-w-0">
+        <slot name="aside" />
+      </div>
+    ) : (
+      <>
+        {art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" width={400} height={400} class={artLook} />}
+        {html && <div class={artLook} set:html={html} />}
+      </>
+    )
+  }
+</div>

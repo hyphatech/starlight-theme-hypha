@@ -17,7 +17,7 @@ test("the example builds in the theme's frame", async () => {
   expect(html).toContain("<hypha-search");
   expect(html).not.toContain("pagefind-ui");
   expect(html).toMatch(/<a href="\/getting-started\/"[^>]*>\s*<svg[^>]*lucide-rocket/);
-  expect(html).toContain('class="hero');
+  expect(html).toContain('class="landing');
   expect(html).toContain("Hypha's look for Starlight.</h1>");
   expect(html).toContain('<meta name="theme-color" content="#0B0C0F"');
   // The theme's components in Tailwind's utilities, on hypha.pub's tokens.
@@ -41,4 +41,13 @@ test("the example builds in the theme's frame", async () => {
   expect(code).toMatch(/data-pagefind-meta="section"[^>]*>Start here</);
   expect(code).toMatch(/<link[^>]*ec\.[^>]*\.css/);
   expect(code).not.toContain("set:html");
+  // A splash page without a hero opens with its own landing: one title,
+  // its program beside it, its features three to a row.
+  const landing = await Bun.file(new URL("../_build/example/landing/index.html", import.meta.url)).text();
+  expect(landing.match(/<h1\b/g)).toHaveLength(1);
+  expect(landing).toContain("Widgets, written once.</h1>");
+  expect(landing).toContain('class="landing-aside');
+  expect(landing).toContain("lg:grid-cols-3");
+  expect(landing).toMatch(/<a href="\/getting-started\/" class="btn[^"]*">\s*Install/);
+  expect(landing).toMatch(/lucide-sparkles/);
 }, 120_000);

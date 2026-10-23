@@ -1,12 +1,12 @@
 ---
-// An icon an option names, from `icons` in libs/config.
 import Archive from "@lucide/astro/icons/archive";
 import Blocks from "@lucide/astro/icons/blocks";
 import BookOpen from "@lucide/astro/icons/book-open";
 import Boxes from "@lucide/astro/icons/boxes";
+import Braces from "@lucide/astro/icons/braces";
 import CodeXml from "@lucide/astro/icons/code-xml";
-import Component from "@lucide/astro/icons/component";
 import Compass from "@lucide/astro/icons/compass";
+import Component from "@lucide/astro/icons/component";
 import FileText from "@lucide/astro/icons/file-text";
 import Globe from "@lucide/astro/icons/globe";
 import GraduationCap from "@lucide/astro/icons/graduation-cap";
@@ -22,16 +22,23 @@ import Rocket from "@lucide/astro/icons/rocket";
 import Rss from "@lucide/astro/icons/rss";
 import ScrollText from "@lucide/astro/icons/scroll-text";
 import Settings from "@lucide/astro/icons/settings";
+import ShieldCheck from "@lucide/astro/icons/shield-check";
+import Sparkles from "@lucide/astro/icons/sparkles";
 import Terminal from "@lucide/astro/icons/terminal";
+import WandSparkles from "@lucide/astro/icons/wand-sparkles";
+import WavesHorizontal from "@lucide/astro/icons/waves-horizontal";
 import Wrench from "@lucide/astro/icons/wrench";
+import Zap from "@lucide/astro/icons/zap";
+// An icon an option names, from `icons` in libs/config.
 import type { IconName } from "../libs/config";
 import Icon from "./Icon.astro";
 
 interface Props {
   name: IconName;
+  size?: "xs" | "sm" | "md" | "lg";
 }
 
-const drawn = { archive: Archive, blocks: Blocks, "book-open": BookOpen, boxes: Boxes, "code-xml": CodeXml, component: Component, compass: Compass, "file-text": FileText, globe: Globe, "graduation-cap": GraduationCap, house: House, layers: Layers, library: Library, "list-checks": ListChecks, map: Map, newspaper: Newspaper, play: Play, puzzle: Puzzle, rocket: Rocket, rss: Rss, "scroll-text": ScrollText, settings: Settings, terminal: Terminal, wrench: Wrench };
+const drawn = { archive: Archive, blocks: Blocks, "book-open": BookOpen, boxes: Boxes, braces: Braces, "code-xml": CodeXml, compass: Compass, component: Component, "file-text": FileText, globe: Globe, "graduation-cap": GraduationCap, house: House, layers: Layers, library: Library, "list-checks": ListChecks, map: Map, newspaper: Newspaper, play: Play, puzzle: Puzzle, rocket: Rocket, rss: Rss, "scroll-text": ScrollText, settings: Settings, "shield-check": ShieldCheck, sparkles: Sparkles, terminal: Terminal, "wand-sparkles": WandSparkles, "waves-horizontal": WavesHorizontal, wrench: Wrench, zap: Zap };
 ---
 
-<Icon icon={drawn[Astro.props.name]} />
+<Icon icon={drawn[Astro.props.name]} size={Astro.props.size} />

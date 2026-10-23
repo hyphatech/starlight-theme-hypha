@@ -44,7 +44,8 @@ libs/trail          the sidebar's groups a page is in, for search's results
 components/         the parts of Starlight's page the theme takes over, and
                     its own: Links, GitHub, Tabs, PhoneNav, Icon, NamedIcon;
                     Search, on Pagefind's index rather than its UI;
-                    Hero, a landing page's opening
+                    Landing, a landing page's opening, and Hero, one
+                    from the frontmatter; Features and Feature, its cards
 styles/tokens.css   hypha.pub's system as Tailwind's theme: its roles, faces,
                     type, grid and utilities
 styles/tailwind.css the tokens and the components, for a project's own
