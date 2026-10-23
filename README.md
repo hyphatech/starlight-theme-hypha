@@ -5,7 +5,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
 ## Install
 
 ```sh
-bun add github:hyphatech/starlight-theme-hypha#v0.2.0
+bun add github:hyphatech/starlight-theme-hypha#v0.2.1
 ```
 
 ```js

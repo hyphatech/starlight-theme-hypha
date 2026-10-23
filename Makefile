@@ -1,5 +1,5 @@
 .DEFAULT_GOAL := help
-.PHONY: help setup test lint build preview serve
+.PHONY: help setup test lint build serve
 
 help: ## list targets
 	@grep -hE '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) \
@@ -24,12 +24,8 @@ lint: node_modules ## the plugin's types
 build: node_modules ## the example site, built into _build/example
 	bun --bun astro build --root example
 
-# Pagefind's index exists only in a build, so search works here and not
-# under `serve`; a page opened from the disk finds none of its assets. Both
-# run from the example's own directory: a server Astro starts in the
-# background takes `--root` again from there.
-preview: build ## the built example, served as a host would, search included
+# The built example, as a host serves it: Pagefind's index exists only in a
+# build, and a page served as it changes loads its styles after its text.
+# Run from the example's own directory, where Astro finds it again.
+serve: build ## the built example, served as a host would, search included
 	cd example && bun --bun astro preview --open
-
-serve: node_modules ## the example, served as it changes, without search
-	cd example && bun --bun astro dev --open

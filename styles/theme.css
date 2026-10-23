@@ -194,29 +194,29 @@ starlight-toc a[aria-current="true"]:hover {
   color: var(--color-ink);
   overflow-wrap: break-word;
 }
-.sl-markdown-content p {
+.sl-markdown-content p:not(:where(.not-content *)) {
   text-wrap: pretty;
 }
 /* Paragraphs and lists a line and a quarter apart, as a post's are. */
 .sl-markdown-content > :not(.sl-heading-wrapper) + :is(p, ul, ol, blockquote) {
   margin-top: 1.25em;
 }
-.sl-markdown-content :is(h2, h3) {
+.sl-markdown-content :is(h2, h3):not(:where(.not-content *)) {
   font-family: var(--font-serif);
   font-weight: 400;
   text-wrap: balance;
   color: var(--color-ink);
 }
-.sl-markdown-content h2 {
+.sl-markdown-content h2:not(:where(.not-content *)) {
   font-size: var(--h2);
   line-height: 1.2;
   letter-spacing: -0.005em;
 }
-.sl-markdown-content h3 {
+.sl-markdown-content h3:not(:where(.not-content *)) {
   font-size: var(--h3);
   line-height: 1.3;
 }
-.sl-markdown-content h4 {
+.sl-markdown-content h4:not(:where(.not-content *)) {
   font-size: 1.0625rem;
   font-weight: 500;
   color: var(--color-ink);

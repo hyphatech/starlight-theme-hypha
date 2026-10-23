@@ -1,6 +1,6 @@
 ---
 // A feature: its icon and title over a rule, what it is, and a link to
-// read more held to the card's foot, so the links of a row line up.
+// read more, each a row of the grid's, so a row of cards lines up.
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import type { IconName } from "../libs/config";
 import Icon from "./Icon.astro";
@@ -16,24 +16,24 @@ interface Props {
 const { title, icon, href, linkText = "Read more" } = Astro.props;
 ---
 
-<article class="flex flex-col rounded-panel border border-rule bg-panel p-6">
-  <h3 class="flex items-center gap-3 border-b border-rule pb-4 font-serif text-xl leading-tight font-normal text-ink">
+<article class="row-span-3 grid grid-rows-subgrid gap-y-4 rounded-panel border border-rule bg-panel p-6">
+  <h3 class="flex items-center gap-3 border-b border-rule pb-4 font-serif text-lg leading-tight font-normal text-ink">
     {icon && <span class="text-graphite"><NamedIcon name={icon} size="md" /></span>}
     {title}
   </h3>
   <div
-    class="mt-4 leading-relaxed text-graphite [&_code]:rounded-control [&_code]:bg-raised [&_code]:px-[0.36em] [&_code]:py-[0.12em] [&_code]:font-mono [&_code]:text-[0.875em]"
+    class="leading-relaxed text-graphite [&_code]:rounded-control [&_code]:bg-raised [&_code]:px-[0.36em] [&_code]:py-[0.12em] [&_code]:font-mono [&_code]:text-[0.875em]"
   >
     <slot />
   </div>
-  {
-    href && (
-      <div class="mt-auto pt-6">
-        <a href={href} class="btn no-underline">
+  <div class="self-end">
+    {
+      href && (
+        <a href={href} class="btn mt-2 no-underline">
           {linkText}
           <Icon icon={ArrowRight} />
         </a>
-      </div>
-    )
-  }
+      )
+    }
+  </div>
 </article>

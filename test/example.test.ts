@@ -50,4 +50,8 @@ test("the example builds in the theme's frame", async () => {
   expect(landing).toContain("lg:grid-cols-3");
   expect(landing).toMatch(/<a href="\/getting-started\/" class="btn[^"]*">\s*Install/);
   expect(landing).toMatch(/lucide-sparkles/);
+  // A row of features lines up on the grid's rows, and the text's own
+  // heading sizes stay out of a component's.
+  expect(landing).toContain("grid-rows-subgrid");
+  expect(css).toContain(".sl-markdown-content h3:not(:where(.not-content *))");
 }, 120_000);

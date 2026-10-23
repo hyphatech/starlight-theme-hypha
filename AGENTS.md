@@ -12,8 +12,7 @@ make test     # the plugin's options, the night's contrast at every hue, and
               # the example's build
 make lint     # the plugin's types
 make build    # the example site, built into _build/example
-make preview  # the built example, served as a host would, search included
-make serve    # the example, served as it changes, without search
+make serve    # the built example, served as a host would, search included
 ```
 
 To try a change in a project before it is tagged, link it, and keep Vite on
