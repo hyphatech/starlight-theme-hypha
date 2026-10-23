@@ -1,9 +1,6 @@
 ---
-// The sidebar's sections as tabs under the header, a row of their own between
-// rules as a phone's second row is, on the page's width from the wordmark's
-// line, each with its icon where the project names one, the open one marked
-// on the header's rule in ink. A phone has them in its second row, with the
-// links.
+// The sidebar's top-level entries as tabs under the header, the open one
+// marked on the header's rule. A phone has them in its second row.
 import config from "virtual:starlight-theme-hypha/config";
 import NamedIcon from "./NamedIcon.astro";
 
@@ -13,12 +10,16 @@ const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[l
 
 {
   tabs.length > 0 && (
-    <div class="row print:hidden">
-      <nav class="tabs" aria-label="Sections">
-        <ul>
+    <div class="hidden border-t border-rule md:block print:hidden">
+      <nav class="mx-auto -mb-px max-w-page" aria-label="Sections">
+        <ul class="no-scrollbar m-0 flex list-none gap-6 overflow-x-auto px-(--gutter) py-0">
           {tabs.map((tab) => (
-            <li>
-              <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined}>
+            <li class="shrink-0">
+              <a
+                href={tab.href}
+                aria-current={tab.isCurrent ? "true" : undefined}
+                class="t-control flex h-12 items-center gap-2 border-b border-transparent whitespace-nowrap text-graphite no-underline transition-colors [--ring-offset:-2px] hover:text-ink aria-[current]:border-ink aria-[current]:text-ink"
+              >
                 {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
                 {tab.label}
               </a>
@@ -29,62 +30,3 @@ const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[l
     </div>
   )
 }
-
-<style>
-  .row {
-    display: none;
-    border-top: 1px solid var(--rule);
-  }
-  .tabs {
-    margin-inline: auto;
-    max-width: var(--page);
-    margin-bottom: -1px;
-  }
-  ul {
-    display: flex;
-    gap: 1.5rem;
-    margin: 0;
-    padding: 0 var(--gutter);
-    list-style: none;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  ul::-webkit-scrollbar {
-    display: none;
-  }
-  li {
-    flex-shrink: 0;
-  }
-  a {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    height: 3rem;
-    border-bottom: 1px solid transparent;
-    color: var(--graphite);
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.25;
-    text-decoration: none;
-    white-space: nowrap;
-    transition:
-      color 120ms var(--ease-state),
-      border-color 120ms var(--ease-state);
-  }
-  a:hover {
-    color: var(--paper);
-  }
-  a[aria-current] {
-    border-bottom-color: var(--paper);
-    color: var(--paper);
-  }
-  /* Inside the row, where the window's edge would cut it. */
-  a:focus-visible {
-    outline-offset: -2px;
-  }
-  @media (min-width: 48rem) {
-    .row {
-      display: block;
-    }
-  }
-</style>

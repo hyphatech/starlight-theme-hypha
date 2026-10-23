@@ -1,42 +1,20 @@
 ---
-// A page's title as hypha.pub heads a post: the title in the slab, its
-// description beneath as the lede, in graphite.
-// The id Starlight's own title takes, which its table of contents links to
-// as "Overview"; Starlight does not export it.
+// A page's title as hypha.pub heads a post, its description the lede.
+// The groups the page is in go to search's index as its results' trail.
+import { trail } from "../libs/trail";
+
+// Starlight's own title's id, which it does not export.
 const PAGE_TITLE_ID = "_top";
 const { title, description } = Astro.locals.starlightRoute.entry.data;
+const section = (Astro.locals.hyphaTrail ?? trail(Astro.locals.starlightRoute.sidebar)).join(" / ");
 ---
 
-<h1 id={PAGE_TITLE_ID}>{title}</h1>
-{description && <p class="lede">{description}</p>}
-
-<style>
-  /* On the page's top line by its capitals, not its box: the slab at this
-     size and leading stands a tenth of an em below its box's top. */
-  h1 {
-    margin-top: calc(var(--page-top) - 0.1em);
-    max-width: 42rem;
-    font-family: var(--font-serif);
-    font-size: clamp(2.375rem, 4.8vw, 3.5rem);
-    font-weight: 400;
-    font-variant-numeric: lining-nums tabular-nums;
-    line-height: 1.05;
-    letter-spacing: -0.02em;
-    text-wrap: balance;
-    color: var(--paper);
-  }
-  .lede {
-    margin-top: 1.25rem;
-    max-width: 42rem;
-    font-family: var(--font-serif);
-    font-size: clamp(1.125rem, 1.6vw, 1.25rem);
-    font-weight: 400;
-    line-height: 1.5;
-    color: var(--graphite);
-  }
-  @media (min-width: 48rem) {
-    .lede {
-      margin-top: 1.5rem;
-    }
-  }
-</style>
+{/* Less a tenth of an em: the slab's capitals, not its box, on the top line. */}
+<h1
+  id={PAGE_TITLE_ID}
+  class="mt-[calc(var(--page-top)_-_0.1em)] max-w-2xl font-serif text-[clamp(2.375rem,4.8vw,3.5rem)] leading-[1.05] font-normal tracking-[-0.02em] text-balance text-ink lining-nums tabular-nums"
+>
+  {title}
+</h1>
+{section && <span hidden data-pagefind-meta="section" data-pagefind-ignore>{section}</span>}
+{description && <p class="t-lede mt-5 max-w-2xl text-graphite md:mt-6">{description}</p>}

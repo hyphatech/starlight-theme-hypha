@@ -1,0 +1,372 @@
+---
+// Search, as Zensical's: a panel over the page, each result a heading under
+// its trail. The arrows choose, Enter opens, Escape closes. It asks
+// Pagefind's index directly: Pagefind's default UI knows no arrows.
+import ArrowDown from "@lucide/astro/icons/arrow-down";
+import ArrowUp from "@lucide/astro/icons/arrow-up";
+import CornerDownLeft from "@lucide/astro/icons/corner-down-left";
+import Magnifier from "@lucide/astro/icons/search";
+import project from "virtual:starlight/project-context";
+import starlight from "virtual:starlight/user-config";
+import Icon from "./Icon.astro";
+
+const t = Astro.locals.t;
+// Pagefind's words as Starlight translates them, English where it does not.
+const pagefind = Object.fromEntries(
+  Object.entries(t.all())
+    .filter(([key]) => key.startsWith("pagefind."))
+    .map(([key, value]) => [key.replace("pagefind.", ""), value]),
+);
+const words = {
+  zero: pagefind.zero_results ?? "No results for [SEARCH_TERM]",
+  one: pagefind.one_result ?? "[COUNT] result for [SEARCH_TERM]",
+  many: pagefind.many_results ?? "[COUNT] results for [SEARCH_TERM]",
+  more: pagefind.load_more ?? "Load more results",
+  dev: t("search.devWarning"),
+};
+const key = "inline-grid h-5 min-w-5 place-items-center rounded-control bg-raised px-1 font-sans text-[0.6875rem] text-ink";
+---
+
+{
+  starlight.pagefind && (
+    <hypha-search class="contents" data-words={JSON.stringify(words)} data-strip-trailing-slash={project.trailingSlash === "never" ? "" : undefined}>
+      {/* On a phone a square, as the menu's button beside it. */}
+      <button
+        type="button"
+        class="open flex size-11 cursor-pointer items-center justify-center gap-2 rounded-control border border-rule bg-panel p-0 font-sans text-[0.875rem]/none font-medium text-graphite transition-colors hover:border-graphite hover:text-ink min-[50rem]:h-10 min-[50rem]:w-72 min-[50rem]:justify-start min-[50rem]:ps-3 min-[50rem]:pe-2"
+        disabled
+        aria-label={t("search.label")}
+        aria-keyshortcuts="Control+K"
+      >
+        <Icon icon={Magnifier} />
+        <span class="hidden min-[50rem]:block" aria-hidden="true">
+          {t("search.label")}
+        </span>
+        <kbd class="shortcut ms-auto hidden gap-[0.25em] rounded-control bg-raised px-1.5 py-1 font-sans text-[0.6875rem] *:font-sans min-[50rem]:flex" aria-hidden="true">
+          <kbd>{t("search.ctrlKey")}</kbd>
+          <kbd>K</kbd>
+        </kbd>
+      </button>
+      {/* Before the page paints, Apple's key where it is the one. */}
+      <script is:inline>
+        (() => {
+          const button = document.currentScript?.previousElementSibling;
+          const key = button?.querySelector(".shortcut kbd");
+          if (key && /(Mac|iPhone|iPod|iPad)/i.test(navigator.platform)) {
+            key.textContent = "⌘";
+            button.setAttribute("aria-keyshortcuts", "Meta+K");
+          }
+        })();
+      </script>
+
+      {/* On a phone the whole screen. It goes quicker than it comes. */}
+      <dialog
+        aria-label={t("search.label")}
+        class="m-0 h-dvh max-h-dvh w-full max-w-full flex-col focus-visible:outline-none! overflow-hidden border-0 bg-panel p-0 text-ink transition-[opacity,translate] duration-200 ease-glide open:flex starting:open:-translate-y-2 starting:open:opacity-0 data-closing:-translate-y-1 data-closing:opacity-0 data-closing:duration-120 data-closing:ease-state motion-reduce:transition-none min-[50rem]:inset-y-auto min-[50rem]:top-0 min-[50rem]:mx-auto min-[50rem]:mt-20 min-[50rem]:h-auto min-[50rem]:max-h-[min(36rem,100dvh_-_8rem)] min-[50rem]:w-[min(40rem,100%_-_2*var(--gutter))] min-[50rem]:rounded-panel min-[50rem]:border min-[50rem]:border-rule backdrop:bg-ivory/72 backdrop:backdrop-blur-[3px] backdrop:transition-opacity backdrop:duration-180 backdrop:ease-glide starting:open:backdrop:opacity-0 data-closing:backdrop:opacity-0 data-closing:backdrop:duration-120 data-closing:backdrop:ease-state motion-reduce:backdrop:transition-none"
+      >
+        <div class="flex h-14 shrink-0 items-center gap-3 border-b border-rule ps-5 pe-3 text-graphite">
+          <Icon icon={Magnifier} size="md" />
+          {/* The caret is the field's focus; the page's ring would box it twice. */}
+          <input
+            type="text"
+            role="combobox"
+            aria-label={t("search.label")}
+            aria-expanded="false"
+            aria-controls="hypha-search-results"
+            aria-autocomplete="list"
+            placeholder={t("search.label")}
+            autocomplete="off"
+            autocapitalize="off"
+            spellcheck="false"
+            enterkeyhint="search"
+            class="h-full min-w-0 flex-1 border-0 bg-transparent font-sans text-base/none font-normal text-ink caret-accent outline-0 placeholder:text-graphite focus-visible:outline-none!"
+          />
+          <button
+            type="button"
+            class="cursor-pointer border-0 bg-transparent p-2 font-sans text-[0.875rem]/none font-medium text-ink min-[50rem]:hidden"
+            data-close
+          >
+            {t("search.cancelLabel")}
+          </button>
+        </div>
+        <p class="status m-0 shrink-0 px-5 pt-3.5 pb-1.5 text-[0.75rem] font-medium whitespace-pre-line text-graphite empty:hidden" role="status" />
+        <div
+          class="results min-h-0 flex-[0_1_auto] overflow-y-auto overscroll-contain px-2 pb-2 [scrollbar-color:var(--color-rule)_transparent] [scrollbar-width:thin] empty:hidden"
+          id="hypha-search-results"
+          role="listbox"
+          aria-label={t("search.label")}
+        />
+        <button
+          type="button"
+          class="more mx-5 mb-3 shrink-0 cursor-pointer border-0 bg-transparent px-0 py-2 text-start font-sans text-[0.8125rem]/none font-medium text-graphite transition-colors hover:text-ink"
+          hidden
+        >
+          {words.more}
+        </button>
+        {/* The keys, where there is a keyboard to press them on. */}
+        <footer class="hidden shrink-0 gap-5 border-t border-rule px-5 py-2.5 text-[0.75rem] text-graphite *:inline-flex *:items-center *:gap-1 min-[50rem]:flex" aria-hidden="true">
+          <span>
+            <kbd class={key}>
+              <Icon icon={ArrowUp} size="xs" />
+            </kbd>
+            <kbd class:list={[key, "me-0.5"]}>
+              <Icon icon={ArrowDown} size="xs" />
+            </kbd>
+            to choose
+          </span>
+          <span>
+            <kbd class:list={[key, "me-0.5"]}>
+              <Icon icon={CornerDownLeft} size="xs" />
+            </kbd>
+            to open
+          </span>
+          <span>
+            <kbd class:list={[key, "me-0.5"]}>esc</kbd>
+            to close
+          </span>
+        </footer>
+      </dialog>
+    </hypha-search>
+  )
+}
+
+<script>
+  // As much of Pagefind's API as is used.
+  interface SubResult {
+    title: string;
+    url: string;
+    excerpt: string;
+    locations: number[];
+  }
+  interface Page {
+    url: string;
+    excerpt: string;
+    meta: { title?: string; section?: string };
+    sub_results: SubResult[];
+  }
+  interface Pagefind {
+    options(options: { baseUrl: string }): Promise<void>;
+    init(): Promise<void>;
+    debouncedSearch(query: string, options?: object, ms?: number): Promise<{ results: { data(): Promise<Page> }[] } | null>;
+  }
+
+  interface Row {
+    trail: string[];
+    title: string;
+    url: string;
+    excerpt: string;
+  }
+
+  // A page's rows: its three headings with the most found under them. A
+  // heading's trail ends with its page; a group named as its page is named
+  // once.
+  function rows(page: Page): Row[] {
+    const title = page.meta.title ?? page.url;
+    const groups = page.meta.section ? page.meta.section.split(" / ") : [];
+    const trail = groups.at(-1) === title ? groups.slice(0, -1) : groups;
+    const own = { trail, title, url: page.url, excerpt: page.excerpt };
+    const subs = [...page.sub_results].sort((a, b) => b.locations.length - a.locations.length).slice(0, 3);
+    if (subs.length === 0) return [own];
+    return subs.map((sub) =>
+      sub.url.includes("#") && sub.title !== title
+        ? { trail: [...trail, title], title: sub.title, url: sub.url, excerpt: sub.excerpt }
+        : { ...own, excerpt: sub.excerpt },
+    );
+  }
+
+  const PAGES_AT_ONCE = 8;
+  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+
+  class HyphaSearch extends HTMLElement {
+    connectedCallback() {
+      const open = this.querySelector<HTMLButtonElement>("button.open")!;
+      const dialog = this.querySelector("dialog")!;
+      const input = dialog.querySelector("input")!;
+      const status = dialog.querySelector<HTMLElement>(".status")!;
+      const list = dialog.querySelector<HTMLElement>(".results")!;
+      const more = dialog.querySelector<HTMLButtonElement>(".more")!;
+      const words = JSON.parse(this.dataset.words ?? "{}") as Record<string, string>;
+      const strip = this.dataset.stripTrailingSlash !== undefined;
+      const href = (url: string) => (strip ? url.replace(/(.)\/(#.*)?$/, "$1$2") : url);
+      const base = import.meta.env.BASE_URL.replace(/\/$/, "");
+
+      let pagefind: Promise<Pagefind | undefined> | undefined;
+      const index = () =>
+        (pagefind ??= import(/* @vite-ignore */ `${base}/pagefind/pagefind.js`)
+          .then(async (module: Pagefind) => {
+            await module.options({ baseUrl: import.meta.env.BASE_URL });
+            await module.init();
+            return module;
+          })
+          .catch(() => undefined));
+
+      // A search begun after another makes the other's answer stale.
+      let pages: { data(): Promise<Page> }[] = [];
+      let drawn = 0;
+      let chosen = -1;
+      let asked = 0;
+
+      const say = (template: string, count: number, query: string) => {
+        status.textContent = template.replace("[COUNT]", String(count)).replace("[SEARCH_TERM]", query);
+      };
+
+      const options = () => [...list.querySelectorAll<HTMLAnchorElement>("[role=option]")];
+
+      const choose = (i: number, scroll = true) => {
+        const all = options();
+        if (all.length === 0) return;
+        chosen = Math.max(0, Math.min(i, all.length - 1));
+        all.forEach((option, j) => option.setAttribute("aria-selected", String(j === chosen)));
+        input.setAttribute("aria-activedescendant", all[chosen].id);
+        if (scroll) all[chosen].scrollIntoView({ block: "nearest" });
+      };
+
+      const draw = (row: Row, n: number) => {
+        const option = document.createElement("a");
+        option.id = `hypha-search-${n}`;
+        option.href = href(row.url);
+        option.setAttribute("role", "option");
+        option.setAttribute("aria-selected", "false");
+        option.className = "grid gap-0.5 rounded-control px-3 py-2.5 text-graphite no-underline transition-colors aria-selected:bg-raised";
+        if (row.trail.length > 0) {
+          const trail = document.createElement("span");
+          trail.className = "truncate text-xs/[1.5]";
+          trail.textContent = row.trail.join(" / ");
+          option.append(trail);
+        }
+        const title = document.createElement("span");
+        title.className = "text-[0.9375rem]/[1.4] font-medium text-ink";
+        title.textContent = row.title;
+        // Pagefind's excerpt is escaped, with the words found in <mark>.
+        const excerpt = document.createElement("span");
+        excerpt.className =
+          "line-clamp-2 text-[0.8125rem]/[1.55] wrap-anywhere [&_mark]:bg-transparent [&_mark]:text-ink [&_mark]:underline [&_mark]:decoration-accent [&_mark]:decoration-1 [&_mark]:underline-offset-3";
+        excerpt.innerHTML = row.excerpt;
+        option.append(title, excerpt);
+        return option;
+      };
+
+      const drawMore = async (query: string, ask: number) => {
+        const batch = pages.slice(drawn, drawn + PAGES_AT_ONCE);
+        const found = await Promise.all(batch.map((page) => page.data()));
+        if (ask !== asked) return;
+        const first = drawn === 0;
+        drawn += batch.length;
+        const n = options().length;
+        list.append(...found.flatMap(rows).map((row, i) => draw(row, n + i)));
+        more.hidden = drawn >= pages.length;
+        say(pages.length === 1 ? words.one : words.many, pages.length, query);
+        if (first) choose(0, false);
+      };
+
+      const search = async () => {
+        const query = input.value.trim();
+        const ask = ++asked;
+        if (query === "") {
+          pages = [];
+          drawn = 0;
+          chosen = -1;
+          list.replaceChildren();
+          status.textContent = "";
+          more.hidden = true;
+          input.setAttribute("aria-expanded", "false");
+          input.removeAttribute("aria-activedescendant");
+          return;
+        }
+        const found = await (await index())?.debouncedSearch(query, {}, 120);
+        if (!found || ask !== asked) return;
+        pages = found.results;
+        drawn = 0;
+        chosen = -1;
+        list.replaceChildren();
+        input.removeAttribute("aria-activedescendant");
+        input.setAttribute("aria-expanded", String(pages.length > 0));
+        more.hidden = true;
+        if (pages.length === 0) say(words.zero, 0, query);
+        else await drawMore(query, ask);
+      };
+
+      // Closed after it has faded: a closed dialog leaves the page at once.
+      const show = () => {
+        delete dialog.dataset.closing;
+        document.documentElement.classList.add("overflow-hidden");
+        dialog.showModal();
+        input.focus();
+        input.select();
+      };
+      const hide = () => {
+        if (!dialog.open || dialog.dataset.closing !== undefined) return;
+        if (reduced.matches) return dialog.close();
+        dialog.dataset.closing = "";
+        const done = () => {
+          if (dialog.dataset.closing === undefined) return;
+          delete dialog.dataset.closing;
+          dialog.close();
+        };
+        dialog.addEventListener("transitionend", done, { once: true });
+        setTimeout(done, 200);
+      };
+
+      dialog.addEventListener("close", () => document.documentElement.classList.remove("overflow-hidden"));
+      open.addEventListener("click", show);
+      open.disabled = false;
+      dialog.querySelector("[data-close]")!.addEventListener("click", hide);
+      // Escape, and a click on the dimmed page around the panel.
+      dialog.addEventListener("cancel", (event) => {
+        event.preventDefault();
+        hide();
+      });
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) hide();
+      });
+      // The page followed may be this one, at another heading.
+      list.addEventListener("click", (event) => {
+        if ((event.target as Element).closest("[role=option]")) hide();
+      });
+      // The mouse chooses as it moves, not as the list scrolls under it.
+      list.addEventListener("pointermove", (event) => {
+        const option = (event.target as Element).closest<HTMLAnchorElement>("[role=option]");
+        if (option) choose(options().indexOf(option), false);
+      });
+      more.addEventListener("click", () => drawMore(input.value.trim(), asked));
+
+      input.addEventListener("input", search);
+      input.addEventListener("keydown", (event) => {
+        if (event.key === "ArrowDown" || event.key === "ArrowUp") {
+          event.preventDefault();
+          choose(chosen + (event.key === "ArrowDown" ? 1 : -1));
+        } else if (event.key === "Enter" && !event.isComposing) {
+          event.preventDefault();
+          const option = options()[chosen];
+          if (!option) return;
+          hide();
+          if (event.metaKey || event.ctrlKey) window.open(option.href, "_blank");
+          else window.location.assign(option.href);
+        }
+      });
+
+      // ⌘K or Ctrl+K anywhere, and / where nothing is being written.
+      window.addEventListener("keydown", (event) => {
+        if ((event.metaKey || event.ctrlKey) && event.key === "k") {
+          event.preventDefault();
+          dialog.open ? hide() : show();
+        } else if (event.key === "/" && !dialog.open) {
+          const target = event.target as HTMLElement;
+          if (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
+          event.preventDefault();
+          show();
+        }
+      });
+
+      // The index is built with the site: none in the dev server.
+      if (import.meta.env.DEV) {
+        status.textContent = words.dev;
+        input.disabled = true;
+        return;
+      }
+      const idle = window.requestIdleCallback ?? ((then: () => void) => setTimeout(then, 1));
+      idle(() => void index());
+    }
+  }
+  customElements.define("hypha-search", HyphaSearch);
+</script>

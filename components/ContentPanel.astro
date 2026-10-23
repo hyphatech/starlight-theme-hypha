@@ -1,20 +1,6 @@
 ---
-// A part of the page -- its title, then its text -- without Starlight's own
-// width or padding: the grid gives both.
+// A part of the page without Starlight's width or padding: the grid gives
+// both. `:where`, so a part's own margin wins.
 ---
 
-<div class="content-panel"><slot /></div>
-
-<style>
-  .content-panel > :global(* + *) {
-    margin-top: 1.5rem;
-  }
-  .content-panel + .content-panel {
-    margin-top: 1.75rem;
-  }
-  @media (min-width: 48rem) {
-    .content-panel + .content-panel {
-      margin-top: 2rem;
-    }
-  }
-</style>
+<div class="content-panel [&+&]:mt-7 md:[&+&]:mt-8 [:where(&>*+*)]:mt-6"><slot /></div>

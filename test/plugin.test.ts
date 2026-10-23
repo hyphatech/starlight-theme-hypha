@@ -2,14 +2,18 @@ import { describe, expect, test } from "bun:test";
 import hypha from "../index";
 import { onRequest } from "../libs/route-middleware";
 import { nightHex } from "../libs/color";
+import { atBuild } from "../libs/github";
+import { configSchema } from "../libs/config";
 
 // The plugin's config:setup, run against a Starlight config, returning what
 // it asked Starlight to change.
-function setup(options: Parameters<typeof hypha>[0], starlight: Record<string, unknown> = {}) {
-  const updates: Record<string, any> = { middleware: [] };
+function setup(options: Parameters<typeof hypha>[0], starlight: Record<string, unknown> = {}, vite: object = {}) {
+  const updates: Record<string, any> = { middleware: [], warnings: [] };
   const plugin = hypha(options);
   (plugin.hooks["config:setup"] as Function)({
     config: { title: "x", ...starlight },
+    astroConfig: { root: new URL("file:///nowhere/"), vite },
+    logger: { warn: (m: string) => updates.warnings.push(m) },
     updateConfig: (u: object) => Object.assign(updates, u),
     addIntegration: () => {},
     addRouteMiddleware: (m: { entrypoint: string }) => updates.middleware.push(m.entrypoint),
@@ -32,14 +36,57 @@ describe("the plugin", () => {
 
   test("puts its sheet before the project's, and lets the project's components win", () => {
     const u = setup({}, { customCss: ["./own.css"], components: { Header: "./Header.astro" } });
-    expect(u.customCss).toEqual(["starlight-theme-hypha/styles/theme.css", "./own.css"]);
+    expect(u.customCss).toEqual(["starlight-theme-hypha/styles/standalone.css", "starlight-theme-hypha/styles/theme.css", "./own.css"]);
     expect(u.components.Header).toBe("./Header.astro");
     expect(u.components.PageFrame).toBe("starlight-theme-hypha/components/PageFrame.astro");
   });
 
   test("keeps its sheet where the project names it", () => {
     const own = ["./tailwind.css", "starlight-theme-hypha/styles/theme.css", "./own.css"];
-    expect(setup({}, { customCss: own }).customCss).toEqual(own);
+    const tailwind = { plugins: [{ name: "@tailwindcss/vite:scan" }] };
+    expect(setup({}, { customCss: own }, tailwind).customCss).toEqual(own);
+    expect(setup({}, { customCss: own }).customCss).toEqual(["./tailwind.css", "starlight-theme-hypha/styles/standalone.css", "starlight-theme-hypha/styles/theme.css", "./own.css"]);
+  });
+
+  test("builds the theme with Tailwind, unless the project builds it in its own", () => {
+    // The Vite plugins the theme's integration adds to the project's.
+    const plugins = (vite: object) => {
+      let integration: any;
+      (hypha({}).hooks["config:setup"] as Function)({
+        config: { title: "x" },
+        astroConfig: { root: new URL("file:///nowhere/"), vite },
+        logger: { warn: () => {} },
+        updateConfig: () => {},
+        addIntegration: (i: unknown) => (integration = i),
+        addRouteMiddleware: () => {},
+      });
+      let added: any[] = [];
+      integration.hooks["astro:config:setup"]({ updateConfig: (u: any) => (added = u.vite.plugins.flat()) });
+      return added.map((p) => p.name as string);
+    };
+    const tailwind = { plugins: [[{ name: "@tailwindcss/vite:scan" }], { name: "other" }] };
+    expect(plugins({})).toContain("@tailwindcss/vite:scan");
+    expect(plugins(tailwind)).not.toContain("@tailwindcss/vite:scan");
+    // On the project's Tailwind, its own sheet must import the theme's.
+    const u = setup({}, {}, tailwind);
+    expect(u.customCss).toEqual(["starlight-theme-hypha/styles/theme.css"]);
+    expect(u.warnings[0]).toContain("starlight-theme-hypha/styles/tailwind.css");
+    expect(setup({}).warnings).toEqual([]);
+  });
+
+  test("turns Pagefind off with search", () => {
+    expect(setup({ search: false }).pagefind).toBe(false);
+    expect(setup({}).pagefind).toBeUndefined();
+  });
+
+  test("reads the repository as a name, or with its stats off", () => {
+    expect(configSchema.parse({ github: "o/r" }).github).toEqual({ repo: "o/r", stats: true });
+    expect(configSchema.parse({ github: { repo: "o/r", stats: false } }).github).toEqual({ repo: "o/r", stats: false });
+    expect(configSchema.parse({}).github).toBeUndefined();
+  });
+
+  test("takes a link to this site or another", () => {
+    expect(configSchema.parse({ links: [{ label: "Changes", href: "/changes/" }] }).links[0].href).toBe("/changes/");
   });
 
   test("leaves Expressive Code off when the project turns it off", () => {
@@ -126,5 +173,37 @@ describe("the tabs", () => {
     };
     onRequest({ locals } as never, async () => {});
     expect(locals.starlightRoute.sidebar).toEqual([]);
+  });
+});
+
+describe("the repository's facts", () => {
+  const dir = () => `${process.env.TMPDIR ?? "/tmp"}/hypha-github-${crypto.randomUUID()}`;
+  const keep = async (cacheDir: string, repo: string, at: number) =>
+    Bun.write(`${cacheDir}/github.json`, JSON.stringify({ [repo]: { at, facts: { version: "1.0.0", stars: 7, forks: 2 } } }));
+
+  test("are the last build's when GitHub fails", async () => {
+    const cacheDir = dir();
+    await keep(cacheDir, "o/stale", 0);
+    const real = globalThis.fetch;
+    globalThis.fetch = (async () => new Response("rate limited", { status: 403 })) as unknown as typeof fetch;
+    try {
+      expect(await atBuild("o/stale", cacheDir)).toEqual({ version: "1.0.0", stars: 7, forks: 2 });
+    } finally {
+      globalThis.fetch = real;
+    }
+  });
+
+  test("are not asked again within the hour", async () => {
+    const cacheDir = dir();
+    await keep(cacheDir, "o/fresh", Date.now());
+    let asked = 0;
+    const real = globalThis.fetch;
+    globalThis.fetch = (async () => (asked++, new Response("{}"))) as unknown as typeof fetch;
+    try {
+      expect((await atBuild("o/fresh", cacheDir))?.stars).toBe(7);
+      expect(asked).toBe(0);
+    } finally {
+      globalThis.fetch = real;
+    }
   });
 });

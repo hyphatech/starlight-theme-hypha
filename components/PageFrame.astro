@@ -1,10 +1,7 @@
 ---
-// The page on hypha.pub's grid: a header across the window over a rule, the
-// sections' tabs in it where the theme's `tabs` is on, and
-// beneath it the page's width, 72rem, the navigation in its margin and the
-// page in the rest. On a phone the navigation is a sheet over the page,
-// opened from the header. Starlight's scripts find the sheet by its id,
-// which keeps its scroll and its open groups from page to page.
+// hypha.pub's grid: the header across the window, then the page's width
+// with the navigation in its margin. On a phone the navigation is a sheet
+// over the page; Starlight's scripts find it by its id.
 import X from "@lucide/astro/icons/x";
 import Icon from "./Icon.astro";
 import PhoneNav from "./PhoneNav.astro";
@@ -12,24 +9,29 @@ import Tabs from "./Tabs.astro";
 
 const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
 // An empty sidebar keeps its margin, so the page stands where its
-// neighbours' do, with nothing in it.
+// neighbours' do.
 const navigable = hasSidebar && sidebar.length > 0;
 const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
 ---
 
-<div class="page">
-  <header class="site-header"><slot name="header" /><Tabs /><PhoneNav /></header>
-  <div class:list={["grid", { "no-sidebar": !hasSidebar }]}>
+<div>
+  {/* Not `.header`, which a page's own styles may take: HeroUI's do. */}
+  <header class="site-header border-b border-rule"><slot name="header" /><Tabs /><PhoneNav /></header>
+  <div
+    class:list={[
+      "mx-auto max-w-page px-(--gutter)",
+      hasSidebar && "md:grid md:grid-cols-[calc(var(--margin)_-_var(--column-gap))_minmax(0,1fr)] md:gap-x-(--column-gap)",
+    ]}
+  >
     {
-      hasSidebar && !navigable && <div class="sidebar" aria-hidden="true" />
+      hasSidebar && !navigable && <div aria-hidden="true" />
     }
     {
       navigable && (
-        <nav class="sidebar print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
+        <nav class="print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
           <script>
-            // On a phone the navigation is a popover, which opens and closes
-            // without script; wider, it is part of the page and the popover is
-            // dropped. While it is open, the page behind it takes no focus.
+            // A popover on a phone, part of the page wider. While it is open,
+            // the page behind it takes no focus.
             class StarlightSidebarPane extends HTMLElement {
               constructor() {
                 super();
@@ -49,11 +51,9 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
             customElements.define("sl-sidebar-pane", StarlightSidebarPane);
           </script>
           <script>
-            // A group of the navigation slides open and shut, its height
-            // animated from wherever it stands, so a second click turns it
-            // back. Its state changes after the click has passed, so that
-            // Starlight's script, which reads it at the click, keeps which
-            // groups are open from page to page.
+            // A group slides open and shut from wherever it stands. Its state
+            // changes after the click, which Starlight's script reads to keep
+            // the open groups from page to page.
             const still = matchMedia("(prefers-reduced-motion: reduce)");
             document.querySelectorAll<HTMLDetailsElement>("#starlight__sidebar details").forEach((details) => {
               const summary = details.querySelector<HTMLElement>(":scope > summary");
@@ -85,104 +85,31 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
               });
             });
           </script>
-          <sl-sidebar-pane popover="" id="starlight__sidebar" class="sidebar-pane">
-            <div class="sheet-bar">
-              <button type="button" popovertarget="starlight__sidebar" popovertargetaction="hide" aria-label="Close the menu">
+          {/* Wider, sticky; its padding, taken back by its margin, is room
+             for a link's focus ring. */}
+          <sl-sidebar-pane
+            popover=""
+            id="starlight__sidebar"
+            class="fixed inset-0 z-(--sl-z-index-menu) m-0 h-full max-h-none w-full max-w-none overflow-y-auto border-0 bg-ivory p-0 text-inherit md:no-scrollbar md:sticky md:inset-auto md:top-0 md:z-auto md:-mx-1.5 md:block md:h-auto md:max-h-dvh md:bg-transparent md:px-1.5"
+          >
+            <div class="flex h-16 items-center justify-end border-b border-rule px-(--gutter) md:hidden">
+              <button
+                type="button"
+                popovertarget="starlight__sidebar"
+                popovertargetaction="hide"
+                aria-label="Close the menu"
+                class="grid size-11 cursor-pointer place-items-center rounded-control border border-rule bg-panel text-graphite"
+              >
                 <Icon icon={X} size="md" />
               </button>
             </div>
-            <div class="sidebar-content" data-tabbed={tabbed ? "" : undefined}>
+            <div class="sidebar-content px-(--gutter) pt-8 pb-12 md:px-0 md:pt-(--page-top) md:pb-8" data-tabbed={tabbed ? "" : undefined}>
               <slot name="sidebar" />
             </div>
           </sl-sidebar-pane>
         </nav>
       )
     }
-    <div class="main-frame"><slot /></div>
+    <div class="main-frame min-w-0"><slot /></div>
   </div>
 </div>
-
-<style>
-  /* Not `.header`, which a page's own styles may take for something of
-     their own: HeroUI's take it for a label. */
-  .site-header {
-    border-bottom: 1px solid var(--rule);
-  }
-  .grid {
-    margin-inline: auto;
-    max-width: var(--page);
-    padding-inline: var(--gutter);
-  }
-  .main-frame {
-    min-width: 0;
-  }
-
-  /* A sheet over the page, under its own bar with the way out. */
-  .sidebar-pane {
-    border: none;
-    padding: 0;
-    width: 100%;
-    max-width: none;
-    height: 100%;
-    max-height: none;
-    margin: 0;
-    color: inherit;
-    position: fixed;
-    inset: 0;
-    z-index: var(--sl-z-index-menu);
-    overflow-y: auto;
-    background: var(--night);
-  }
-  .sheet-bar {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    height: 4rem;
-    padding-inline: var(--gutter);
-    border-bottom: 1px solid var(--rule);
-  }
-  .sheet-bar button {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-control);
-    background: var(--panel);
-    color: var(--graphite);
-    cursor: pointer;
-  }
-  .sidebar-content {
-    padding: 2rem var(--gutter) 3rem;
-  }
-
-  /* Wider, the navigation is the margin: sticky beside the page, scrolling
-     on its own when it is longer than the window. Its padding, taken back
-     by its margin, is room for a link's focus ring. */
-  @media (min-width: 48rem) {
-    .grid:not(.no-sidebar) {
-      display: grid;
-      grid-template-columns: calc(var(--margin) - var(--column-gap)) minmax(0, 1fr);
-      column-gap: var(--column-gap);
-    }
-    .sidebar-pane {
-      display: block;
-      position: sticky;
-      inset: auto;
-      top: 0;
-      z-index: auto;
-      height: auto;
-      max-height: 100dvh;
-      margin: 0 -0.375rem;
-      padding: 0 0.375rem;
-      background: none;
-      scrollbar-width: none;
-    }
-    .sheet-bar {
-      display: none;
-    }
-    .sidebar-content {
-      padding: var(--page-top) 0 2rem;
-    }
-  }
-</style>

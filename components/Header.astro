@@ -1,26 +1,24 @@
 ---
-// hypha.pub's header: across the window, its contents on the page's width,
-// the wordmark at the start and search and the project's links at the end.
-// On a phone the links go to the second row, and the button that opens the
-// navigation takes their place.
+// The wordmark, then search and the project's links. On a phone the links
+// move to a second row, and the menu's button takes their place.
 import Menu from "@lucide/astro/icons/menu";
-import Search from "@astrojs/starlight/components/Search.astro";
-import Icon from "./Icon.astro";
-import SiteTitle from "./SiteTitle.astro";
 import config from "virtual:starlight-theme-hypha/config";
+import Search from "virtual:starlight/components/Search";
 import GitHub from "./GitHub.astro";
+import Icon from "./Icon.astro";
 import Links from "./Links.astro";
+import SiteTitle from "./SiteTitle.astro";
 
 const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
 ---
 
-<div class="bar">
+<div class="mx-auto flex h-16 max-w-page items-center gap-6 px-(--gutter)">
   <SiteTitle />
-  <div class="end print:hidden">
+  <div class="ms-auto flex items-center gap-2 md:gap-6 print:hidden">
     <Search />
     {
       (config.links.length > 0 || config.github) && (
-        <nav class="links" aria-label="Site">
+        <nav class="hidden items-center gap-6 md:flex" aria-label="Site">
           <Links />
           <GitHub />
         </nav>
@@ -28,63 +26,15 @@ const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
     }
     {
       hasSidebar && sidebar.length > 0 && (
-        <button type="button" popovertarget="starlight__sidebar" class="menu" aria-label={Astro.locals.t("menuButton.accessibleLabel")}>
+        <button
+          type="button"
+          popovertarget="starlight__sidebar"
+          class="grid size-11 cursor-pointer place-items-center rounded-control border border-rule bg-panel text-graphite transition-colors hover:border-graphite hover:text-ink md:hidden"
+          aria-label={Astro.locals.t("menuButton.accessibleLabel")}
+        >
           <Icon icon={Menu} size="md" />
         </button>
       )
     }
   </div>
 </div>
-
-<style>
-  .bar {
-    display: flex;
-    align-items: center;
-    gap: 1.5rem;
-    margin-inline: auto;
-    max-width: var(--page);
-    height: 4rem;
-    padding-inline: var(--gutter);
-  }
-  /* On a phone search and the menu are a pair of squares, close together. */
-  .end {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    margin-inline-start: auto;
-  }
-  .links {
-    display: none;
-    align-items: center;
-    gap: 1.5rem;
-  }
-  .menu {
-    display: grid;
-    place-items: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    border: 1px solid var(--rule);
-    border-radius: var(--radius-control);
-    background: var(--panel);
-    color: var(--graphite);
-    cursor: pointer;
-    transition:
-      border-color 120ms var(--ease-state),
-      color 120ms var(--ease-state);
-  }
-  .menu:hover {
-    border-color: var(--graphite);
-    color: var(--paper);
-  }
-  @media (min-width: 48rem) {
-    .end {
-      gap: 1.5rem;
-    }
-    .links {
-      display: flex;
-    }
-    .menu {
-      display: none;
-    }
-  }
-</style>

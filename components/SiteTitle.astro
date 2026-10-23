@@ -1,37 +1,19 @@
 ---
-// The wordmark, as hypha.pub's: Hypha's mark, then "hypha" and, in
-// graphite, the project's Starlight title after a dot, as hypha.pub is
-// "hypha.pub".
-import mark from "../assets/hypha.webp";
+// Starlight's logo and title. With the theme's `brand`, the brand comes
+// first and the title follows it in graphite, as "hypha.solidtype".
+import config from "virtual:starlight-theme-hypha/config";
+import starlight from "virtual:starlight/user-config";
+import { logos } from "virtual:starlight/user-images";
 
 const { siteTitle, siteTitleHref } = Astro.locals.starlightRoute;
+const name = config.brand ? `${config.brand}.${siteTitle}` : siteTitle;
+// Night only: a logo given for both themes is drawn in its dark one.
+const logo = logos.dark;
 ---
 
-<a href={siteTitleHref} class="wordmark" aria-label={`hypha.${siteTitle}, home`}>
-  <img src={mark.src} alt="" width="52" height="84" />
-  <span translate="no">hypha<span class="site">.{siteTitle}</span></span>
+<a href={siteTitleHref} class="wordmark flex shrink-0 items-center gap-2 text-ink no-underline pointer-coarse:min-h-11" aria-label={`${name}, home`}>
+  {logo && <img src={logo.src} alt="" width={logo.width} height={logo.height} class="h-7 w-auto" />}
+  <span translate="no" class:list={["text-lg/none font-medium tracking-[-0.01em]", { "sr-only": starlight.logo?.replacesTitle }]}>
+    {config.brand ? (<>{config.brand}<span class="text-graphite">.{siteTitle}</span></>) : siteTitle}
+  </span>
 </a>
-
-<style>
-  .wordmark {
-    display: flex;
-    flex-shrink: 0;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--paper);
-    text-decoration: none;
-  }
-  img {
-    width: auto;
-    height: 1.75rem;
-  }
-  span {
-    font-size: 1.125rem;
-    font-weight: 500;
-    line-height: 1;
-    letter-spacing: -0.01em;
-  }
-  .site {
-    color: var(--graphite);
-  }
-</style>

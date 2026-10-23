@@ -27,33 +27,52 @@ libs/route-middleware
                     the sidebar split into tabs, where `tabs` is on
 libs/color          the night as hex, for the browser's theme-color
 libs/github         a repository's version, stars and forks, asked at build
-                    time and again in the browser
+                    time
+libs/trail          the sidebar's groups a page is in, for search's results
 components/         the parts of Starlight's page the theme takes over, and
                     its own: Links, GitHub, Tabs, PhoneNav, Icon, NamedIcon;
+                    Search, on Pagefind's index rather than its UI;
                     Hero, a landing page's opening
-styles/theme.css    the look: hypha.pub's tokens and roles on Starlight's
+styles/tokens.css   hypha.pub's system as Tailwind's theme: its roles, faces,
+                    type, grid and utilities
+styles/tailwind.css the tokens and the components, for a project's own
+                    Tailwind build
+styles/standalone.css
+                    the theme's own Tailwind build, for a project without one
+styles/theme.css    Starlight's tokens from the roles, and the parts of its
+                    page the theme does not render, in plain CSS
 styles/code-theme   hypha.pub's code theme
-assets/hypha.webp   Hypha's mark, in the wordmark
+assets/hypha.webp   Hypha's mark, for a project's Starlight `logo`
 example/            a site on the theme, for the test and a look at a change
 test/               the plugin's config, contrast, and the example's build
 ```
 
 ## Rules that must hold
 
-- **The look is hypha.pub's, copied, not imported.** Its tokens, type and
-  grid come from hypha.pub's `src/styles/site.css`; a change to the system
-  belongs there first, then here. Why: one system across Hypha's sites,
-  with hypha.pub the one that leads.
-- **A project chooses its hue, its links and its title, and nothing in the
-  theme names a project.** Why: the theme serves every project; one that
-  needs more overrides a token in its own sheet or a component in
-  Starlight's `components`, both of which win over the theme's. Symptom:
+- **The look is hypha.pub's, copied, not imported.** Its tokens, type,
+  grid and utilities come from hypha.pub's `src/styles/site.css`, into
+  `styles/tokens.css`; a change to the system belongs there first, then
+  here. Why: one system across Hypha's sites, with hypha.pub the one that
+  leads, on its way to a Hypha UI Kit.
+- **The theme is styled with Tailwind 4, as every Hypha project is.** A
+  component the theme renders takes utilities on hypha.pub's tokens, never
+  a `<style>` block; plain CSS, in `styles/theme.css`, is for the markup
+  Starlight renders itself. Why: one way of styling across the projects.
+  Symptom: `rg -l '<style' components` finds a component.
+- **A page has one Tailwind build.** The project's, which imports
+  `styles/tailwind.css`, or, where it has none, the theme's own. Why: two
+  builds each declare `hidden` again after the other's `md:flex`, and undo
+  each other.
+- **A project chooses its hue, its mark, its title and what its header
+  holds, and nothing in the theme names a project.** Why: the theme is open
+  to any Starlight site, Hypha's among them; one that needs more overrides
+  a token in its own sheet or a component in Starlight's `components`, both
+  of which win over the theme's. Symptom:
   `rg -n -i 'solidtype|heroui' index.ts libs components styles` finds a
   project's name outside a comment's example.
 - **Every colour turns on `--hue`, and its text reads at every hue.** Why: a
   project picks the hue, so no hue may make the page unreadable. Test:
-  `test/plugin.test.ts` checks graphite and paper on night across the
-  circle.
+  `test/plugin.test.ts` checks graphite and ink on ivory across the circle.
 - **The options are plain data.** A link names its icon from a fixed set
   rather than passing a component, since the options reach the components
   through a virtual module as JSON. Adding an icon is a name in

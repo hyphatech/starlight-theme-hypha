@@ -1,0 +1,150 @@
+/* hypha.pub's system as Tailwind's theme, copied from hypha.pub's
+   src/styles/site.css, where a change belongs first. Colours turn on `--hue`,
+   which the plugin sets in the page's head. Static, so every token is on
+   `:root` for a project's sheet to change. */
+
+@import "@fontsource/inter-tight/400.css";
+@import "@fontsource/inter-tight/500.css";
+@import "@fontsource-variable/roboto-slab/index.css";
+
+@theme static {
+  /* Role names: `ivory` is the ground, `ink` the text. `accent` is for
+     marks, never text: text is ink and graphite only. */
+  --color-ivory: hsl(var(--hue) 15% 5%);
+  --color-ink: hsl(var(--hue) 15% 90%);
+  --color-graphite: hsl(var(--hue) 10% 58%); /* 6.3:1 on ivory, over 5.5:1 at any hue */
+  --color-rule: hsl(var(--hue) 14% 17%);
+  --color-accent: hsl(calc(var(--hue) + 6) 72% 72%);
+
+  /* Surfaces lift the ground toward ink instead of using shadows. Mixed in
+     oklab: oklch loses the near-grey ground's hue. */
+  --color-panel: color-mix(in oklab, var(--color-ink) 4%, var(--color-ivory));
+  --color-raised: color-mix(in oklab, var(--color-ink) 7%, var(--color-ivory));
+
+  --container-page: 72rem;
+
+  --font-serif: "Roboto Slab Variable", ui-serif, Georgia, serif;
+  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
+
+  --text-2xs: 0.6875rem;
+  --text-2xs--line-height: 1.4;
+  --text-xs: 0.75rem;
+  --text-xs--line-height: 1.35;
+  --text-sm: 0.875rem;
+  --text-sm--line-height: 1.4;
+
+  --tracking-label: 0.08em;
+
+  --radius-control: 4px;
+  --radius-panel: 10px;
+
+  --ease-glide: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-state: cubic-bezier(0.4, 0, 0.2, 1);
+  --default-transition-duration: 120ms;
+  --default-transition-timing-function: var(--ease-state);
+}
+
+/* The grid. */
+:root {
+  --gutter: 1rem;
+  --margin: 11.5rem;
+  --measure: 42rem;
+  --sidebar: 12rem;
+  --column-gap: 2.5rem;
+  /* Where the navigation, the title and the contents start. */
+  --page-top: 3.5rem;
+}
+@media (width >= 40rem) {
+  :root {
+    --gutter: 1.5rem;
+  }
+}
+@media (width >= 48rem) {
+  :root {
+    --page-top: 4rem;
+  }
+}
+@media (width >= 64rem) {
+  :root {
+    --margin: calc(100% / 6);
+  }
+}
+
+/* hypha.pub's utilities. */
+
+/* Sized so a long lead title sets in two lines on a laptop. */
+@utility t-display {
+  text-wrap: balance;
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(2.375rem, 5.6vw, 4.5rem);
+  line-height: 1.03;
+  letter-spacing: -0.02em;
+}
+
+@utility t-lede {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: clamp(1.125rem, 1.6vw, 1.25rem);
+  line-height: 1.5;
+}
+
+@utility t-label {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+@utility t-control {
+  font-family: var(--font-sans);
+  font-weight: 500;
+  font-size: var(--text-sm);
+  line-height: 1.25;
+}
+
+/* hyphatech.io's buttons. The clear border keeps its edge where forced
+   colours drop the fill. */
+@utility btn-primary {
+  @apply t-control rounded-control inline-flex h-10 pointer-coarse:h-11 cursor-pointer items-center gap-2 border border-transparent bg-ink px-5 text-ivory transition-opacity hover:opacity-85;
+}
+
+@utility btn {
+  @apply t-control rounded-control inline-flex h-10 pointer-coarse:h-11 cursor-pointer items-center gap-2 border border-rule bg-panel px-5 text-graphite transition-colors hover:border-graphite hover:bg-raised hover:text-ink;
+}
+
+/* A standalone link: control height on touch, so it can be hit. */
+@utility link {
+  @apply t-control pointer-coarse:min-h-11 cursor-pointer items-center text-graphite underline decoration-graphite/50 underline-offset-4 transition-colors pointer-coarse:inline-flex hover:text-ink hover:decoration-ink;
+}
+
+/* The ring goes inside, clear of rounded corners: outside, a frame's clip
+   or the next cell's ground would hide it. */
+@utility focus-inset {
+  --ring-offset: -6px;
+}
+
+@utility nav-item {
+  @apply t-control rounded-control pointer-coarse:min-h-11 flex items-center whitespace-nowrap text-graphite transition-colors aria-[current]:bg-raised aria-[current]:text-ink not-aria-[current]:hover:bg-panel not-aria-[current]:hover:text-ink;
+}
+
+/* The theme's own. */
+
+/* A link in the header, and in a phone's row under it, its ring inside the
+   row, which scrolls and would clip it. */
+@utility bar-link {
+  @apply t-control inline-flex items-center gap-2 whitespace-nowrap text-graphite no-underline transition-colors hover:text-ink;
+}
+@utility row-link {
+  @apply nav-item gap-1.5 px-2 py-2.5 no-underline [--ring-offset:-2px] min-[22.5rem]:gap-2 min-[22.5rem]:px-3;
+}
+
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}

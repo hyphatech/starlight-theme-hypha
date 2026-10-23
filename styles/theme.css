@@ -1,100 +1,44 @@
-/* Starlight in hypha.pub's look: hyphatech.io's faces, grid and roles,
-   copied from hypha.pub's src/styles/site.css, not imported. A change to the
-   system belongs there first. Its night turns on `--hue`, which the plugin
-   sets from its `hue` option, so each project's documentation is told from
-   another's, and from the writing, at a glance. Night only, as hypha.pub.
-   Unlayered, so it wins over Starlight's own; it names Starlight's parts and
-   the page's text, never what a page's own components render. A project's
-   own sheet, after this one, may set any token below. */
+/* Starlight's tokens from tokens.css, and the parts of Starlight's page the
+   theme does not render, whose markup takes no classes. Unlayered, so it
+   wins over Starlight's own. */
 
-@import "@fontsource/inter-tight/400.css";
-@import "@fontsource/inter-tight/500.css";
-@import "@fontsource-variable/roboto-slab/index.css";
-
-/* `accent` is for marks, never text: text is ink and graphite only. */
+/* Headings' sizes, which their spacing is reckoned in. */
 :root {
-  --night: hsl(var(--hue) 15% 5%);
-  --paper: hsl(var(--hue) 15% 90%);
-  --graphite: hsl(var(--hue) 10% 58%); /* 6.3:1 on night, over 5.5:1 at any hue */
-  --rule: hsl(var(--hue) 14% 17%);
-  --accent-mark: hsl(calc(var(--hue) + 6) 72% 72%);
-  /* Surfaces lift the ground toward ink instead of using shadows. Mixed in
-     oklab: oklch loses the near-grey ground's hue. */
-  --panel: color-mix(in oklab, var(--paper) 4%, var(--night));
-  --raised: color-mix(in oklab, var(--paper) 7%, var(--night));
-
-  --font-serif: "Roboto Slab Variable", ui-serif, Georgia, serif;
-  --font-sans: "Inter Tight", ui-sans-serif, system-ui, sans-serif;
-  --font-mono: ui-monospace, "SF Mono", Menlo, monospace;
-
-  --radius-control: 4px;
-  --radius-panel: 10px;
-  --ease-state: cubic-bezier(0.4, 0, 0.2, 1);
-
-  /* The grid: the page's width, the margin that holds the navigation, the
-     measure, about 85 characters at 17px, and the column beside it. */
-  --page: 72rem;
-  --gutter: 1rem;
-  --margin: 11.5rem;
-  --measure: 42rem;
-  --sidebar: 12rem;
-  --column-gap: 2.5rem;
-  /* The one line the navigation, the title and the contents start on,
-     below the header's rule: hypha.pub's post's top on a phone, hyphatech.io's
-     section's wider, a reference wanting its first line sooner than a post. */
-  --page-top: 3.5rem;
-  /* Headings' sizes. */
   --h2: clamp(1.5rem, 2.4vw, 1.875rem);
   --h3: 1.3125rem;
 }
-@media (min-width: 40rem) {
-  :root {
-    --gutter: 1.5rem;
-  }
-}
-@media (min-width: 48rem) {
-  :root {
-    --page-top: 4rem;
-  }
-}
-@media (min-width: 64rem) {
-  :root {
-    --margin: calc(100% / 6);
-  }
-}
 
-/* Starlight's tokens, from the system's roles. Its grays run from text to
-   ground: graphite for what is secondary, rule for every line. */
+/* Starlight's grays run from text to ground. */
 :root,
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --sl-color-white: var(--paper);
-  --sl-color-gray-1: var(--paper);
-  --sl-color-gray-2: var(--paper);
-  --sl-color-gray-3: var(--graphite);
-  --sl-color-gray-4: var(--graphite);
-  --sl-color-gray-5: var(--rule);
-  --sl-color-gray-6: var(--raised);
-  --sl-color-gray-7: var(--panel);
-  --sl-color-black: var(--night);
+  --sl-color-white: var(--color-ink);
+  --sl-color-gray-1: var(--color-ink);
+  --sl-color-gray-2: var(--color-ink);
+  --sl-color-gray-3: var(--color-graphite);
+  --sl-color-gray-4: var(--color-graphite);
+  --sl-color-gray-5: var(--color-rule);
+  --sl-color-gray-6: var(--color-raised);
+  --sl-color-gray-7: var(--color-panel);
+  --sl-color-black: var(--color-ivory);
 
-  --sl-color-accent-low: var(--raised);
-  --sl-color-accent: var(--accent-mark);
-  --sl-color-accent-high: var(--paper);
+  --sl-color-accent-low: var(--color-raised);
+  --sl-color-accent: var(--color-accent);
+  --sl-color-accent-high: var(--color-ink);
 
-  --sl-color-text: var(--paper);
-  --sl-color-text-accent: var(--paper);
-  --sl-color-text-invert: var(--night);
-  --sl-color-bg: var(--night);
-  --sl-color-bg-nav: var(--night);
-  --sl-color-bg-sidebar: var(--night);
-  --sl-color-bg-inline-code: var(--raised);
-  --sl-color-bg-accent: var(--paper);
-  --sl-color-hairline-light: var(--rule);
-  --sl-color-hairline: var(--rule);
-  --sl-color-hairline-shade: var(--rule);
-  --sl-color-backdrop-overlay: color-mix(in oklab, var(--night) 80%, transparent);
+  --sl-color-text: var(--color-ink);
+  --sl-color-text-accent: var(--color-ink);
+  --sl-color-text-invert: var(--color-ivory);
+  --sl-color-bg: var(--color-ivory);
+  --sl-color-bg-nav: var(--color-ivory);
+  --sl-color-bg-sidebar: var(--color-ivory);
+  --sl-color-bg-inline-code: var(--color-raised);
+  --sl-color-bg-accent: var(--color-ink);
+  --sl-color-hairline-light: var(--color-rule);
+  --sl-color-hairline: var(--color-rule);
+  --sl-color-hairline-shade: var(--color-rule);
+  --sl-color-backdrop-overlay: color-mix(in oklab, var(--color-ivory) 80%, transparent);
 
   --sl-font: var(--font-sans);
   --sl-font-mono: var(--font-mono);
@@ -109,91 +53,43 @@
   scroll-padding-top: 2rem;
 }
 
-/* The scrollbar's room is kept from the start, so the page does not move
-   sideways when it comes. */
+/* The scrollbar's room is kept, so the page does not move sideways. */
 html {
   scrollbar-gutter: stable;
-  background: var(--night);
+  background: var(--color-ivory);
   -webkit-font-smoothing: antialiased;
-  scrollbar-color: var(--rule) var(--night);
+  scrollbar-color: var(--color-rule) var(--color-ivory);
 }
 body {
-  background: var(--night);
-  color: var(--paper);
+  background: var(--color-ivory);
+  color: var(--color-ink);
   font-family: var(--font-sans);
 }
 ::selection {
-  background: var(--accent-mark);
-  color: var(--night);
+  background: var(--color-accent);
+  color: var(--color-ivory);
 }
 :focus-visible {
-  outline: 2px solid var(--accent-mark);
-  outline-offset: 3px;
+  outline: 2px solid var(--color-accent);
+  outline-offset: var(--ring-offset, 3px);
 }
 
-/* The header: the wordmark, search a quiet field, the nav in graphite, a
-   hairline beneath, which Starlight's frame draws in the rule's colour. */
-site-search button[data-open-modal] {
-  height: 2.5rem;
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-control);
-  background: var(--panel);
-  color: var(--graphite);
-  font-size: 0.875rem;
-  font-weight: 500;
-  transition:
-    border-color 120ms var(--ease-state),
-    color 120ms var(--ease-state);
-}
-/* Wider, a field with room to read what it asks for. */
-@media (min-width: 50rem) {
-  site-search button[data-open-modal] {
-    width: 18rem;
-    max-width: none;
-  }
-}
-/* On a phone, where Starlight shows the icon alone, the same square as the
-   menu's button beside it. */
-@media (max-width: 49.99rem) {
-  site-search button[data-open-modal] {
-    justify-content: center;
-    width: 2.75rem;
-    height: 2.75rem;
-    padding: 0;
-  }
-}
-site-search button[data-open-modal]:hover {
-  border-color: var(--graphite);
-  color: var(--paper);
-}
-site-search button[data-open-modal] kbd {
-  background: var(--raised);
-  border-radius: var(--radius-control);
-}
-site-search dialog {
-  border: 1px solid var(--rule);
-  border-radius: var(--radius-panel);
-  background: var(--night);
-}
-/* A group's label as hypha.pub's labels: small capitals in graphite. Its
-   links hang from one rule, the current one marked on it in ink, as the
-   post's contents are. */
+/* The sidebar as hypha.pub's contents: labels in small capitals, links on
+   one rule, the current one marked on it. */
 .sidebar-content .group-label .large {
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--graphite);
+  color: var(--color-graphite);
 }
-/* A group's heading set at its label's size, on a line no taller than the
-   label's: its capitals then stand on the page's top line, beside the
-   title's and the contents' label. */
+/* On the page's top line, beside the title's capitals. */
 .sidebar-content summary {
   padding: 0;
   font-size: 0.75rem;
   line-height: 1.4;
-  color: var(--graphite);
+  color: var(--color-graphite);
 }
 /* Within the line, which a taller caret would stretch. */
 .sidebar-content summary .caret {
@@ -204,9 +100,7 @@ site-search dialog {
 .sidebar-content details[data-closing] > summary .caret {
   transform: none;
 }
-/* Under tabs the sidebar holds the open tab's group alone, its label the
-   tab's: the group's heading goes, and its pages start on the page's top
-   line. */
+/* Under tabs the open tab's group stands alone, without its heading. */
 .sidebar-content[data-tabbed] .top-level > li > details > summary {
   display: none;
 }
@@ -218,7 +112,7 @@ site-search dialog {
 }
 .sidebar-content ul ul {
   margin-top: 0.75rem;
-  border-inline-start: 1px solid var(--rule);
+  border-inline-start: 1px solid var(--color-rule);
 }
 .sidebar-content ul ul li {
   margin-inline-start: 0;
@@ -230,7 +124,7 @@ site-search dialog {
   border-inline-start: 1px solid transparent;
   border-radius: 0;
   padding: 0.3rem 0 0.3rem 0.75rem;
-  color: var(--graphite);
+  color: var(--color-graphite);
   font-size: 0.875rem;
   line-height: 1.4;
   transition: color 120ms var(--ease-state);
@@ -242,33 +136,32 @@ site-search dialog {
 }
 .sidebar-content a:hover,
 .sidebar-content a:focus-visible {
-  color: var(--paper);
+  color: var(--color-ink);
 }
 .sidebar-content a[aria-current="page"],
 .sidebar-content a[aria-current="page"]:hover,
 .sidebar-content a[aria-current="page"]:focus {
-  border-inline-start-color: var(--paper);
+  border-inline-start-color: var(--color-ink);
   background: none;
-  color: var(--paper);
+  color: var(--color-ink);
   font-weight: 400;
 }
 
-/* The page's contents, as hypha.pub's: a label, then the sections on a
-   rule, the one being read in ink. */
+/* The page's contents, as hypha.pub's. */
 starlight-toc h2 {
   font-family: var(--font-sans);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--graphite);
+  color: var(--color-graphite);
 }
 starlight-toc h2 {
   margin-bottom: 1rem;
   line-height: 1.4;
 }
 starlight-toc nav > ul {
-  border-inline-start: 1px solid var(--rule);
+  border-inline-start: 1px solid var(--color-rule);
 }
 starlight-toc a {
   display: block;
@@ -278,28 +171,27 @@ starlight-toc a {
   border-inline-start: 1px solid transparent;
   border-radius: 0;
   padding-block: 0.3rem;
-  color: var(--graphite);
+  color: var(--color-graphite);
   font-size: 0.8125rem;
   line-height: 1.35;
   transition: color 120ms var(--ease-state);
 }
 starlight-toc a:hover {
-  color: var(--paper);
+  color: var(--color-ink);
 }
 starlight-toc a[aria-current="true"],
 starlight-toc a[aria-current="true"]:hover {
-  border-inline-start-color: var(--paper);
-  color: var(--paper);
+  border-inline-start-color: var(--color-ink);
+  color: var(--color-ink);
 }
 
-/* The page's own text, on hypha.pub's prose: headings in the slab at its
-   regular weight, links underlined in ink, lists on a dash. Smaller than a
-   post's 19px: a reference is scanned as much as read. */
+/* The page's text, on hypha.pub's prose: smaller than a post's, a
+   reference is scanned as much as read. */
 .sl-markdown-content {
   font-size: 1.0625rem;
   line-height: 1.7;
   letter-spacing: 0.003em;
-  color: var(--paper);
+  color: var(--color-ink);
   overflow-wrap: break-word;
 }
 .sl-markdown-content p {
@@ -313,7 +205,7 @@ starlight-toc a[aria-current="true"]:hover {
   font-family: var(--font-serif);
   font-weight: 400;
   text-wrap: balance;
-  color: var(--paper);
+  color: var(--color-ink);
 }
 .sl-markdown-content h2 {
   font-size: var(--h2);
@@ -327,12 +219,9 @@ starlight-toc a[aria-current="true"]:hover {
 .sl-markdown-content h4 {
   font-size: 1.0625rem;
   font-weight: 500;
-  color: var(--paper);
+  color: var(--color-ink);
 }
-/* A heading's space is its wrapper's, which holds its anchor link: the
-   heading inside takes none, or the two would add up. Closer than a post's:
-   a reference is scanned, its sections short. More above than below, and a
-   heading straight under another close to it. */
+/* A heading's space is its wrapper's, which holds its anchor link. */
 .sl-markdown-content .sl-heading-wrapper :is(h2, h3, h4) {
   margin: 0;
 }
@@ -352,15 +241,15 @@ starlight-toc a[aria-current="true"]:hover {
   margin-top: 0.75rem;
 }
 .sl-markdown-content a:not(:where(.not-content *)) {
-  color: var(--paper);
+  color: var(--color-ink);
   text-decoration-line: underline;
-  text-decoration-color: color-mix(in oklab, var(--paper) 40%, transparent);
+  text-decoration-color: color-mix(in oklab, var(--color-ink) 40%, transparent);
   text-decoration-thickness: 1px;
   text-underline-offset: 0.2em;
   transition: text-decoration-color 120ms var(--ease-state);
 }
 .sl-markdown-content a:not(:where(.not-content *)):hover {
-  text-decoration-color: var(--paper);
+  text-decoration-color: var(--color-ink);
 }
 .sl-markdown-content strong:not(:where(.not-content *)) {
   font-weight: 500;
@@ -379,24 +268,24 @@ starlight-toc a[aria-current="true"]:hover {
   top: 0.82em;
   width: 0.45em;
   height: 1px;
-  background: var(--graphite);
+  background: var(--color-graphite);
 }
 .sl-markdown-content ol:not(:where(.not-content *)) > li::marker {
   font-family: var(--font-serif);
-  color: var(--graphite);
+  color: var(--color-graphite);
 }
 .sl-markdown-content blockquote:not(:where(.not-content *)) {
-  border-inline-start: 1px solid var(--rule);
+  border-inline-start: 1px solid var(--color-rule);
   padding-inline-start: 1.5rem;
   font-family: var(--font-serif);
   font-size: 1.1875rem;
   line-height: 1.55;
   font-style: normal;
-  color: var(--paper);
+  color: var(--color-ink);
 }
 .sl-markdown-content hr:not(:where(.not-content *)) {
   border: 0;
-  border-top: 1px solid var(--rule);
+  border-top: 1px solid var(--color-rule);
   margin-block: 2.5rem;
 }
 .sl-markdown-content :not(pre) > code:not(:where(.not-content *)) {
@@ -405,12 +294,10 @@ starlight-toc a[aria-current="true"]:hover {
   padding: 0.12em 0.36em;
   border: none;
   border-radius: var(--radius-control);
-  background: var(--raised);
+  background: var(--color-raised);
 }
 
-/* Tables ruled by row, the head in graphite, a chip kept to one line: the
-   table scrolls instead. The last column, a description where a reference
-   has one, keeps a width to read in. */
+/* Tables ruled by row; a chip stays on one line, the table scrolls. */
 .sl-markdown-content table:not(:where(.not-content *)) {
   border-collapse: collapse;
   font-size: 0.9375rem;
@@ -418,13 +305,13 @@ starlight-toc a[aria-current="true"]:hover {
 }
 .sl-markdown-content :is(th, td):not(:where(.not-content *)) {
   border: none;
-  border-bottom: 1px solid var(--rule);
+  border-bottom: 1px solid var(--color-rule);
   background: transparent;
   padding: 0.625rem 1rem 0.625rem 0;
   vertical-align: top;
 }
 .sl-markdown-content th:not(:where(.not-content *)) {
-  color: var(--graphite);
+  color: var(--color-graphite);
   font-weight: 500;
   text-align: start;
 }
@@ -444,9 +331,7 @@ starlight-toc a[aria-current="true"]:hover {
   max-width: var(--measure);
 }
 
-/* Starlight's cards as hypha.pub's panels: a panel on a rule, the title in
-   the slab, the body in graphite, an icon in graphite with no chip, and the
-   grid even, never staggered, so the cards keep the page's lines. */
+/* Starlight's cards as hypha.pub's panels, the grid never staggered. */
 .sl-markdown-content .card-grid {
   gap: 1rem;
 }
@@ -458,10 +343,10 @@ starlight-toc a[aria-current="true"]:hover {
 }
 .sl-markdown-content .card {
   gap: 0.75rem;
-  border: 1px solid var(--rule);
+  border: 1px solid var(--color-rule);
   border-radius: var(--radius-panel);
   padding: 1.5rem 1.75rem 1.75rem;
-  background: var(--panel);
+  background: var(--color-panel);
 }
 .sl-markdown-content .card .title {
   gap: 0.75rem;
@@ -470,31 +355,30 @@ starlight-toc a[aria-current="true"]:hover {
   font-weight: 400;
   line-height: 1.2;
   letter-spacing: -0.005em;
-  color: var(--paper);
+  color: var(--color-ink);
 }
 .sl-markdown-content .card .icon {
   border: none;
   padding: 0;
   background: none;
-  color: var(--graphite);
+  color: var(--color-graphite);
 }
 .sl-markdown-content .card .body {
-  color: var(--graphite);
+  color: var(--color-graphite);
   font-size: 1rem;
   line-height: 1.6;
 }
 
-/* Previous and next as hypha.pub's Read next: a panel on a rule, its title
-   in the slab, its direction a label, set apart from the text. */
+/* Previous and next as hypha.pub's Read next. */
 .pagination-links {
   margin-top: 3rem;
 }
 .pagination-links a {
-  border: 1px solid var(--rule);
+  border: 1px solid var(--color-rule);
   border-radius: var(--radius-panel);
   box-shadow: none;
   padding: 1rem 1.25rem;
-  color: var(--graphite);
+  color: var(--color-graphite);
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: 0.08em;
@@ -502,8 +386,8 @@ starlight-toc a[aria-current="true"]:hover {
   transition: background-color 120ms var(--ease-state);
 }
 .pagination-links a:hover {
-  border-color: var(--rule);
-  background: var(--panel);
+  border-color: var(--color-rule);
+  background: var(--color-panel);
 }
 .pagination-links .link-title {
   display: inline-block;
@@ -514,7 +398,7 @@ starlight-toc a[aria-current="true"]:hover {
   line-height: 1.2;
   letter-spacing: -0.005em;
   text-transform: none;
-  color: var(--paper);
+  color: var(--color-ink);
 }
 
 @media (prefers-reduced-motion: reduce) {

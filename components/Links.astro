@@ -1,22 +1,22 @@
 ---
-// The project's links, as hypha.pub's header sets its own: an icon and a
-// word, in graphite. Another site opens in a tab of its own, so the reader
-// keeps their place.
+// The project's links. One to another site opens in a new tab, so the
+// reader keeps their place.
 import config from "virtual:starlight-theme-hypha/config";
 import NamedIcon from "./NamedIcon.astro";
 
 interface Props {
-  // Each link in a list item of its own, for a list around them.
+  // Each link in a list item, in a phone's row.
   listed?: boolean;
 }
 
 const { listed = false } = Astro.props;
+const external = (href: string) => /^https?:\/\//.test(href);
 ---
 
 {
   config.links.map((link) => {
     const a = (
-      <a href={link.href} target="_blank" rel="noopener">
+      <a href={link.href} class={listed ? "row-link" : "bar-link"} {...(external(link.href) && { target: "_blank", rel: "noopener" })}>
         {link.icon && <NamedIcon name={link.icon} />}
         {link.label}
       </a>
@@ -24,21 +24,3 @@ const { listed = false } = Astro.props;
     return listed ? <li>{a}</li> : a;
   })
 }
-
-<style>
-  a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: var(--graphite);
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.25;
-    white-space: nowrap;
-    text-decoration: none;
-    transition: color 120ms var(--ease-state);
-  }
-  a:hover {
-    color: var(--paper);
-  }
-</style>

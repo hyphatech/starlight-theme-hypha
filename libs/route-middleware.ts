@@ -1,4 +1,5 @@
 import { defineRouteMiddleware, type StarlightRouteData } from "@astrojs/starlight/route-data";
+import { trail } from "./trail";
 
 type Entry = StarlightRouteData["sidebar"][number];
 
@@ -12,11 +13,12 @@ const holdsCurrent = (entry: Entry): boolean =>
 const pages = (entry: Entry): number => (entry.type === "link" ? 1 : entry.entries.reduce((n, e) => n + pages(e), 0));
 
 // The sidebar's top-level entries become the tabs, and the sidebar keeps the
-// open one's group alone, open, its label the tab's. A page in no tab, or the
-// only page of its tab, keeps no sidebar: as Zensical's, one link to the page
-// the reader is on says nothing.
+// open tab's group alone. A tab's only page has no sidebar: one link to the
+// page being read says nothing.
 export const onRequest = defineRouteMiddleware((context) => {
   const route = context.locals.starlightRoute;
+  // Read before the sidebar is cut down to one tab's, or to none.
+  context.locals.hyphaTrail = trail(route.sidebar);
   context.locals.hyphaTabs = route.sidebar.flatMap((entry: Entry) => {
     const href = firstHref(entry);
     return href === undefined ? [] : [{ label: entry.label, href, isCurrent: holdsCurrent(entry) }];

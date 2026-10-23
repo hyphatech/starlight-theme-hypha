@@ -1,7 +1,6 @@
 ---
-// hypha.pub's icon: the stroke is scaled by the size, so the line is 1.35px
-// at every size: one stroke-width rendered at three sizes has three weights
-// in it.
+// hypha.pub's icon: the stroke scaled with the size, so the line is 1.35px
+// at every size.
 import type { AstroComponent } from "@lucide/astro";
 
 interface Props {
@@ -17,10 +16,4 @@ const { icon: Drawn, size = "sm", class: className } = Astro.props;
 const px = ICON_PX[size];
 ---
 
-<Drawn size={px} stroke-width={(LINE_PX * 24) / px} aria-hidden="true" class:list={["icon", className]} />
-
-<style>
-  .icon {
-    flex-shrink: 0;
-  }
-</style>
+<Drawn size={px} stroke-width={(LINE_PX * 24) / px} aria-hidden="true" class:list={["shrink-0", className]} />

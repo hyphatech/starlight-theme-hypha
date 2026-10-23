@@ -1,9 +1,6 @@
 ---
-// A phone's second row, as hyphatech.io's: under the wordmark, between
-// rules, the sections' tabs and then the project's links and repository, the
-// open tab on `raised`. Too wide for the screen, the row scrolls under a
-// finger, with no bar drawn under it. Wider, the tabs and the header take
-// them back.
+// A phone's second row, as hyphatech.io's: the tabs, then the links and the
+// repository, the open tab on `raised`. Too wide, it scrolls under a finger.
 import config from "virtual:starlight-theme-hypha/config";
 import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
@@ -11,92 +8,29 @@ import NamedIcon from "./NamedIcon.astro";
 
 const tabs = Astro.locals.hyphaTabs ?? [];
 const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[label] : undefined);
-const shown = tabs.length > 0 || config.links.length > 0 || config.github !== undefined;
+const links = config.links.length > 0 || config.github !== undefined;
 ---
 
 {
-  shown && (
-    <nav class="phone print:hidden" aria-label="Site">
-      <ul>
+  (tabs.length > 0 || links) && (
+    <nav class="border-t border-rule md:hidden print:hidden" aria-label="Site">
+      <ul class="no-scrollbar m-0 mx-auto flex max-w-page list-none items-center gap-0.5 overflow-x-auto px-1.5 py-2 *:shrink-0 min-[22.5rem]:gap-1 min-[22.5rem]:px-2 sm:px-4">
         {tabs.map((tab) => (
           <li>
-            <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined}>
+            <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined} class="row-link">
               {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
               {tab.label}
             </a>
           </li>
         ))}
-        {tabs.length > 0 && (config.links.length > 0 || config.github) && <li class="divider" aria-hidden="true" />}
+        {tabs.length > 0 && links && <li class="mx-2 my-2.5 w-px self-stretch bg-rule" aria-hidden="true" />}
         <Links listed />
         {config.github && (
           <li>
-            <GitHub />
+            <GitHub listed />
           </li>
         )}
       </ul>
     </nav>
   )
 }
-
-<style>
-  .phone {
-    border-top: 1px solid var(--rule);
-  }
-  ul {
-    display: flex;
-    align-items: center;
-    gap: 0.25rem;
-    margin: 0;
-    padding: 0.5rem calc(var(--gutter) - 0.75rem);
-    list-style: none;
-    overflow-x: auto;
-    scrollbar-width: none;
-  }
-  ul::-webkit-scrollbar {
-    display: none;
-  }
-  ul > :global(li) {
-    flex-shrink: 0;
-  }
-  /* hyphatech.io's nav-item: a control's type, the open one on `raised`,
-     another on `panel` under the pointer. */
-  ul > :global(li > a) {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-    min-height: 2.75rem;
-    padding: 0 0.75rem;
-    border-radius: var(--radius-control);
-    color: var(--graphite);
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.25;
-    text-decoration: none;
-    white-space: nowrap;
-    transition:
-      background-color 120ms var(--ease-state),
-      color 120ms var(--ease-state);
-  }
-  ul > :global(li > a[aria-current]) {
-    background: var(--raised);
-    color: var(--paper);
-  }
-  ul > :global(li > a:not([aria-current]):hover) {
-    background: var(--panel);
-    color: var(--paper);
-  }
-  ul > :global(li > a:focus-visible) {
-    outline-offset: -2px;
-  }
-  .divider {
-    align-self: stretch;
-    width: 1px;
-    margin: 0.625rem 0.5rem;
-    background: var(--rule);
-  }
-  @media (min-width: 48rem) {
-    .phone {
-      display: none;
-    }
-  }
-</style>

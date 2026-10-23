@@ -36,10 +36,12 @@ import starlight from "@astrojs/starlight";
 import hypha from "starlight-theme-hypha";
 
 starlight({
-  title: "solidtype", // the header reads "hypha.solidtype"
+  title: "solidtype",
+  logo: { src: "starlight-theme-hypha/assets/hypha.webp" },
   plugins: [
     hypha({
       hue: 225,
+      brand: "hypha", // the header reads "hypha.solidtype"
       github: "hyphatech/solidtype",
       tabs: { "Start here": "rocket", HeroUI: "component" },
       links: [
@@ -51,32 +53,63 @@ starlight({
 });
 ```
 
+### Tailwind
+
+The theme is styled as hypha.pub is, with Tailwind 4 on hypha.pub's tokens,
+and a page has one Tailwind build. A project without Tailwind needs nothing
+more: the plugin adds Tailwind and builds the theme alone. A project on
+Tailwind builds the theme in its own sheet, with one import after Tailwind's:
+
+```css
+/* src/styles/tailwind.css, in Starlight's customCss */
+@layer base, starlight, theme, components, utilities;
+@import "@astrojs/starlight-tailwind";
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@import "starlight-theme-hypha/styles/tailwind.css";
+```
+
+That brings hypha.pub's tokens -- `bg-panel`, `text-graphite`,
+`rounded-control`, `t-label`, `nav-item` and the rest -- to the project's
+own utilities, and the theme's components into its build. Without it the
+build warns, and the theme's components go unstyled: two builds on a page
+would undo each other's utilities.
+
 ## Options
 
 | Option | Default | What it sets |
 |---|---|---|
 | `hue` | `225` | The night's hue, in degrees: every surface, line and text colour turns with it |
-| `github` | none | The repository, as `owner/name`: the header links to it with its latest version, its stars and its forks |
-| `tabs` | `false` | Each top-level entry of the sidebar a tab under the header; the sidebar shows the open tab's pages. `true`, or each tab's icon by its entry's label: `{ "Start here": "rocket", Reference: "book-open" }` |
-| `links` | `[]` | The links in the header, on a phone in its second row |
+| `brand` | none | A name before Starlight's `title`, which then follows it in graphite after a dot: `brand: "hypha"` and `title: "solidtype"` read "hypha.solidtype" |
+| `search` | `true` | Search in the header; `false` turns Starlight's Pagefind off too |
+| `github` | none | The repository, as `owner/name`, linked with its latest version, stars and forks; `{ repo: "owner/name", stats: false }` shows GitHub's mark alone and asks GitHub nothing |
+| `tabs` | `false` | The sidebar's top-level entries as tabs under the header, the sidebar showing the open tab's pages: `true`, or each tab's icon by its label, `{ "Start here": "rocket", Reference: "book-open" }` |
+| `links` | `[]` | Links at the end of the header, on a phone in its second row: `{ label, href, icon? }`. One to another site opens in a new tab |
 
-A link's or a tab's icon is lucide's, by its name, one of `archive`, `blocks`,
-`book-open`, `boxes`, `code-xml`, `component`, `compass`, `file-text`, `globe`,
-`graduation-cap`, `house`, `layers`, `library`, `list-checks`, `map`,
-`newspaper`, `play`, `puzzle`, `rocket`, `rss`, `scroll-text`, `settings`,
-`terminal` and `wrench`, or none.
+An icon is lucide's, by its name: `archive`, `blocks`, `book-open`, `boxes`,
+`code-xml`, `component`, `compass`, `file-text`, `globe`, `graduation-cap`,
+`house`, `layers`, `library`, `list-checks`, `map`, `newspaper`, `play`,
+`puzzle`, `rocket`, `rss`, `scroll-text`, `settings`, `terminal` or `wrench`.
 
-The header's wordmark is "hypha." and Starlight's own `title`.
+The header's mark and title are Starlight's own `logo` and `title`, and
+`logo.replacesTitle` hides the title. Hypha's mark comes with the theme:
+
+```js
+logo: { src: "starlight-theme-hypha/assets/hypha.webp" },
+```
 
 The repository's version, stars and forks are asked of GitHub's API as the
-site is built, so the header is drawn with them, and again by the reader's
-browser, once a session, so they stay current between builds; its version is
-the latest release's tag, or its newest tag, without a leading `v`. A build
-with `GITHUB_TOKEN` set asks with it, past GitHub's limit of sixty
-unauthenticated requests an hour.
+site is built; the reader's browser asks GitHub nothing. The build keeps the
+answer in Astro's cache: a build within the hour takes it without asking,
+and one GitHub fails takes the last answer, however old. The version is the
+latest release's tag, or the newest tag, without a leading `v`. A build with
+`GITHUB_TOKEN` set asks with it, past GitHub's sixty requests an hour.
 
-Under tabs, the only page of its tab has no sidebar, and stands where its
-neighbours do.
+Search is the theme's own panel on Starlight's Pagefind index, each result a
+heading under the groups and page it is in. The arrows choose a result,
+Enter opens it; ⌘K, Ctrl+K or `/` opens the panel, Escape closes it.
+
+Under tabs, a tab's only page has no sidebar.
 
 ## A landing page
 
@@ -101,17 +134,14 @@ hero:
 
 ## Changing more
 
-The theme's sheet comes before the project's `customCss`, so a project's sheet
-can set any of its tokens -- `--night`, `--paper`, `--graphite`, `--rule`,
-`--accent-mark`, `--panel`, `--raised`, the grid's `--page`, `--measure` and
-`--margin` -- on `:root`. A sheet that would undo the theme's -- Tailwind's, through
-`@astrojs/starlight-tailwind`, defines its own `--font-sans` -- goes before
-it: name the theme's sheet in `customCss` after it, and the plugin keeps that
-order.
-
-```js
-customCss: ["./src/tailwind.css", "starlight-theme-hypha/styles/theme.css", "./src/own.css"],
-```
+The tokens are hypha.pub's, in `styles/tokens.css`: the roles
+`--color-ivory`, `--color-ink`, `--color-graphite`, `--color-rule`,
+`--color-accent`, `--color-panel` and `--color-raised`, the faces, the type,
+`--radius-control`, `--radius-panel`, the eases, and the grid's
+`--container-page`, `--measure`, `--margin` and `--gutter`. The theme's
+sheets come before the project's `customCss`, so a project's sheet can set
+any of them on `:root`; where the project names the theme's sheet in
+`customCss`, the plugin keeps it there.
 
 A component the project overrides in Starlight's
 `components` wins over the theme's.

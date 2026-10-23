@@ -13,9 +13,11 @@ export default defineConfig({
   integrations: [
     starlight({
       title: "example",
+      logo: { src: "starlight-theme-hypha/assets/hypha.webp" },
       favicon: "/favicon-32.png",
       plugins: [
         hypha({
+          brand: "hypha",
           github: "hyphatech/starlight-theme-hypha",
           tabs: { "Start here": "rocket", Reference: "book-open" },
           links: [{ label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" }],

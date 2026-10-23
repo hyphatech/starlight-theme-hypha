@@ -1,43 +1,19 @@
 ---
-// The page and its contents, as hypha.pub sets a post and its notes: the
-// text at the measure, the contents in the column to its right where
-// hypha.pub keeps its sidenotes, from the width that has room for both.
-// Narrower, the page goes without them, as a post does.
+// The text at the measure and the page's contents beside it, where
+// hypha.pub keeps a post's sidenotes; narrower, the text alone.
 ---
 
-<div class:list={["columns", { "with-contents": Astro.locals.starlightRoute.toc }]}>
-  <div class="main-pane"><slot /></div>
+<div
+  class:list={[
+    Astro.locals.starlightRoute.toc && "xl:grid xl:grid-cols-[minmax(0,var(--measure))_var(--sidebar)] xl:gap-x-(--column-gap)",
+  ]}
+>
+  <div class="isolate min-w-0 max-w-(--measure) in-data-has-hero:max-w-none"><slot /></div>
   {
     Astro.locals.starlightRoute.toc && (
-      <aside class="contents print:hidden">
+      <aside class="hidden xl:block print:hidden">
         <slot name="right-sidebar" />
       </aside>
     )
   }
 </div>
-
-<style>
-  .main-pane {
-    min-width: 0;
-    max-width: var(--measure);
-    isolation: isolate;
-  }
-  /* A landing page is the page's whole width: its hero and its cards, its
-     text still at the measure. */
-  :global([data-has-hero]) .main-pane {
-    max-width: none;
-  }
-  .contents {
-    display: none;
-  }
-  @media (min-width: 80rem) {
-    .columns.with-contents {
-      display: grid;
-      grid-template-columns: minmax(0, var(--measure)) var(--sidebar);
-      column-gap: var(--column-gap);
-    }
-    .contents {
-      display: block;
-    }
-  }
-</style>

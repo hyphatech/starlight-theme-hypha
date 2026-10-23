@@ -1,0 +1,8 @@
+/* The theme's own Tailwind build, for a project without one. No preflight,
+   which would reset Starlight's page. */
+
+@layer base, starlight, theme, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities) source(none);
+@import "./tailwind.css";
