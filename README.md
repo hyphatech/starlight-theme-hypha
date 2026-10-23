@@ -147,3 +147,7 @@ A component the project overrides in Starlight's
 `components` wins over the theme's.
 
 The favicon is the project's: Starlight's `favicon`, from its `public/`.
+
+## Licence
+
+MIT, copyright Hypha Technologies Ltd. See [LICENSE](LICENSE).
