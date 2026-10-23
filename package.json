@@ -1,7 +1,7 @@
 {
   "name": "starlight-theme-hypha",
   "version": "0.1.0",
-  "description": "Hypha's look for Starlight: hypha.pub's grid, faces and night, for every Hypha project's documentation.",
+  "description": "Hypha's look for Starlight.",
   "license": "MIT",
   "type": "module",
   "exports": {

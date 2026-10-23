@@ -1,67 +1,36 @@
 # starlight-theme-hypha
 
-Hypha's look for [Starlight](https://starlight.astro.build): hypha.pub's grid,
-faces and night, for every Hypha project's documentation. The navigation sits
-in the page's margin, the text at its measure, the page's contents beside it,
-and code on a panel, as a post on [hypha.pub](https://hypha.pub) is set.
+Hypha's look for [Starlight](https://starlight.astro.build).
 
 ## Install
-
-From GitHub, at a tag:
 
 ```sh
 bun add github:hyphatech/starlight-theme-hypha#v0.1.0
 ```
 
-To try a change to the theme in a project before it is tagged, link it:
-
-```sh
-cd starlight-theme-hypha && bun link
-cd <project> && bun link starlight-theme-hypha
-```
-
-and, while it is linked, keep Vite on the link's path, which Astro would
-otherwise read as a path inside the project:
-
 ```js
 // astro.config.mjs
-export default defineConfig({ vite: { resolve: { preserveSymlinks: true } } });
-```
-
-Then add it to Starlight's plugins:
-
-```js
-// astro.config.mjs
+import { defineConfig } from "astro/config";
 import starlight from "@astrojs/starlight";
-import hypha from "starlight-theme-hypha";
+import starlightThemeHypha from "starlight-theme-hypha";
 
-starlight({
-  title: "solidtype",
-  logo: { src: "starlight-theme-hypha/assets/hypha.webp" },
-  plugins: [
-    hypha({
-      hue: 225,
-      brand: "hypha", // the header reads "hypha.solidtype"
-      github: "hyphatech/solidtype",
-      tabs: { "Start here": "rocket", HeroUI: "component" },
-      links: [
-        { label: "Hypha Stack", href: "https://hyphatech.io/stack", icon: "layers" },
-        { label: "GitHub", href: "https://github.com/hyphatech/solidtype", icon: "code-xml" },
-      ],
+export default defineConfig({
+  integrations: [
+    starlight({
+      title: "Docs",
+      plugins: [starlightThemeHypha()],
     }),
   ],
 });
 ```
 
-### Tailwind
+### With Tailwind
 
-The theme is styled as hypha.pub is, with Tailwind 4 on hypha.pub's tokens,
-and a page has one Tailwind build. A project without Tailwind needs nothing
-more: the plugin adds Tailwind and builds the theme alone. A project on
-Tailwind builds the theme in its own sheet, with one import after Tailwind's:
+A project without Tailwind needs nothing more. A project on Tailwind 4
+imports the theme into its own Tailwind sheet, so the page has one Tailwind
+build:
 
 ```css
-/* src/styles/tailwind.css, in Starlight's customCss */
 @layer base, starlight, theme, components, utilities;
 @import "@astrojs/starlight-tailwind";
 @import "tailwindcss/theme.css" layer(theme);
@@ -69,84 +38,89 @@ Tailwind builds the theme in its own sheet, with one import after Tailwind's:
 @import "starlight-theme-hypha/styles/tailwind.css";
 ```
 
-That brings hypha.pub's tokens -- `bg-panel`, `text-graphite`,
-`rounded-control`, `t-label`, `nav-item` and the rest -- to the project's
-own utilities, and the theme's components into its build. Without it the
-build warns, and the theme's components go unstyled: two builds on a page
-would undo each other's utilities.
+Without that import the build warns, and the theme's components go unstyled.
 
 ## Options
 
-| Option | Default | What it sets |
-|---|---|---|
-| `hue` | `225` | The night's hue, in degrees: every surface, line and text colour turns with it |
-| `brand` | none | A name before Starlight's `title`, which then follows it in graphite after a dot: `brand: "hypha"` and `title: "solidtype"` read "hypha.solidtype" |
-| `search` | `true` | Search in the header; `false` turns Starlight's Pagefind off too |
-| `github` | none | The repository, as `owner/name`, linked with its latest version, stars and forks; `{ repo: "owner/name", stats: false }` shows GitHub's mark alone and asks GitHub nothing |
-| `tabs` | `false` | The sidebar's top-level entries as tabs under the header, the sidebar showing the open tab's pages: `true`, or each tab's icon by its label, `{ "Start here": "rocket", Reference: "book-open" }` |
-| `links` | `[]` | Links at the end of the header, on a phone in its second row: `{ label, href, icon? }`. One to another site opens in a new tab |
-
-An icon is lucide's, by its name: `archive`, `blocks`, `book-open`, `boxes`,
-`code-xml`, `component`, `compass`, `file-text`, `globe`, `graduation-cap`,
-`house`, `layers`, `library`, `list-checks`, `map`, `newspaper`, `play`,
-`puzzle`, `rocket`, `rss`, `scroll-text`, `settings`, `terminal` or `wrench`.
-
-The header's mark and title are Starlight's own `logo` and `title`, and
-`logo.replacesTitle` hides the title. Hypha's mark comes with the theme:
-
 ```js
-logo: { src: "starlight-theme-hypha/assets/hypha.webp" },
+starlightThemeHypha({
+  hue: 30,
+  brand: "acme",
+  github: "acme/widgets",
+  tabs: { Guides: "book-open", Reference: "file-text" },
+  links: [{ label: "Changelog", href: "/changelog/", icon: "scroll-text" }],
+});
 ```
 
-The repository's version, stars and forks are asked of GitHub's API as the
-site is built; the reader's browser asks GitHub nothing. The build keeps the
-answer in Astro's cache: a build within the hour takes it without asking,
-and one GitHub fails takes the last answer, however old. The version is the
-latest release's tag, or the newest tag, without a leading `v`. A build with
-`GITHUB_TOKEN` set asks with it, past GitHub's sixty requests an hour.
+| Option | Default | Description |
+|---|---|---|
+| `hue` | `225` | The hue, in degrees, every colour turns with |
+| `brand` | none | A name before the site's title: `brand: "acme"` and `title: "docs"` read "acme.docs" |
+| `search` | `true` | Search in the header; `false` also turns off Starlight's Pagefind |
+| `github` | none | The repository, `owner/name`, linked with its version, stars and forks. `{ repo, stats: false }` shows the link alone |
+| `tabs` | `false` | The sidebar's top-level groups as tabs under the header: `true`, or an icon for each by its label |
+| `links` | `[]` | Links in the header: `{ label, href, icon? }`. A link to another site opens in a new tab |
 
-Search is the theme's own panel on Starlight's Pagefind index, each result a
-heading under the groups and page it is in. The arrows choose a result,
-Enter opens it; ⌘K, Ctrl+K or `/` opens the panel, Escape closes it.
+The header's logo and title are Starlight's own `logo` and `title`.
 
-Under tabs, a tab's only page has no sidebar.
+Icons are [Lucide](https://lucide.dev)'s: `archive`, `blocks`, `book-open`,
+`boxes`, `code-xml`, `component`, `compass`, `file-text`, `globe`,
+`graduation-cap`, `house`, `layers`, `library`, `list-checks`, `map`,
+`newspaper`, `play`, `puzzle`, `rocket`, `rss`, `scroll-text`, `settings`,
+`terminal` and `wrench`.
 
-## A landing page
+The repository's version, stars and forks are fetched from GitHub at build
+time and cached for an hour; if GitHub fails, the last fetched values are
+used. Set `GITHUB_TOKEN` to raise GitHub's limit.
 
-Starlight's own: a page with `template: splash` and a `hero` in its
-frontmatter, and `<CardGrid>` and `<Card>` beneath. The theme sets the hero as
-hyphatech.io opens -- the title in the slab at display size, the tagline as its
-lede, `primary` and `secondary` actions as its buttons -- and the cards as
-panels on a rule, across the page's width.
+## Search
+
+Search runs on Starlight's Pagefind index. `⌘K`, `Ctrl+K` or `/` opens it,
+the arrow keys choose a result, `Enter` opens it and `Escape` closes.
+
+## Landing page
+
+A page with `template: splash` and a `hero` gets the theme's hero, and
+Starlight's `<CardGrid>` and `<Card>` its panels.
 
 ```mdx
 ---
-title: solidtype
+title: Acme
 template: splash
 hero:
-  title: Solid, typed, for OCaml.
-  tagline: Components in OCaml's JSX, compiled as Solid compiles its own.
+  title: Widgets, documented.
+  tagline: Everything about Acme's widgets.
   actions:
-    - { text: Get started, link: /getting-started/, variant: primary, icon: right-arrow }
-    - { text: HeroUI's ports, link: /heroui/coverage/, variant: secondary }
+    - { text: Get started, link: /guides/, variant: primary, icon: right-arrow }
+    - { text: Reference, link: /reference/, variant: secondary }
 ---
 ```
 
-## Changing more
+## Customising
 
-The tokens are hypha.pub's, in `styles/tokens.css`: the roles
-`--color-ivory`, `--color-ink`, `--color-graphite`, `--color-rule`,
-`--color-accent`, `--color-panel` and `--color-raised`, the faces, the type,
-`--radius-control`, `--radius-panel`, the eases, and the grid's
-`--container-page`, `--measure`, `--margin` and `--gutter`. The theme's
-sheets come before the project's `customCss`, so a project's sheet can set
-any of them on `:root`; where the project names the theme's sheet in
-`customCss`, the plugin keeps it there.
+The theme's tokens are CSS custom properties. Set any of them on `:root` in
+a sheet in Starlight's `customCss`:
 
-A component the project overrides in Starlight's
-`components` wins over the theme's.
+| Token | Default | Used for |
+|---|---|---|
+| `--color-ivory` | `hsl(hue 15% 5%)` | The background |
+| `--color-ink` | `hsl(hue 15% 90%)` | Text |
+| `--color-graphite` | `hsl(hue 10% 58%)` | Secondary text and icons |
+| `--color-rule` | `hsl(hue 14% 17%)` | Lines and borders |
+| `--color-accent` | `hsl(hue+6 72% 72%)` | Focus, selection and search matches |
+| `--color-panel` | ink 4% over ivory | Code, cards and controls |
+| `--color-raised` | ink 7% over ivory | Inline code and the current item |
+| `--font-sans` | Inter Tight | Text |
+| `--font-serif` | Roboto Slab | Headings |
+| `--font-mono` | the system's | Code |
+| `--radius-control` | `4px` | Buttons and fields |
+| `--radius-panel` | `10px` | Panels |
+| `--container-page` | `72rem` | The page's width |
+| `--measure` | `42rem` | The text's width |
+| `--margin` | `11.5rem`, a sixth of the page from `64rem` | The navigation's column |
+| `--gutter` | `1rem`, `1.5rem` from `40rem` | The page's side padding |
 
-The favicon is the project's: Starlight's `favicon`, from its `public/`.
+A component set in Starlight's `components` overrides the theme's.
 
 ## Licence
 

@@ -1,8 +1,7 @@
 # AGENTS.md
 
-starlight-theme-hypha is a Starlight plugin: Hypha's look -- hypha.pub's grid,
-faces and night -- for every Hypha project's documentation, installed from
-GitHub at a tag. This file is for anyone changing it, human or agent. Users
+starlight-theme-hypha is a Starlight plugin, Hypha's look for any Starlight
+site, installed from GitHub at a tag. This file is for anyone changing it, human or agent. Users
 start at [README.md](README.md).
 
 ## Commands
@@ -15,6 +14,19 @@ make lint     # the plugin's types
 make build    # the example site, built into _build/example
 make preview  # the built example, served as a host would, search included
 make serve    # the example, served as it changes, without search
+```
+
+To try a change in a project before it is tagged, link it, and keep Vite on
+the link's path, which Astro would otherwise read as inside the project:
+
+```sh
+cd starlight-theme-hypha && bun link
+cd <project> && bun link starlight-theme-hypha
+```
+
+```js
+// the project's astro.config.mjs, while linked
+export default defineConfig({ vite: { resolve: { preserveSymlinks: true } } });
 ```
 
 ## Layout

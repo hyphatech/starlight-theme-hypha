@@ -18,7 +18,7 @@ test("the example builds in the theme's frame", async () => {
   expect(html).not.toContain("pagefind-ui");
   expect(html).toMatch(/<a href="\/getting-started\/"[^>]*>\s*<svg[^>]*lucide-rocket/);
   expect(html).toContain('class="hero');
-  expect(html).toContain("Every Hypha project's documentation");
+  expect(html).toContain("Hypha's look for Starlight.</h1>");
   expect(html).toContain('<meta name="theme-color" content="#0B0C0F"');
   // The theme's components in Tailwind's utilities, on hypha.pub's tokens.
   const sheets = await Promise.all(

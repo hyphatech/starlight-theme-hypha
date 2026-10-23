@@ -1,26 +1,25 @@
 ---
 title: Getting Started
-description: A Starlight site in Hypha's look, from one plugin.
+description: Hypha's look for Starlight, from one plugin.
 ---
 
-The theme sets Starlight on hypha.pub's grid: the navigation in the page's
-margin, the text at its measure, the page's contents beside it.
+The navigation sits in the page's margin, the text at its measure, and the
+page's contents beside it.
 
 ## Install
 
-Add the plugin to Starlight's own list, with the project's links.
+Add the plugin to Starlight's plugins.
 
 ```js title="astro.config.mjs"
 starlight({
-  title: "example",
-  plugins: [hypha({ links: [{ label: "GitHub", href: "https://github.com/hyphatech/example", icon: "code-xml" }] })],
+  title: "Docs",
+  plugins: [starlightThemeHypha({ github: "acme/widgets" })],
 });
 ```
 
 ### The hue
 
-The night turns on one number, `hue`, in degrees. Every surface, line and
-text colour follows it.
+Every surface, line and text colour turns on one number, `hue`, in degrees.
 
-- 225, a reference's blue, is the default.
-- Any other sets a project apart.
+- 225, a blue, is the default.
+- Any other sets a site apart.
