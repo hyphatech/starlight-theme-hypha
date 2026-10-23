@@ -3,7 +3,9 @@
 // with the navigation in its margin. On a phone the navigation is a sheet
 // over the page; Starlight's scripts find it by its id.
 import X from "@lucide/astro/icons/x";
+import config from "virtual:starlight-theme-hypha/config";
 import Icon from "./Icon.astro";
+import NamedIcon from "./NamedIcon.astro";
 import PhoneNav from "./PhoneNav.astro";
 import Tabs from "./Tabs.astro";
 
@@ -12,6 +14,9 @@ const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
 // neighbours' do.
 const navigable = hasSidebar && sidebar.length > 0;
 const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
+// The open tab, named in the sheet's bar above its pages.
+const open = Astro.locals.hyphaTabs?.find((tab) => tab.isCurrent);
+const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.label] : undefined;
 ---
 
 <div>
@@ -92,7 +97,11 @@ const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
             id="starlight__sidebar"
             class="fixed inset-0 z-(--sl-z-index-menu) m-0 h-full max-h-none w-full max-w-none overflow-y-auto border-0 bg-ivory p-0 text-inherit md:no-scrollbar md:sticky md:inset-auto md:top-0 md:z-auto md:-mx-1.5 md:block md:h-auto md:max-h-dvh md:bg-transparent md:px-1.5"
           >
-            <div class="flex h-16 items-center justify-end border-b border-rule px-(--gutter) md:hidden">
+            <div class="flex h-16 items-center justify-between gap-4 border-b border-rule px-(--gutter) md:hidden">
+              <span class="t-control flex min-w-0 items-center gap-2 text-ink">
+                {openIcon && <NamedIcon name={openIcon} />}
+                <span class="truncate">{open?.label}</span>
+              </span>
               <button
                 type="button"
                 popovertarget="starlight__sidebar"

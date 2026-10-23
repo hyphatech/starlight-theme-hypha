@@ -1,6 +1,7 @@
 ---
-// A phone's second row, as hyphatech.io's: the tabs, then the links and the
-// repository, the open tab on `raised`. Too wide, it scrolls under a finger.
+// A phone's second row, as hyphatech.io's: the tabs, the links, then the
+// repository, each set apart by a rule, the open tab on `raised`. Too wide,
+// it scrolls under a finger.
 import config from "virtual:starlight-theme-hypha/config";
 import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
@@ -8,11 +9,12 @@ import NamedIcon from "./NamedIcon.astro";
 
 const tabs = Astro.locals.hyphaTabs ?? [];
 const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[label] : undefined);
-const links = config.links.length > 0 || config.github !== undefined;
+const links = config.links.length > 0;
+const github = config.github !== undefined;
 ---
 
 {
-  (tabs.length > 0 || links) && (
+  (tabs.length > 0 || links || github) && (
     <nav class="border-t border-rule md:hidden print:hidden" aria-label="Site">
       <ul class="no-scrollbar m-0 mx-auto flex max-w-page list-none items-center gap-0.5 overflow-x-auto px-1.5 py-2 *:shrink-0 min-[22.5rem]:gap-1 min-[22.5rem]:px-2 sm:px-4">
         {tabs.map((tab) => (
@@ -23,11 +25,12 @@ const links = config.links.length > 0 || config.github !== undefined;
             </a>
           </li>
         ))}
-        {tabs.length > 0 && links && <li class="mx-2 my-2.5 w-px self-stretch bg-rule" aria-hidden="true" />}
-        <Links listed />
-        {config.github && (
+        {tabs.length > 0 && (links || github) && <li class="mx-2 my-2.5 w-px self-stretch bg-rule" aria-hidden="true" />}
+        <Links row="phone" />
+        {links && github && <li class="mx-2 my-2.5 w-px self-stretch bg-rule" aria-hidden="true" />}
+        {github && (
           <li>
-            <GitHub listed />
+            <GitHub row />
           </li>
         )}
       </ul>

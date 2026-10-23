@@ -24,7 +24,8 @@ export const configSchema = z.object({
   // The sidebar's top-level entries as tabs under the header: `true`, or
   // each tab's icon by its entry's label.
   tabs: z.union([z.boolean(), z.record(z.string(), z.enum(icons))]).default(false),
-  // Links at the end of the header. One to another site opens in a new tab.
+  // Links in the row under the header, after the tabs. One to another site
+  // opens in a new tab.
   links: z
     .array(
       z.object({

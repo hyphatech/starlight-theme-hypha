@@ -28,9 +28,13 @@ test("the example builds in the theme's frame", async () => {
   expect(css).toContain("--color-ink:");
   expect(css).toMatch(/\.max-w-page\{/);
   expect(css).toMatch(/\.row-link\{/);
-  // A tab's only page stands where its neighbours do, with no sidebar.
-  const lone = await Bun.file(new URL("../_build/example/reference/index.html", import.meta.url)).text();
+  // A tab's only page has no sidebar; a tab of two has one, named in the
+  // phone's sheet by the tab's name.
+  const lone = await Bun.file(new URL("../_build/example/getting-started/index.html", import.meta.url)).text();
   expect(lone).not.toContain('id="starlight__sidebar"');
+  const two = await Bun.file(new URL("../_build/example/reference/index.html", import.meta.url)).text();
+  expect(two).toContain('id="starlight__sidebar"');
+  expect(two).toMatch(/<span class="truncate">Reference<\/span>/);
   // Code's styles reach the page: linked, and never left in an attribute.
   const code = await Bun.file(new URL("../_build/example/getting-started/index.html", import.meta.url)).text();
   expect(code).toContain("<pre");

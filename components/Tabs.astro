@@ -1,30 +1,39 @@
 ---
-// The sidebar's top-level entries as tabs under the header, the open one
-// marked on the header's rule. A phone has them in its second row.
+// The second row: the sidebar's top-level groups as tabs, the open one
+// marked on the header's rule, and at its end the project's links, then the
+// repository past a rule. A phone has its own.
 import config from "virtual:starlight-theme-hypha/config";
+import GitHub from "./GitHub.astro";
+import Links from "./Links.astro";
 import NamedIcon from "./NamedIcon.astro";
 
 const tabs = Astro.locals.hyphaTabs ?? [];
 const icon = (label: string) => (typeof config.tabs === "object" ? config.tabs[label] : undefined);
+const links = config.links.length > 0;
+const github = config.github !== undefined;
 ---
 
 {
-  tabs.length > 0 && (
+  (tabs.length > 0 || links || github) && (
     <div class="hidden border-t border-rule md:block print:hidden">
       <nav class="mx-auto -mb-px max-w-page" aria-label="Sections">
-        <ul class="no-scrollbar m-0 flex list-none gap-6 overflow-x-auto px-(--gutter) py-0">
+        <ul class="no-scrollbar m-0 flex list-none items-center gap-6 overflow-x-auto px-(--gutter) py-0">
           {tabs.map((tab) => (
             <li class="shrink-0">
-              <a
-                href={tab.href}
-                aria-current={tab.isCurrent ? "true" : undefined}
-                class="t-control flex h-12 items-center gap-2 border-b border-transparent whitespace-nowrap text-graphite no-underline transition-colors [--ring-offset:-2px] hover:text-ink aria-[current]:border-ink aria-[current]:text-ink"
-              >
+              <a href={tab.href} aria-current={tab.isCurrent ? "true" : undefined} class="tab-link">
                 {icon(tab.label) && <NamedIcon name={icon(tab.label)!} />}
                 {tab.label}
               </a>
             </li>
           ))}
+          {(links || github) && <li class="ms-auto" aria-hidden="true" />}
+          <Links row="tabs" />
+          {links && github && <li class="h-5 w-px shrink-0 bg-rule" aria-hidden="true" />}
+          {github && (
+            <li class="flex shrink-0">
+              <GitHub />
+            </li>
+          )}
         </ul>
       </nav>
     </div>

@@ -1,12 +1,10 @@
 ---
-// The wordmark, then search and the project's links. On a phone the links
-// move to a second row, and the menu's button takes their place.
+// The wordmark, then search at the end, and on a phone the menu's button.
+// The links are in the second row.
 import Menu from "@lucide/astro/icons/menu";
 import config from "virtual:starlight-theme-hypha/config";
 import Search from "virtual:starlight/components/Search";
-import GitHub from "./GitHub.astro";
 import Icon from "./Icon.astro";
-import Links from "./Links.astro";
 import SiteTitle from "./SiteTitle.astro";
 
 const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
@@ -16,14 +14,6 @@ const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
   <SiteTitle />
   <div class="ms-auto flex items-center gap-2 md:gap-6 print:hidden">
     <Search />
-    {
-      (config.links.length > 0 || config.github) && (
-        <nav class="hidden items-center gap-6 md:flex" aria-label="Site">
-          <Links />
-          <GitHub />
-        </nav>
-      )
-    }
     {
       hasSidebar && sidebar.length > 0 && (
         <button

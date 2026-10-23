@@ -5,7 +5,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
 ## Install
 
 ```sh
-bun add github:hyphatech/starlight-theme-hypha#v0.1.0
+bun add github:hyphatech/starlight-theme-hypha#v0.1.1
 ```
 
 ```js
@@ -59,7 +59,7 @@ starlightThemeHypha({
 | `search` | `true` | Search in the header; `false` also turns off Starlight's Pagefind |
 | `github` | none | The repository, `owner/name`, linked with its version, stars and forks. `{ repo, stats: false }` shows the link alone |
 | `tabs` | `false` | The sidebar's top-level groups as tabs under the header: `true`, or an icon for each by its label |
-| `links` | `[]` | Links in the header: `{ label, href, icon? }`. A link to another site opens in a new tab |
+| `links` | `[]` | Links in the row under the header, after the tabs: `{ label, href, icon? }`. A link to another site opens in a new tab |
 
 The header's logo and title are Starlight's own `logo` and `title`.
 

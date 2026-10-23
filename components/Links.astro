@@ -5,22 +5,23 @@ import config from "virtual:starlight-theme-hypha/config";
 import NamedIcon from "./NamedIcon.astro";
 
 interface Props {
-  // Each link in a list item, in a phone's row.
-  listed?: boolean;
+  // In a row of tabs, each link in a list item.
+  row?: "tabs" | "phone";
 }
 
-const { listed = false } = Astro.props;
+const { row } = Astro.props;
+const look = { tabs: "tab-link", phone: "row-link" }[row ?? ""] ?? "bar-link";
 const external = (href: string) => /^https?:\/\//.test(href);
 ---
 
 {
   config.links.map((link) => {
     const a = (
-      <a href={link.href} class={listed ? "row-link" : "bar-link"} {...(external(link.href) && { target: "_blank", rel: "noopener" })}>
+      <a href={link.href} class={look} {...(external(link.href) && { target: "_blank", rel: "noopener" })}>
         {link.icon && <NamedIcon name={link.icon} />}
         {link.label}
       </a>
     );
-    return listed ? <li>{a}</li> : a;
+    return row ? <li class="shrink-0">{a}</li> : a;
   })
 }

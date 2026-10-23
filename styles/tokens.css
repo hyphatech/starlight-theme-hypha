@@ -138,6 +138,9 @@
 @utility bar-link {
   @apply t-control inline-flex items-center gap-2 whitespace-nowrap text-graphite no-underline transition-colors hover:text-ink;
 }
+@utility tab-link {
+  @apply t-control flex h-12 items-center gap-2 border-b border-transparent whitespace-nowrap text-graphite no-underline transition-colors [--ring-offset:-2px] hover:text-ink aria-[current]:border-ink aria-[current]:text-ink;
+}
 @utility row-link {
   @apply nav-item gap-1.5 px-2 py-2.5 no-underline [--ring-offset:-2px] min-[22.5rem]:gap-2 min-[22.5rem]:px-3;
 }
