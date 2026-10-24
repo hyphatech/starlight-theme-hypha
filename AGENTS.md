@@ -37,6 +37,7 @@ libs/vite           the options, as a virtual module the components import
 libs/route-middleware
                     the sidebar split into tabs, where `tabs` is on
 libs/color          the night as hex, for the browser's theme-color
+libs/console        a console block's copy button, copying its commands alone
 libs/github         a repository's version, stars and forks, asked at build
                     time
 libs/trail          the sidebar's groups a page is in, for search's results

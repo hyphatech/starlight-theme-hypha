@@ -1,6 +1,7 @@
 ---
 // Starlight's head, preloading the theme's faces: text set in a fallback
-// first changes width when its face comes, and the header moves.
+// first changes width when its face comes, and the header moves. Its
+// script has a console block's copy button copy the commands alone.
 import Default from "@astrojs/starlight/components/Head.astro";
 import sans400 from "@fontsource/inter-tight/files/inter-tight-latin-400-normal.woff2?url";
 import sans500 from "@fontsource/inter-tight/files/inter-tight-latin-500-normal.woff2?url";
@@ -9,3 +10,8 @@ import serif from "@fontsource-variable/roboto-slab/files/roboto-slab-latin-wght
 
 <Default />
 {[sans400, sans500, serif].map((href) => <link rel="preload" href={href} as="font" type="font/woff2" crossorigin />)}
+
+<script>
+  import { copyCommands } from "../libs/console";
+  copyCommands(document);
+</script>

@@ -50,6 +50,10 @@ test("the example builds in the theme's frame", async () => {
   expect(code).toMatch(/data-pagefind-meta="section"[^>]*>Start here</);
   expect(code).toMatch(/<link[^>]*ec\.[^>]*\.css/);
   expect(code).not.toContain("set:html");
+  // Expressive Code's <Code> renders beside the theme's options: they stay
+  // JSON, as it asks. A console block's copy text is set by the page.
+  expect(code).toContain('data-code="export const widget = () => &#x27;one&#x27;;"');
+  expect(code).toContain('querySelectorAll(`pre[data-language="console"]`)');
   // Code's "Copied" is the theme's control, ink on the raised ground.
   const ec = await Promise.all(
     [...code.matchAll(/<link[^>]*href="([^"]*ec\.[^"]+\.css)"/g)].map(([, href]) => Bun.file(new URL(`../_build/example${href}`, import.meta.url)).text()),
