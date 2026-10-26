@@ -2,6 +2,9 @@
 
 Hypha's look for [Starlight](https://starlight.astro.build).
 
+Readable at any hue, and clear of your own styles. Tabs, search and
+repository stats included.
+
 ## Getting started
 
 1. Install the theme:
@@ -55,8 +58,8 @@ starlightThemeHypha({
 | `links` | `[]` | Extra links next to the tabs: `{ label, href, icon? }`. External links open in a new tab |
 
 Set the logo and title with Starlight's `logo` and `title`. Icons are
-[Lucide](https://lucide.dev) names; see [`libs/config.ts`](libs/config.ts)
-for the list.
+[Lucide](https://lucide.dev) names, plus `starlight` for Starlight's own mark;
+see [`libs/config.ts`](libs/config.ts) for the list.
 
 GitHub stats are fetched at build time and cached for an hour. Set
 `GITHUB_TOKEN` to avoid GitHub's rate limit.

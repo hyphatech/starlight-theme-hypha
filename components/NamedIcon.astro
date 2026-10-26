@@ -29,6 +29,7 @@ import WandSparkles from "@lucide/astro/icons/wand-sparkles";
 import WavesHorizontal from "@lucide/astro/icons/waves-horizontal";
 import Wrench from "@lucide/astro/icons/wrench";
 import Zap from "@lucide/astro/icons/zap";
+import { Icon as StarlightIcon } from "@astrojs/starlight/components";
 // An icon an option names, from `icons` in libs/config.
 import type { IconName } from "../libs/config";
 import Icon from "./Icon.astro";
@@ -38,7 +39,15 @@ interface Props {
   size?: "xs" | "sm" | "md" | "lg";
 }
 
+const ICON_PX = { xs: 12, sm: 16, md: 20, lg: 24 } as const;
+const { name, size = "sm" } = Astro.props;
 const drawn = { archive: Archive, blocks: Blocks, "book-open": BookOpen, boxes: Boxes, braces: Braces, "code-xml": CodeXml, compass: Compass, component: Component, "file-text": FileText, globe: Globe, "graduation-cap": GraduationCap, house: House, layers: Layers, library: Library, "list-checks": ListChecks, map: Map, newspaper: Newspaper, play: Play, puzzle: Puzzle, rocket: Rocket, rss: Rss, "scroll-text": ScrollText, settings: Settings, "shield-check": ShieldCheck, sparkles: Sparkles, terminal: Terminal, "wand-sparkles": WandSparkles, "waves-horizontal": WavesHorizontal, wrench: Wrench, zap: Zap };
 ---
 
-<Icon icon={drawn[Astro.props.name]} size={Astro.props.size} />
+{
+  name === "starlight" ? (
+    <StarlightIcon name="starlight" size={`${ICON_PX[size]}px`} class="hypha:shrink-0" />
+  ) : (
+    <Icon icon={drawn[name]} size={size} />
+  )
+}

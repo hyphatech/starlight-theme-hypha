@@ -4,7 +4,7 @@ description: Hypha's look for Starlight.
 template: splash
 hero:
   title: Hypha's look for Starlight.
-  tagline: One plugin, with the site's own hue, links and repository.
+  tagline: Readable at any hue, and clear of your own styles. Tabs, search and repository stats included.
   actions:
     - text: Get started
       link: /getting-started/
@@ -18,16 +18,20 @@ hero:
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
 <CardGrid>
-  <Card title="One plugin" icon="puzzle">
-    Add it to Starlight's plugins.
+  <Card title="Any hue" icon="sun">
+    Set one number and every colour follows it. Text stays readable at every
+    hue.
   </Card>
-  <Card title="Any hue" icon="setting">
-    One number turns every surface, line and text colour, readable at any hue.
+  <Card title="Your styles stay yours" icon="puzzle">
+    The theme's classes and variables are prefixed, and its styles sit in their
+    own layer, so your Tailwind or design system is left alone.
   </Card>
-  <Card title="Tabs and a repository" icon="github">
-    The sidebar's groups as tabs, and the repository's version and stars in the header.
+  <Card title="Tabs and links" icon="list-format">
+    The sidebar's top-level groups become tabs, with your own links beside them
+    and your repository's version and stars in the header.
   </Card>
-  <Card title="Search" icon="magnifier">
-    The arrow keys choose a result, Enter opens it.
+  <Card title="Search from the keyboard" icon="magnifier">
+    Press ⌘K or / to search every page. Pick a result with the arrow keys and
+    press Enter to open it.
   </Card>
 </CardGrid>

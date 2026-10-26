@@ -20,7 +20,7 @@ export default defineConfig({
           brand: "hypha",
           github: "hyphatech/starlight-theme-hypha",
           tabs: { "Start here": "rocket", Reference: "book-open" },
-          links: [{ label: "Starlight", href: "https://starlight.astro.build", icon: "globe" }],
+          links: [{ label: "Starlight", href: "https://starlight.astro.build", icon: "starlight" }],
         }),
       ],
       sidebar: [
