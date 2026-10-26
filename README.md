@@ -2,51 +2,36 @@
 
 Hypha's look for [Starlight](https://starlight.astro.build).
 
-## Install
+## Getting started
 
-```sh
-bun add github:hyphatech/starlight-theme-hypha#v0.4.0
-```
+1. Install the theme:
 
-```js
-// astro.config.mjs
-import { defineConfig } from "astro/config";
-import starlight from "@astrojs/starlight";
-import starlightThemeHypha from "starlight-theme-hypha";
+   ```sh
+   bun add github:hyphatech/starlight-theme-hypha#v0.4.0
+   ```
 
-export default defineConfig({
-  integrations: [
-    starlight({
-      title: "Docs",
-      plugins: [starlightThemeHypha()],
-    }),
-  ],
-});
-```
+2. Add it to `plugins` in your `astro.config.mjs`:
 
-### Beside a project's own styles
+   ```js
+   import { defineConfig } from "astro/config";
+   import starlight from "@astrojs/starlight";
+   import starlightThemeHypha from "starlight-theme-hypha";
 
-The theme brings its own Tailwind build, every utility and every variable
-under its prefix, `hypha:` and `--hypha-`. A project on Tailwind, or with a
-design system of its own, needs nothing more: its classes and variables
-share no name with the theme's, so neither restyles the other, and the
-project's Tailwind plugin builds the theme's sheet beside its own.
+   export default defineConfig({
+     integrations: [
+       starlight({
+         title: "docs",
+         logo: { src: "./src/assets/mark.svg" },
+         plugins: [starlightThemeHypha({ hue: 30, brand: "acme" })],
+       }),
+     ],
+   });
+   ```
 
-All of the theme's styles are in its cascade layer, `hypha`, after
-Starlight's and before a project's Tailwind layers, in the order Starlight's
-guide to Tailwind gives with the theme's added:
+3. Run `bun run dev` and open <http://localhost:4321>.
 
-```css
-@layer base, starlight, hypha, theme, components, utilities;
-```
-
-So the theme restyles Starlight, and a project's styles, layered after it
-or unlayered, win over the theme's. A project that states its own order
-names `hypha` after `starlight`.
-
-A page's own block marked `not-content` -- a demo of the project's
-components, say -- is left alone by the theme's styles for the text, as by
-Starlight's.
+Next, pick your [options](#options), add a [landing page](#landing-page), or
+[customise](#customising) the styles.
 
 ## Options
 
@@ -62,35 +47,27 @@ starlightThemeHypha({
 
 | Option | Default | Description |
 |---|---|---|
-| `hue` | `225` | The hue, in degrees, every colour turns with |
-| `brand` | none | A name before the site's title: `brand: "acme"` and `title: "docs"` read "acme.docs" |
-| `search` | `true` | Search in the header; `false` also turns off Starlight's Pagefind |
-| `github` | none | The repository, `owner/name`, linked with its version, stars and forks. `{ repo, stats: false }` shows the link alone |
-| `tabs` | `false` | The sidebar's top-level groups as tabs under the header: `true`, or an icon for each by its label |
-| `links` | `[]` | Links in the row under the header, after the tabs: `{ label, href, icon? }`. A link to another site opens in a new tab |
+| `hue` | `225` | Colour hue, in degrees. All colours are based on it |
+| `brand` | none | Shown before the title: `brand: "acme"` with `title: "docs"` shows "acme.docs" |
+| `search` | `true` | Search in the header. `false` also turns off Pagefind |
+| `github` | none | Your repository, `owner/name`, shown with its version, stars and forks. Use `{ repo, stats: false }` for the link only |
+| `tabs` | `false` | Show the sidebar's top-level groups as tabs. `true`, or an icon for each group by its label |
+| `links` | `[]` | Extra links next to the tabs: `{ label, href, icon? }`. External links open in a new tab |
 
-The header's logo and title are Starlight's own `logo` and `title`.
+Set the logo and title with Starlight's `logo` and `title`. Icons are
+[Lucide](https://lucide.dev) names; see [`libs/config.ts`](libs/config.ts)
+for the list.
 
-Icons are [Lucide](https://lucide.dev)'s: `archive`, `blocks`, `book-open`,
-`boxes`, `braces`, `code-xml`, `compass`, `component`, `file-text`,
-`globe`, `graduation-cap`, `house`, `layers`, `library`, `list-checks`,
-`map`, `newspaper`, `play`, `puzzle`, `rocket`, `rss`, `scroll-text`,
-`settings`, `shield-check`, `sparkles`, `terminal`, `wand-sparkles`,
-`waves-horizontal`, `wrench` and `zap`.
+GitHub stats are fetched at build time and cached for an hour. Set
+`GITHUB_TOKEN` to avoid GitHub's rate limit.
 
-The repository's version, stars and forks are fetched from GitHub at build
-time and cached for an hour; if GitHub fails, the last fetched values are
-used. Set `GITHUB_TOKEN` to raise GitHub's limit.
-
-## Search
-
-Search runs on Starlight's Pagefind index. `⌘K`, `Ctrl+K` or `/` opens it,
-the arrow keys choose a result, `Enter` opens it and `Escape` closes.
+Open search with `⌘K`, `Ctrl+K` or `/`. In a `console` code block, the copy
+button copies only the commands, not their output.
 
 ## Landing page
 
-A page with `template: splash` and a `hero` gets the theme's hero, and
-Starlight's `<CardGrid>` and `<Card>` its panels.
+A page with `template: splash` and a `hero` uses the theme's hero. Starlight's
+`<CardGrid>` and `<Card>` are styled too.
 
 ```mdx
 ---
@@ -105,12 +82,9 @@ hero:
 ---
 ```
 
-A splash page without a `hero` opens with its own `<Landing>`, which takes
-the hero's props and holds the page's title. What it holds goes under the
-tagline, and its `aside` slot beside the text, its code as text on the page
-rather than a panel; beside an aside, the image is the mark above the title.
-`<Features>` sets `<Feature>`s three to a row, each with an icon from the
-list above and a link at its foot.
+For more control, skip `hero` and use `<Landing>`. It takes the same props,
+plus an `aside` slot for code next to the text. `<Features>` shows
+`<Feature>` cards three per row, each with an icon and a link.
 
 ````mdx
 ---
@@ -150,15 +124,9 @@ export const widget = () => "one";
 </Features>
 ````
 
-## Code
-
-A `console` block is commands, each after `$ `, and what they print; its
-copy button copies the commands alone.
-
 ## Customising
 
-The theme's tokens are CSS custom properties, each named under the theme's
-prefix. Set any of them on `:root` in a sheet in Starlight's `customCss`:
+Override any token on `:root` in a CSS file listed in Starlight's `customCss`:
 
 | Token | Default | Used for |
 |---|---|---|
@@ -179,8 +147,22 @@ prefix. Set any of them on `:root` in a sheet in Starlight's `customCss`:
 | `--hypha-margin` | `11.5rem`, a sixth of the page from `64rem` | The navigation's column |
 | `--hypha-gutter` | `1rem`, `1.5rem` from `40rem` | The page's side padding |
 
-A component set in Starlight's `components` overrides the theme's.
+To replace a component, use Starlight's `components` option.
+
+### With your own styles
+
+CSS classes and variables are prefixed, `hypha:` and `--hypha-`, so they
+won't clash with your design system. The theme's styles are in the `hypha`
+cascade layer, which comes after Starlight's and before your own styles. If
+you declare your own layer order, put `hypha` after `starlight`:
+
+```css
+@layer base, starlight, hypha, theme, components, utilities;
+```
+
+Anything inside `not-content` is left unstyled, like a demo of your own
+components.
 
 ## Licence
 
-MIT, copyright Hypha Technologies Ltd. See [LICENSE](LICENSE).
+MIT. Copyright Hypha Technologies Ltd. See [LICENSE](LICENSE).
