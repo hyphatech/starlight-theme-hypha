@@ -14,7 +14,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
   cascade layer
 - **Tabs, search and repository stats** included
 
-**[Documentation and live demo](https://hyphatech.github.io/starlight-theme-hypha/)**
+📖 **[Documentation and live demo](https://hyphatech.github.io/starlight-theme-hypha/)**
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset=".github/screenshot-dark.png">
