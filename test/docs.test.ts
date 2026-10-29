@@ -8,7 +8,9 @@ import { $ } from "bun";
 const built = (href: string) => Bun.file(new URL(`../_build/docs${href.replace(/^\/starlight-theme-hypha/, "")}`, import.meta.url)).text();
 
 test("the docs build in the theme's frame", async () => {
-  await $`bun --bun astro build --root docs`.quiet();
+  // As a host builds it: under `bun test`, NODE_ENV is `test`, which Vite
+  // builds as development, search disabled.
+  await $`bun --bun astro build --root docs`.env({ ...process.env, NODE_ENV: "production" }).quiet();
   const html = await Bun.file(new URL("../_build/docs/index.html", import.meta.url)).text();
   expect(html).toContain(":root{--hypha-hue:225;--hypha-accent-hue:231;--hypha-tint:1}");
   expect(html).toContain('aria-label="hypha.starlight, home"');
@@ -19,6 +21,9 @@ test("the docs build in the theme's frame", async () => {
   expect(html).toContain('aria-label="Sections"');
   // Search is the theme's, not Pagefind's UI; a page's groups are its trail.
   expect(html).toContain("<hypha-search");
+  // Its script works: a development build keeps the branch that disables it.
+  const search = html.match(/<script type="module" src="([^"]*Search[^"]+\.js)"/)![1]!;
+  expect(await built(search)).not.toMatch(/\.dev,\w+\.disabled=!0/);
   expect(html).not.toContain("pagefind-ui");
   expect(html).toMatch(/<a href="\/starlight-theme-hypha\/getting-started\/"[^>]*>\s*<svg[^>]*lucide-rocket/);
   expect(html).toContain('class="landing');
