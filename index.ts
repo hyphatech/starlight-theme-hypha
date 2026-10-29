@@ -3,8 +3,9 @@ import { fileURLToPath } from "node:url";
 import { ExpressiveCodeTheme } from "@astrojs/starlight/expressive-code";
 import tailwindcss from "@tailwindcss/vite";
 import type { StarlightPlugin } from "@astrojs/starlight/types";
-import { nightHex } from "./libs/color";
-import { configSchema, type HyphaThemeUserConfig } from "./libs/config";
+import { groundHex } from "./libs/color";
+import { configSchema, type HyphaThemeConfig, type HyphaThemeUserConfig } from "./libs/config";
+import { adopt, named, paletteCss } from "./libs/palettes";
 import { vitePluginHyphaTheme } from "./libs/vite";
 
 export type { HyphaThemeUserConfig };
@@ -32,10 +33,25 @@ const components = {
   TwoColumnContent: "starlight-theme-hypha/components/TwoColumnContent.astro",
 };
 
-const codeTheme = () =>
-  ExpressiveCodeTheme.fromJSONString(readFileSync(new URL("./styles/code-theme.json", import.meta.url), "utf-8"));
+const codeTheme = (file: string) => ExpressiveCodeTheme.fromJSONString(readFileSync(new URL(`./styles/${file}`, import.meta.url), "utf-8"));
 
-// Code as hypha.pub sets it: a panel on a rule, no shadow. Its styles stay
+// The palette's code themes for the site's schemes; a named palette's are
+// Shiki's, by name.
+function codeThemes({ schemes, palette }: HyphaThemeConfig) {
+  const of = (s: "dark" | "light") =>
+    palette === "hypha" ? codeTheme(s === "dark" ? "code-theme.json" : "code-theme-day.json") : named[palette].code[s];
+  return schemes.map(of);
+}
+
+// The browser's theme-color: the starting scheme's ground, or with `auto`,
+// each under its media query.
+function themeColors({ scheme, palette, hue, tint }: HyphaThemeConfig) {
+  const ground = (s: "dark" | "light") => (palette === "hypha" ? groundHex(s, hue, tint) : adopt(palette, s).ivory);
+  const meta = (s: "dark" | "light", media?: string) => ({ tag: "meta" as const, attrs: { name: "theme-color", content: ground(s), ...(media ? { media } : {}) } });
+  return scheme === "auto" ? [meta("dark", "(prefers-color-scheme: dark)"), meta("light", "(prefers-color-scheme: light)")] : [meta(scheme)];
+}
+
+// Code as Hypha sets it: a panel on a rule, no shadow. Its styles stay
 // linked: inlined, MDX's static optimisation leaves the `<style>` empty, its
 // CSS in a literal `set:html` attribute.
 const expressiveCode = {
@@ -61,6 +77,17 @@ const expressiveCode = {
       terminalBackground: "var(--hypha-color-panel)",
       tooltipSuccessBackground: "var(--hypha-color-raised)",
       tooltipSuccessForeground: "var(--hypha-color-ink)",
+    },
+    // Marked and changed lines: a wash of their tone, its rule before.
+    textMarkers: {
+      markBackground: "color-mix(in oklab, var(--hypha-tone-note) 14%, transparent)",
+      markBorderColor: "var(--hypha-tone-note)",
+      insBackground: "color-mix(in oklab, var(--hypha-tone-tip) 14%, transparent)",
+      insBorderColor: "var(--hypha-tone-tip)",
+      insDiffIndicatorColor: "var(--hypha-tone-tip)",
+      delBackground: "color-mix(in oklab, var(--hypha-tone-danger) 14%, transparent)",
+      delBorderColor: "var(--hypha-tone-danger)",
+      delDiffIndicatorColor: "var(--hypha-tone-danger)",
     },
   },
 };
@@ -97,15 +124,16 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
           components: { ...components, ...starlight.components },
           ...(config.search ? {} : { pagefind: false }),
           head: [
-            { tag: "style", content: `:root{--hypha-hue:${config.hue}}` },
-            ...(hasThemeColor ? [] : [{ tag: "meta" as const, attrs: { name: "theme-color", content: nightHex(config.hue) } }]),
+            { tag: "style", content: `:root{--hypha-hue:${config.hue};--hypha-accent-hue:${config.accent};--hypha-tint:${config.tint}}` },
+            ...(config.palette === "hypha" ? [] : [{ tag: "style" as const, content: paletteCss(config.palette) }]),
+            ...(hasThemeColor ? [] : themeColors(config)),
             ...head,
           ],
           expressiveCode:
             starlight.expressiveCode === false
               ? false
               : {
-                  themes: [codeTheme()],
+                  themes: codeThemes(config),
                   ...expressiveCode,
                   ...(typeof starlight.expressiveCode === "object" ? starlight.expressiveCode : {}),
                 },

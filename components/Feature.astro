@@ -3,6 +3,7 @@
 // read more, each a row of the grid's, so a row of cards lines up.
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import type { IconName } from "../libs/config";
+import { withBase } from "../libs/link";
 import Icon from "./Icon.astro";
 import NamedIcon from "./NamedIcon.astro";
 
@@ -29,7 +30,7 @@ const { title, icon, href, linkText = "Read more" } = Astro.props;
   <div class="hypha:self-end">
     {
       href && (
-        <a href={href} class="hypha:btn hypha:mt-2 hypha:no-underline">
+        <a href={withBase(href)} class="hypha:btn hypha:mt-2 hypha:no-underline">
           {linkText}
           <Icon icon={ArrowRight} />
         </a>

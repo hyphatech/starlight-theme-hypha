@@ -1,0 +1,72 @@
+---
+title: Landing pages
+description: A hero from the frontmatter, or a landing of your own.
+---
+
+## A hero
+
+A page with `template: splash` and a `hero` opens with the theme's hero, as
+[this site's home](/starlight-theme-hypha/) does. Starlight's `<CardGrid>` and `<Card>` below it
+are styled as panels.
+
+```mdx title="src/content/docs/index.mdx"
+---
+title: Acme
+template: splash
+hero:
+  title: Widgets, documented.
+  tagline: Everything about Acme's widgets.
+  actions:
+    - { text: Get started, link: /guides/, variant: primary, icon: right-arrow }
+    - { text: Reference, link: /reference/, variant: secondary }
+---
+```
+
+## A landing of your own
+
+Leave out `hero` and open with `<Landing>`. It takes the same title, tagline,
+image and actions, and an `aside` for code beside the text. `<Features>`
+lays `<Feature>` cards three to a row, each with an icon and a link.
+[See it on a page](/starlight-theme-hypha/landing/).
+
+````mdx title="src/content/docs/index.mdx"
+---
+title: Acme
+template: splash
+---
+
+import Landing from "starlight-theme-hypha/components/Landing.astro";
+import Features from "starlight-theme-hypha/components/Features.astro";
+import Feature from "starlight-theme-hypha/components/Feature.astro";
+import mark from "../../assets/mark.svg";
+
+<Landing
+  title="Widgets, written once."
+  tagline="Everything about Acme's widgets."
+  image={{ file: mark, alt: "Acme" }}
+  actions={[{ text: "Get started", link: "/guides/", icon: "right-arrow" }]}
+>
+
+```sh
+bun add widgets
+```
+
+<Fragment slot="aside">
+
+```js
+export const widget = () => "one";
+```
+
+</Fragment>
+</Landing>
+
+<Features>
+  <Feature title="Fast" icon="zap" href="/guides/speed/" linkText="Speed">
+    Nothing runs in the browser but search.
+  </Feature>
+</Features>
+````
+
+A feature's `icon` is one of [the theme's icons](/starlight-theme-hypha/options/#icons). Write
+links from your site's root, `/guides/`: on a site with a `base`, the theme
+puts them under it.

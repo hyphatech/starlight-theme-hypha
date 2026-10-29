@@ -1,0 +1,9 @@
+/* The site's own Tailwind, beside the theme's: unprefixed, in the layers
+   Starlight's guide names, the theme's inserted after Starlight's. No
+   preflight, which would reset Starlight's page. */
+
+@layer base, starlight, hypha, theme, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+@source "../components";

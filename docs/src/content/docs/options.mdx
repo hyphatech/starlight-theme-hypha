@@ -1,0 +1,53 @@
+---
+title: Options
+description: Every option the plugin takes.
+---
+
+import { icons } from "starlight-theme-hypha/config";
+import { paletteNames } from "starlight-theme-hypha/palettes";
+
+```js
+starlightThemeHypha({
+  palette: "catppuccin",
+  scheme: "auto",
+  brand: "acme",
+  github: "acme/widgets",
+  tabs: { Guides: "book-open", Reference: "file-text" },
+  links: [{ label: "Changelog", href: "/changelog/", icon: "scroll-text" }],
+});
+```
+
+All are optional. The plugin refuses an option it does not know the shape of
+and names it.
+
+## Colours
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `palette` | `string` | `"hypha"` | The colours, dark and light, with code themes to match: {paletteNames.map((p, i) => <span><code>{p}</code>{i < paletteNames.length - 1 && ", "}</span>)} |
+| `hue` | `number`, 0 to 360 | `225` | `hypha` only: the near-greys' hue. Alone, the accent follows it |
+| `accent` | `number`, 0 to 360 | `231` | `hypha` only: the accent's hue |
+| `tint` | `number`, 0 to 2 | `1` | `hypha` only: how much colour the greys carry; 0 is grey |
+| `scheme` | `"auto" \| "dark" \| "light"` | `"auto"` | The scheme a visit starts in; `auto` follows the visitor's system |
+| `themeSelect` | `boolean` | `true` | The header's control, for the visitor to change the scheme |
+
+See [Colours](/starlight-theme-hypha/colours/).
+
+## The header
+
+| Option | Type | Default | Description |
+|---|---|---|---|
+| `brand` | `string` | none | Before the title: `"acme"` with the title `"docs"` reads `acme.docs` |
+| `search` | `boolean` | `true` | Search in the header; `false` turns off Pagefind too |
+| `github` | `string`, or `{ repo; stats }` | none | The repository, `owner/name`, with its version, stars and forks |
+| `tabs` | `boolean`, or an icon by label | `false` | The sidebar's top-level groups as tabs under the header |
+| `links` | `{ label; href; icon? }[]` | `[]` | Links after the tabs; one to another site opens in a new tab |
+
+See [The header](/starlight-theme-hypha/header/).
+
+## Icons
+
+An icon is one of [Lucide](https://lucide.dev)'s, or `starlight`, Starlight's
+own mark:
+
+{icons.map((icon, i) => <span><code>{icon}</code>{i < icons.length - 1 ? ", " : "."}</span>)}

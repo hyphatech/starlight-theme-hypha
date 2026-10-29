@@ -1,0 +1,98 @@
+---
+title: Colours
+description: Light and dark, and the palettes that colour them.
+---
+
+import PalettePicker from "~/components/PalettePicker.astro";
+import { named } from "starlight-theme-hypha/palettes";
+
+A palette sets every colour: the ground, the text, secondary text and lines,
+an accent for focus, selection, the current place and links, and the
+green, yellow and red of asides and changed lines. It comes in a dark and a
+light scheme, with code themes to match.
+
+## Try a palette
+
+Pick one. The whole site changes, its code included, for this visit, and the
+line below is the option that gives it.
+
+<PalettePicker />
+
+## Known palettes
+
+Nine palettes people already know from their editors, adopted with their
+own code themes:
+
+```js
+starlightThemeHypha({ palette: "catppuccin" });
+```
+
+<table>
+  <thead>
+    <tr><th>Palette</th><th>Dark</th><th>Light</th></tr>
+  </thead>
+  <tbody>
+    {Object.entries(named).map(([name, { code }]) => (
+      <tr><td><code>{name}</code></td><td><code>{code.dark}</code></td><td><code>{code.light}</code></td></tr>
+    ))}
+  </tbody>
+</table>
+
+Each keeps its published colours where they read. Where one falls short of
+the theme's bar for body text, often a light scheme's text or yellow, only
+its lightness moves, as far as it must; its hue and chroma stay.
+
+## The theme's own
+
+`hypha`, the default, is the theme's own palette, turned by three numbers: a
+**hue** for the near-greys of the ground, text and lines, an **accent** hue,
+and a **tint**, how much colour the greys carry, from `0`, grey, to `2`. A
+`hue` given alone brings its accent with it, six degrees on:
+
+```js
+starlightThemeHypha({ hue: 30 }); // accent 36
+starlightThemeHypha({ hue: 160, accent: 20, tint: 1.5 });
+```
+
+The numbers turn the theme's own palette alone; a known palette has its own
+colours, and the plugin refuses them beside one.
+
+## Light and dark
+
+`scheme` is the scheme a visit starts in: `auto`, the default, follows the
+visitor's system, or `dark` or `light`. The header's control lets the
+visitor change it, and their choice is kept for the next visit; a site's
+default is never stored, so changing it reaches everyone.
+
+```js
+starlightThemeHypha({ scheme: "dark" }); // starts dark, the control can change it
+starlightThemeHypha({ themeSelect: false }); // follows the system, no control
+starlightThemeHypha({ scheme: "dark", themeSelect: false }); // always dark
+```
+
+Without the control, a choice stored on an earlier visit is ignored. Code is
+coloured for each scheme the site can show, and the browser's `theme-color`
+follows the starting scheme.
+
+## Readable at every one
+
+In both schemes, text reads at 7:1 or more on the ground and the surfaces,
+secondary text at 4.5:1, and the accent and the tones mark them at 3:1. The
+theme's own palette holds more, text at 12:1, at every hue, accent and tint
+the options take. The theme's tests check every palette.
+
+The day's accent is set at an even lightness in OKLCH, so a yellow accent is
+as dark as a blue one. It needs a browser from 2024 or later.
+
+## Your own colours
+
+To change a role rather than a palette, set its token. A token on `:root`
+changes both schemes; under `[data-theme]`, one:
+
+```css title="src/styles/custom.css"
+:root[data-theme="light"] {
+  --hypha-color-ivory: #fffdf8;
+}
+```
+
+The roles and their defaults are under [Tokens](/starlight-theme-hypha/tokens/).

@@ -1,26 +1,30 @@
 ---
 title: starlight-theme-hypha
-description: Hypha's look for Starlight.
+description: Hypha's look for Starlight, in light and dark, at any palette.
 template: splash
 hero:
   title: Hypha's look for Starlight.
-  tagline: Readable at any hue, and clear of your own styles. Tabs, search and repository stats included.
+  tagline: Light and dark, any palette, and clear of your own styles. Tabs, search and repository stats included.
   actions:
     - text: Get started
       link: /getting-started/
       variant: primary
       icon: right-arrow
-    - text: Read the options
-      link: /reference/
+    - text: Try a palette
+      link: /colours/
       variant: secondary
 ---
 
 import { Card, CardGrid } from "@astrojs/starlight/components";
 
 <CardGrid>
-  <Card title="Any hue" icon="sun">
-    Set one number and every colour follows it. Text stays readable at every
-    hue.
+  <Card title="Light and dark" icon="moon">
+    Visitors pick light, dark or their system's, from the header. Or keep
+    your site to one.
+  </Card>
+  <Card title="Any palette" icon="sun">
+    Catppuccin, Gruvbox, Rosé Pine and six more, each with its own code
+    themes, or Hypha's own at any hue. Text stays readable in every one.
   </Card>
   <Card title="Your styles stay yours" icon="puzzle">
     The theme's classes and variables are prefixed, and its styles sit in their
@@ -33,5 +37,9 @@ import { Card, CardGrid } from "@astrojs/starlight/components";
   <Card title="Search from the keyboard" icon="magnifier">
     Press ⌘K or / to search every page. Pick a result with the arrow keys and
     press Enter to open it.
+  </Card>
+  <Card title="Landing pages" icon="rocket">
+    A hero from the frontmatter, or a landing of your own with code beside it
+    and a row of features.
   </Card>
 </CardGrid>

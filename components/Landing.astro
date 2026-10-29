@@ -1,13 +1,15 @@
 ---
-// A landing page's opening, as hyphatech.io's: a display title, its tagline
+// A landing page's opening, as Hypha's: a display title, its tagline
 // as the lede, what the page puts in the slot -- an install command, say --
-// and its actions as hyphatech.io's buttons. Beside it, the page's `aside`,
+// and its actions as Hypha's buttons. Beside it, the page's `aside`,
 // or else its image as art; beside an aside, the image is the mark above
-// the title. The night is the theme's only scheme, so of a pair of images
-// the dark one shows.
+// the title. An image pair shows each in its scheme; actions from the root
+// go under the site's base.
 import { Image } from "astro:assets";
 import { Icon } from "@astrojs/starlight/components";
 import type { StarlightIcon } from "@astrojs/starlight/types";
+import config from "virtual:starlight-theme-hypha/config";
+import { withBase } from "../libs/link";
 
 interface Action {
   text: string;
@@ -35,7 +37,16 @@ const looks = {
   minimal: "hypha:link hypha:inline-flex hypha:h-10 hypha:gap-2 hypha:px-2 hypha:pointer-coarse:h-11",
 };
 
-const art = image?.file ?? image?.dark ?? image?.light;
+const pair = image?.dark && image.light && image.dark !== image.light;
+const arts = image?.file
+  ? [{ src: image.file, only: "" }]
+  : pair && config.schemes.length === 2
+    ? [
+        { src: image.dark!, only: "hypha:[[data-theme=light]_&]:hidden" },
+        { src: image.light!, only: "hypha:[[data-theme=dark]_&]:hidden" },
+      ]
+    : [image?.[config.schemes[0]] ?? image?.dark ?? image?.light].flatMap((src) => (src ? [{ src, only: "" }] : []));
+const art = arts.length > 0;
 const html = art ? undefined : image?.html;
 const artLook = "hypha:h-auto hypha:w-[min(70%,20rem)] hypha:justify-self-center hypha:lg:w-[min(100%,24rem)]";
 ---
@@ -47,7 +58,7 @@ const artLook = "hypha:h-auto hypha:w-[min(70%,20rem)] hypha:justify-self-center
   ]}
 >
   <div class="hypha:min-w-0">
-    {aside && art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" class="hypha:mb-10 hypha:h-auto hypha:w-[min(100%,20rem)]" />}
+    {aside && arts.map(({ src, only }) => <Image src={src} alt={image?.alt ?? ""} loading="eager" decoding="async" class:list={["hypha:mb-10 hypha:h-auto hypha:w-[min(100%,20rem)]", only]} />)}
     <h1
       id={PAGE_TITLE_ID}
       data-page-title
@@ -71,7 +82,7 @@ const artLook = "hypha:h-auto hypha:w-[min(70%,20rem)] hypha:justify-self-center
           {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant = "primary" }) => {
             const drawn = typeof icon === "string" ? { type: "icon" as const, name: icon } : icon;
             return (
-              <a href={link} class:list={[looks[variant], className]} {...attrs}>
+              <a href={withBase(link)} class:list={[looks[variant], className]} {...attrs}>
                 {text}
                 {drawn?.type === "icon" && <Icon name={drawn.name} size="1rem" />}
                 {drawn?.type === "raw" && <Fragment set:html={drawn.html} />}
@@ -89,7 +100,7 @@ const artLook = "hypha:h-auto hypha:w-[min(70%,20rem)] hypha:justify-self-center
       </div>
     ) : (
       <>
-        {art && <Image src={art} alt={image?.alt ?? ""} loading="eager" decoding="async" width={400} height={400} class={artLook} />}
+        {arts.map(({ src, only }) => <Image src={src} alt={image?.alt ?? ""} loading="eager" decoding="async" width={400} height={400} class:list={[artLook, only]} />)}
         {html && <div class={artLook} set:html={html} />}
       </>
     )

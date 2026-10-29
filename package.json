@@ -1,6 +1,6 @@
 {
   "name": "starlight-theme-hypha",
-  "version": "0.4.0",
+  "version": "0.5.0",
   "description": "Hypha's look for Starlight.",
   "license": "MIT",
   "type": "module",
@@ -8,6 +8,9 @@
     ".": "./index.ts",
     "./components/*": "./components/*",
     "./route-middleware": "./libs/route-middleware.ts",
+    "./config": "./libs/config.ts",
+    "./palettes": "./libs/palettes.ts",
+    "./package.json": "./package.json",
     "./styles/*": "./styles/*",
     "./assets/*": "./assets/*"
   },

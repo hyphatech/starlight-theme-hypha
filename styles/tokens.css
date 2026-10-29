@@ -1,7 +1,6 @@
-/* hypha.pub's system as Tailwind's theme, copied from hypha.pub's
-   src/styles/site.css, where a change belongs first. Built under the theme's
-   prefix, so a token is named by `--theme()` and a utility applied by its
-   prefixed name, which hypha.pub's own build has no need of. Colours turn on
+/* Hypha's design system as Tailwind's theme, kept in step with Hypha's other
+   sites. Built under the theme's prefix, so a token is named by `--theme()`
+   and a utility applied by its prefixed name. Colours turn on
    `--hypha-hue`, which the plugin sets in the page's head. Static, so every
    token is on `:root`, as `--hypha-...`, for a project's sheet to change. */
 
@@ -11,12 +10,13 @@
 
 @theme static {
   /* Role names: `ivory` is the ground, `ink` the text. `accent` is for
-     marks, never text: text is ink and graphite only. */
-  --color-ivory: hsl(var(--hypha-hue) 15% 5%);
-  --color-ink: hsl(var(--hypha-hue) 15% 90%);
-  --color-graphite: hsl(var(--hypha-hue) 10% 58%); /* 6.3:1 on ivory, over 5.5:1 at any hue */
-  --color-rule: hsl(var(--hypha-hue) 14% 17%);
-  --color-accent: hsl(calc(var(--hypha-hue) + 6) 72% 72%);
+     marks, never text: text is ink and graphite only. The night's, turned
+     by the hue, accent and tint the plugin sets in the head. */
+  --color-ivory: hsl(var(--hypha-hue) calc(15% * var(--hypha-tint, 1)) 5%);
+  --color-ink: hsl(var(--hypha-hue) calc(15% * var(--hypha-tint, 1)) 90%);
+  --color-graphite: hsl(var(--hypha-hue) calc(10% * var(--hypha-tint, 1)) 58%); /* over 4.5:1 on ivory, at any hue and tint */
+  --color-rule: hsl(var(--hypha-hue) calc(14% * var(--hypha-tint, 1)) 17%);
+  --color-accent: hsl(var(--hypha-accent-hue, calc(var(--hypha-hue) + 6)) 72% 72%);
 
   /* Surfaces lift the ground toward ink instead of using shadows. Mixed in
      oklab: oklch loses the near-grey ground's hue. */
@@ -47,6 +47,18 @@
   --default-transition-timing-function: --theme(--ease-state);
 }
 
+/* The day. The accent is set in
+   OKLCH for an even lightness at every hue. */
+@layer hypha {
+  :root[data-theme="light"] {
+    --hypha-color-ivory: hsl(var(--hypha-hue) calc(20% * var(--hypha-tint, 1)) 97.5%);
+    --hypha-color-ink: hsl(var(--hypha-hue) calc(15% * var(--hypha-tint, 1)) 12%);
+    --hypha-color-graphite: hsl(var(--hypha-hue) calc(8% * var(--hypha-tint, 1)) 36%);
+    --hypha-color-rule: hsl(var(--hypha-hue) calc(14% * var(--hypha-tint, 1)) 87%);
+    --hypha-color-accent: oklch(from hsl(var(--hypha-accent-hue, calc(var(--hypha-hue) + 6)) 72% 50%) 0.5 0.13 h);
+  }
+}
+
 /* The grid. */
 @layer hypha {
   :root {
@@ -75,7 +87,7 @@
   }
 }
 
-/* hypha.pub's utilities. */
+/* Hypha's utilities. */
 
 /* Sized so a long lead title sets in two lines on a laptop. */
 @utility t-display {
@@ -110,7 +122,7 @@
   line-height: 1.25;
 }
 
-/* hyphatech.io's buttons. The clear border keeps its edge where forced
+/* Hypha's buttons. The clear border keeps its edge where forced
    colours drop the fill. */
 @utility btn-primary {
   @apply hypha:t-control hypha:rounded-control hypha:inline-flex hypha:h-10 hypha:pointer-coarse:h-11 hypha:cursor-pointer hypha:items-center hypha:gap-2 hypha:border hypha:border-transparent hypha:bg-ink hypha:px-5 hypha:text-ivory hypha:transition-opacity hypha:hover:opacity-85;
@@ -143,7 +155,7 @@
   @apply hypha:t-control hypha:inline-flex hypha:items-center hypha:gap-2 hypha:whitespace-nowrap hypha:text-graphite hypha:no-underline hypha:transition-colors hypha:hover:text-ink;
 }
 @utility tab-link {
-  @apply hypha:t-control hypha:flex hypha:h-12 hypha:items-center hypha:gap-2 hypha:border-b hypha:border-transparent hypha:whitespace-nowrap hypha:text-graphite hypha:no-underline hypha:transition-colors hypha:[--hypha-ring-offset:-2px] hypha:hover:text-ink hypha:aria-[current]:border-ink hypha:aria-[current]:text-ink;
+  @apply hypha:t-control hypha:flex hypha:h-12 hypha:items-center hypha:gap-2 hypha:border-b hypha:border-transparent hypha:whitespace-nowrap hypha:text-graphite hypha:no-underline hypha:transition-colors hypha:[--hypha-ring-offset:-2px] hypha:hover:text-ink hypha:aria-[current]:border-accent hypha:aria-[current]:text-ink;
 }
 @utility row-link {
   @apply hypha:nav-item hypha:gap-1.5 hypha:px-2 hypha:py-2.5 hypha:no-underline hypha:[--hypha-ring-offset:-2px] hypha:min-[22.5rem]:gap-2 hypha:min-[22.5rem]:px-3;

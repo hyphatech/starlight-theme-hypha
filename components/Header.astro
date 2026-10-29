@@ -1,9 +1,10 @@
 ---
-// The wordmark, then search at the end, and on a phone the menu's button.
-// The links are in the second row.
+// The wordmark; search, the scheme's control and, on a phone, the menu at
+// the end. The links are in the second row.
 import Menu from "@lucide/astro/icons/menu";
 import config from "virtual:starlight-theme-hypha/config";
 import Search from "virtual:starlight/components/Search";
+import ThemeSelect from "virtual:starlight/components/ThemeSelect";
 import Icon from "./Icon.astro";
 import SiteTitle from "./SiteTitle.astro";
 
@@ -14,6 +15,7 @@ const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
   <SiteTitle />
   <div class="hypha:ms-auto hypha:flex hypha:items-center hypha:gap-2 hypha:md:gap-6 hypha:print:hidden">
     <Search />
+    <ThemeSelect />
     {
       hasSidebar && sidebar.length > 0 && (
         <button

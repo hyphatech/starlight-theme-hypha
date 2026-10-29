@@ -15,17 +15,17 @@ node_modules: package.json bun.lock
 	bun install --frozen-lockfile
 	@touch node_modules
 
-test: node_modules ## the plugin's options, the night's contrast at every hue, the example's build
+test: node_modules ## the options, contrast and docs' build
 	bun test test
 
 lint: node_modules ## the plugin's types
 	bunx tsc --noEmit -p .
 
-build: node_modules ## the example site, built into _build/example
-	bun --bun astro build --root example
+build: node_modules ## the docs site, built into _build/docs
+	bun --bun astro build --root docs
 
-# The built example, as a host serves it: Pagefind's index exists only in a
+# The built docs, as a host serves it: Pagefind's index exists only in a
 # build, and a page served as it changes loads its styles after its text.
-# Run from the example's own directory, where Astro finds it again.
-serve: build ## the built example, served as a host would, search included
-	cd example && bun --bun astro preview --open
+# Run from the docs' own directory, where Astro finds it again.
+serve: build ## the built docs, served as a host would, search included
+	cd docs && bun --bun astro preview --open

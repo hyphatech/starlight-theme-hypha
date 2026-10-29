@@ -1,0 +1,71 @@
+---
+title: Getting started
+description: Install the theme and add it to Starlight.
+---
+
+import { Code, Steps } from "@astrojs/starlight/components";
+import pkg from "starlight-theme-hypha/package.json";
+
+export const install = `$ bun add github:hyphatech/starlight-theme-hypha#v${pkg.version}`;
+
+The theme is a Starlight plugin. It works with any Starlight site, new or
+existing, and needs no setup beyond the plugin.
+
+## Install
+
+<Steps>
+
+1. Install the theme from GitHub, at a release's tag:
+
+   <Code lang="console" code={install} />
+
+2. Add it to `plugins` in `astro.config.mjs`:
+
+   ```js title="astro.config.mjs" ins={3,10}
+   import { defineConfig } from "astro/config";
+   import starlight from "@astrojs/starlight";
+   import starlightThemeHypha from "starlight-theme-hypha";
+
+   export default defineConfig({
+     integrations: [
+       starlight({
+         title: "docs",
+         logo: { src: "./src/assets/mark.svg" },
+         plugins: [starlightThemeHypha({ brand: "acme" })],
+       }),
+     ],
+   });
+   ```
+
+3. Start Astro and open [localhost:4321](http://localhost:4321):
+
+   ```console
+   $ bun run dev
+   astro  ready in 412 ms
+   ```
+
+</Steps>
+
+The site follows the visitor's system, light or dark, with a control in the
+header to choose. Its palette is Hypha's own.
+
+## Your mark
+
+A mark drawn for a dark ground disappears on a light one. Give Starlight one
+for each:
+
+```js title="astro.config.mjs"
+starlight({
+  logo: { dark: "./src/assets/mark.svg", light: "./src/assets/mark-dark.svg" },
+});
+```
+
+Hypha's own mark comes with the theme, as
+`starlight-theme-hypha/assets/hypha.webp` and `hypha-day.webp`.
+
+## Next
+
+- [Pick a palette](/starlight-theme-hypha/colours/), or keep the site to one scheme.
+- [Fill the header](/starlight-theme-hypha/header/): your brand, repository, tabs and links.
+- [Open with a landing page](/starlight-theme-hypha/landing-pages/).
+- [Customise](/starlight-theme-hypha/customising/) a token or a component.

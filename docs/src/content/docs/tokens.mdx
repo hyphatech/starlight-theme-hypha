@@ -1,0 +1,59 @@
+---
+title: Tokens
+description: The CSS variables a site may set.
+---
+
+Each is named under the theme's prefix. Set any of them on `:root` in a
+sheet in Starlight's `customCss`; a colour under `:root[data-theme="light"]`
+or `"dark"` changes one scheme. See [Customising](/starlight-theme-hypha/customising/).
+
+## Colours
+
+These are the theme's own palette's, where `hue`, `accent` and `tint` are its
+numbers. A known palette sets the same tokens to its own colours.
+
+| Token | Dark | Light | Used for |
+|---|---|---|---|
+| `--hypha-color-ivory` | `hsl(hue 15% 5%)` | `hsl(hue 20% 97.5%)` | The ground |
+| `--hypha-color-ink` | `hsl(hue 15% 90%)` | `hsl(hue 15% 12%)` | Text |
+| `--hypha-color-graphite` | `hsl(hue 10% 58%)` | `hsl(hue 8% 36%)` | Secondary text and icons |
+| `--hypha-color-rule` | `hsl(hue 14% 17%)` | `hsl(hue 14% 87%)` | Lines and borders |
+| `--hypha-color-accent` | `hsl(accent 72% 72%)` | `oklch(0.5 0.13 accent)` | Focus, selection, search's matches |
+| `--hypha-color-panel` | ink 4% over ivory | the same | Code, cards and controls |
+| `--hypha-color-raised` | ink 7% over ivory | the same | Inline code and the current item |
+
+The greys' saturations are the tint's share of those shown, which are at a
+tint of 1.
+
+## Tones
+
+An aside, a badge and a marked or changed line of code carry a tone: a mark
+only, on the theme's panel, with the text in ink. In the theme's own
+palette each is the accent's colour at a hue of its own, shown below; a
+known palette sets them to its own green, yellow and red.
+
+| Token | Hue | Used for |
+|---|---|---|
+| `--hypha-tone-note` | the accent | Notes, marked lines |
+| `--hypha-tone-tip` | `150` | Tips, success, added lines |
+| `--hypha-tone-caution` | `40` | Cautions |
+| `--hypha-tone-danger` | `5` | Dangers, removed lines |
+
+## Type
+
+| Token | Default | Used for |
+|---|---|---|
+| `--hypha-font-sans` | Inter Tight | Text |
+| `--hypha-font-serif` | Roboto Slab | Headings |
+| `--hypha-font-mono` | the system's | Code |
+
+## Shape and grid
+
+| Token | Default | Used for |
+|---|---|---|
+| `--hypha-radius-control` | `4px` | Buttons and fields |
+| `--hypha-radius-panel` | `10px` | Panels |
+| `--hypha-container-page` | `72rem` | The page's width |
+| `--hypha-measure` | `42rem` | The text's width |
+| `--hypha-margin` | `11.5rem`, a sixth of the page from `64rem` | The navigation's column |
+| `--hypha-gutter` | `1rem`, `1.5rem` from `40rem` | The page's side padding |

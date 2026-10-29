@@ -1,9 +1,12 @@
 import { describe, expect, test } from "bun:test";
 import hypha from "../index";
 import { onRequest } from "../libs/route-middleware";
-import { nightHex } from "../libs/color";
+import { contrast, groundHex, roles } from "../libs/color";
 import { atBuild } from "../libs/github";
 import { configSchema } from "../libs/config";
+import { adopt, bar, layers, named, paletteCss } from "../libs/palettes";
+import { fromHex, mix } from "../libs/color";
+import { withBase } from "../libs/link";
 
 // The plugin's config:setup, run against a Starlight config, returning what
 // it asked Starlight to change.
@@ -22,16 +25,45 @@ function setup(options: Parameters<typeof hypha>[0], starlight: Record<string, u
 }
 
 describe("the plugin", () => {
-  test("sets the night's hue, 225 unless given", () => {
-    expect(setup(undefined).head[0]).toEqual({ tag: "style", content: ":root{--hypha-hue:225}" });
-    expect(setup({ hue: 35 }).head[0]).toEqual({ tag: "style", content: ":root{--hypha-hue:35}" });
+  test("sets the theme's own palette's hue, accent and tint, hypha's unless given", () => {
+    const vars = (o: Parameters<typeof hypha>[0]) => setup(o).head[0];
+    expect(vars(undefined)).toEqual({ tag: "style", content: ":root{--hypha-hue:225;--hypha-accent-hue:231;--hypha-tint:1}" });
+    // A hue alone takes its accent with it, as before palettes.
+    expect(vars({ hue: 35 }).content).toBe(":root{--hypha-hue:35;--hypha-accent-hue:41;--hypha-tint:1}");
+    expect(vars({ hue: 358 }).content).toContain("--hypha-accent-hue:4;");
+    expect(vars({ accent: 200, tint: 0.5 }).content).toBe(":root{--hypha-hue:225;--hypha-accent-hue:200;--hypha-tint:0.5}");
   });
 
-  test("gives the browser the night as theme-color, unless the project does", () => {
+  test("gives a named palette's colours, in the theme's layer, and its code themes", () => {
+    const u = setup({ palette: "gruvbox" });
+    expect(u.head[1]).toEqual({ tag: "style", content: paletteCss("gruvbox") });
+    // The layers' order first, as the theme's sheet states it, or the
+    // theme's layer, named here before any sheet, would sit below Starlight's.
+    expect(u.head[1].content).toStartWith("@layer base, starlight, hypha, theme, components, utilities;@layer hypha{:root:root{--hypha-color-ivory:#282828;--hypha-color-ink:#EBDBB2;");
+    expect(u.head[1].content).toContain(":root:root[data-theme=light]{--hypha-color-ivory:#FBF1C7;");
+    expect(u.expressiveCode.themes).toEqual(["gruvbox-dark-medium", "gruvbox-light-medium"]);
+    expect(setup({ palette: "gruvbox", scheme: "light", themeSelect: false }).expressiveCode.themes).toEqual(["gruvbox-light-medium"]);
+    const meta = u.head.filter((e: any) => e.attrs?.name === "theme-color").map((m: any) => m.attrs.content);
+    expect(meta).toEqual(["#282828", "#FBF1C7"]);
+    expect(setup({}).head.filter((e: any) => e.tag === "style")).toHaveLength(1);
+  });
+
+  test("gives the browser its scheme's ground as theme-color, unless the project does", () => {
     const meta = (u: any) => u.head.filter((e: any) => e.attrs?.name === "theme-color");
-    expect(meta(setup({ hue: 225 }))).toEqual([{ tag: "meta", attrs: { name: "theme-color", content: "#0B0C0F" } }]);
+    expect(meta(setup({ hue: 225, scheme: "dark" }))).toEqual([{ tag: "meta", attrs: { name: "theme-color", content: "#0B0C0F" } }]);
+    expect(meta(setup({ hue: 225 })).map((m: any) => m.attrs.media)).toEqual(["(prefers-color-scheme: dark)", "(prefers-color-scheme: light)"]);
+    expect(meta(setup({ scheme: "light" }))[0].attrs.content).toBe(groundHex("light", 225));
     const own = { tag: "meta", attrs: { name: "theme-color", content: "#000000" } };
     expect(meta(setup({}, { head: [own] }))).toEqual([own]);
+  });
+
+  test("gives code a theme for each scheme the site has", () => {
+    const names = (o: Parameters<typeof hypha>[0]) => setup(o).expressiveCode.themes.map((t: any) => t.name);
+    expect(names({})).toEqual(["hypha-night", "hypha-day"]);
+    // A default scheme with the control still shows both.
+    expect(names({ scheme: "dark" })).toEqual(["hypha-night", "hypha-day"]);
+    expect(names({ scheme: "dark", themeSelect: false })).toEqual(["hypha-night"]);
+    expect(names({ scheme: "light", themeSelect: false })).toEqual(["hypha-day"]);
   });
 
   test("puts its sheet before the project's, and lets the project's components win", () => {
@@ -74,6 +106,15 @@ describe("the plugin", () => {
     expect(u.warnings).toEqual([]);
   });
 
+  test("starts in its scheme, and shows both where a visitor can change it or the system can", () => {
+    const schemes = (o: object) => configSchema.parse(o).schemes;
+    expect(configSchema.parse({}).themeSelect).toBe(true);
+    expect(schemes({})).toEqual(["dark", "light"]);
+    expect(schemes({ scheme: "dark" })).toEqual(["dark", "light"]);
+    expect(schemes({ themeSelect: false })).toEqual(["dark", "light"]);
+    expect(schemes({ scheme: "light", themeSelect: false })).toEqual(["light"]);
+  });
+
   test("turns Pagefind off with search", () => {
     expect(setup({ search: false }).pagefind).toBe(false);
     expect(setup({}).pagefind).toBeUndefined();
@@ -103,42 +144,95 @@ describe("the plugin", () => {
     expect(() => hypha({ github: "https://github.com/hyphatech/x" })).toThrow(/github/);
     expect(() => hypha({ tabs: { Reference: "star" as never } })).toThrow(/tabs/);
     expect(() => hypha({ hue: 400 })).toThrow(/hue/);
+    expect(() => hypha({ palette: "neon" as never })).toThrow(/palette/);
+    expect(() => hypha({ palette: "nord" as never })).toThrow(/palette/);
+    expect(() => hypha({ palette: "catppuccin", hue: 30 })).toThrow(/named palette has its own colours/);
+    expect(() => hypha({ tint: 2.5 })).toThrow(/tint/);
+    expect(() => hypha({ scheme: "dim" as never })).toThrow(/scheme/);
     expect(() => hypha({ links: [{ label: "x", href: "x", icon: "star" as never }] })).toThrow(/links/);
   });
 });
 
-// WCAG's contrast of two sRGB hex colours.
-function contrast(a: string, b: string) {
-  const lum = (hex: string) => {
-    const [r, g, bl] = [1, 3, 5].map((i) => {
-      const c = parseInt(hex.slice(i, i + 2), 16) / 255;
-      return c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-    });
-    return 0.2126 * r + 0.7152 * g + 0.0722 * bl;
-  };
-  const [hi, lo] = [lum(a), lum(b)].sort((x, y) => y - x);
-  return (hi + 0.05) / (lo + 0.05);
-}
-
-// hsl(h s% l%) as hex, as libs/color writes the night.
-function hsl(h: number, s: number, l: number) {
-  const a = s * Math.min(l, 1 - l);
-  const f = (n: number) => {
-    const k = (n + h / 30) % 12;
-    return Math.round((l - a * Math.max(-1, Math.min(k - 3, 9 - k, 1))) * 255)
-      .toString(16)
-      .padStart(2, "0");
-  };
-  return `#${f(0)}${f(8)}${f(4)}`;
-}
-
-test("the night's text reads at every hue", () => {
-  for (let h = 0; h < 360; h += 5) {
-    const night = hsl(h, 0.15, 0.05);
-    expect(night.toUpperCase()).toBe(nightHex(h));
-    expect(contrast(hsl(h, 0.1, 0.58), night)).toBeGreaterThan(5.5);
-    expect(contrast(hsl(h, 0.15, 0.9), night)).toBeGreaterThan(14);
+// Text is ink and graphite, on the ground and on the surfaces; the accent
+// marks the ground as a focus ring, and the ground is selected text on it.
+// Every hue, accent and tint a project can choose, in either scheme.
+test("the text reads in both schemes, at every hue and tint", () => {
+  for (const scheme of ["dark", "light"] as const) {
+    for (const tint of [0, 0.5, 1, 1.5, 2]) {
+      for (let hue = 0; hue < 360; hue += 5) {
+        const r = roles(scheme, hue, hue, tint);
+        for (const ground of [r.ivory, r.panel, r.raised]) {
+          expect(contrast(r.ink, ground)).toBeGreaterThan(12);
+          expect(contrast(r.graphite, ground)).toBeGreaterThan(4.5);
+        }
+        expect(contrast(r.rule, r.ivory)).toBeGreaterThan(1.15);
+      }
+    }
+    for (let accent = 0; accent < 360; accent += 3) {
+      const r = roles(scheme, 225, accent, 1);
+      expect(contrast(r.accent, r.ivory)).toBeGreaterThan(4.5);
+    }
   }
+});
+
+test("puts a root-relative link under the site's base, and no other", () => {
+  expect(withBase("/guides/", "/docs/")).toBe("/docs/guides/");
+  expect(withBase("/guides/", "/docs")).toBe("/docs/guides/");
+  expect(withBase("/docs/guides/", "/docs/")).toBe("/docs/guides/");
+  expect(withBase("/docs", "/docs/")).toBe("/docs");
+  expect(withBase("/documents/", "/docs/")).toBe("/docs/documents/");
+  expect(withBase("/guides/", "/")).toBe("/guides/");
+  for (const other of ["guides/", "../guides/", "https://x.dev/", "//x.dev/", "#top", "mailto:a@b.c"]) expect(withBase(other, "/docs/")).toBe(other);
+});
+
+// The tones of asides, badges and changed lines are the accent's colour at
+// hues of their own, in theme.css: each marks the ground and the panel it
+// sits on, in either scheme, at every hue and tint around it.
+test("the tones mark their panels in both schemes", async () => {
+  const sheet = await Bun.file(new URL("../styles/theme.css", import.meta.url)).text();
+  const hues = [...sheet.matchAll(/--hypha-tone-\w+: hsl\((\d+) 72% 72%\)/g)].map((m) => Number(m[1]));
+  expect(hues).toEqual([150, 40, 5]);
+  for (const scheme of ["dark", "light"] as const) {
+    for (const tint of [0, 1, 2]) {
+      for (let hue = 0; hue < 360; hue += 15) {
+        for (const tone of hues) {
+          const r = roles(scheme, hue, tone, tint);
+          expect(contrast(r.accent, r.panel)).toBeGreaterThan(3);
+        }
+      }
+    }
+  }
+});
+
+// A named palette, adopted, meets the same bar in both schemes: its text on
+// the ground and the surfaces, its secondary text, and its marks -- the
+// accent, the tones -- on the ground and the panel; its lines still show.
+test("every named palette reads in both schemes", () => {
+  for (const name of Object.keys(named) as (keyof typeof named)[]) {
+    for (const scheme of ["dark", "light"] as const) {
+      const r = adopt(name, scheme);
+      const ivory = fromHex(r.ivory);
+      const ink = fromHex(r.ink);
+      const grounds = [ivory, mix(ink, 0.04, ivory), mix(ink, 0.07, ivory)];
+      const least = (c: string) => Math.min(...grounds.map((g) => contrast(fromHex(c), g)));
+      expect([name, scheme, least(r.ink) >= bar.ink]).toEqual([name, scheme, true]);
+      expect([name, scheme, least(r.graphite) >= bar.graphite]).toEqual([name, scheme, true]);
+      for (const mark of [r.accent, r.tip, r.caution, r.danger]) expect([name, scheme, mark, least(mark) >= bar.mark]).toEqual([name, scheme, mark, true]);
+      expect(contrast(fromHex(r.rule), ivory)).toBeGreaterThan(1.15);
+    }
+  }
+});
+
+// Adopted, not redrawn: a palette's published colours stand where they meet
+// the bar, and a moved one keeps its hue.
+test("a named palette keeps its published colours where they read", () => {
+  expect(adopt("github", "dark")).toMatchObject({ ivory: "#0D1117", ink: "#E6EDF3", accent: "#4493F8" });
+  expect(adopt("catppuccin", "dark")).toMatchObject({ ivory: "#1E1E2E", ink: "#CDD6F4", accent: "#CBA6F7" });
+  expect(adopt("gruvbox", "light")).toMatchObject({ ivory: "#FBF1C7", ink: "#3C3836", accent: "#AF3A03" });
+});
+
+test("the night at hypha's hue is the night it was", () => {
+  expect(groundHex("dark", 225)).toBe("#0B0C0F");
 });
 
 // A selector of theme.css that reaches into a page's content below its own
@@ -183,6 +277,11 @@ test("the sheets declare only the theme's own variables", async () => {
 // Every rule of the theme's sheets is in its layer, `hypha`, so a project's
 // styles win over it; what stands outside is Tailwind's own, which the build
 // places in `hypha.theme` and `hypha.utilities`.
+test("a palette's sheet orders the layers as the theme's sheet does", async () => {
+  const standalone = await Bun.file(new URL("../styles/standalone.css", import.meta.url)).text();
+  expect(standalone).toContain(`@layer ${layers};`);
+});
+
 test("the sheets keep their rules in the theme's layer", async () => {
   for (const name of ["theme.css", "tokens.css", "standalone.css"]) {
     const sheet = (await Bun.file(new URL(`../styles/${name}`, import.meta.url)).text()).replace(/\/\*[\s\S]*?\*\//g, "");

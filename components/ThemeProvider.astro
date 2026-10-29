@@ -1,8 +1,20 @@
 ---
-// Night only, whatever a visitor chose on another site: inline, before the
-// page paints.
+// The scheme before the page paints: the visitor's stored choice where the
+// control is on, else the site's `scheme`; `auto` follows the system.
+import config from "virtual:starlight-theme-hypha/config";
 ---
 
-<script is:inline>
-  document.documentElement.dataset.theme = "dark";
+<script is:inline define:vars={{ scheme: config.scheme, remembers: config.themeSelect }}>
+  let choice = scheme;
+  if (remembers) {
+    try {
+      const stored = localStorage.getItem("starlight-theme");
+      if (stored === "auto" || stored === "light" || stored === "dark") choice = stored;
+    } catch {}
+  }
+  const light = matchMedia("(prefers-color-scheme: light)");
+  const show = () => (document.documentElement.dataset.theme = choice === "auto" ? (light.matches ? "light" : "dark") : choice);
+  show();
+  // Without the control, nothing else follows the system.
+  if (!remembers && choice === "auto") light.addEventListener("change", show);
 </script>

@@ -1,0 +1,105 @@
+---
+title: Markdown
+description: What a page's Markdown and Starlight's components look like on the theme.
+---
+
+import { Aside, Badge, Card, CardGrid, Code, FileTree, LinkCard, Steps, TabItem, Tabs } from "@astrojs/starlight/components";
+
+A page of everything a reference holds, to see the theme at once. Switch the
+scheme in the header, or [try a palette](/starlight-theme-hypha/colours/), and come back.
+
+## Text
+
+A paragraph sets at the measure, with **strong** text, _emphasis_,
+`inline code` and [a link](/starlight-theme-hypha/getting-started/).
+
+> A quote is set in the serif, on a rule.
+
+### Lists
+
+- An item
+- Another, with a [link](/starlight-theme-hypha/options/)
+  - And one inside it
+
+1. First
+2. Second
+3. Third
+
+### A table
+
+| Option | Type | Default |
+|---|---|---|
+| `palette` | `string` | `"hypha"` |
+| `scheme` | `"auto" \| "dark" \| "light"` | `"auto"` |
+| `tabs` | `boolean` | `false` |
+
+---
+
+## Code
+
+```js title="widget.js" {2}
+export const widget = () => "one";
+export const twice = (f) => () => [f(), f()];
+```
+
+<Code lang="js" code="export const widget = () => 'one';" />
+
+```console
+$ bun add widgets
+installed widgets
+```
+
+```diff lang="ts"
+-const scheme = "dark";
++const scheme = "auto";
+```
+
+## Asides
+
+<Aside>A note: what to know.</Aside>
+
+<Aside type="tip">A tip: what helps.</Aside>
+
+<Aside type="caution">A caution: what to watch.</Aside>
+
+<Aside type="danger">Danger: what breaks.</Aside>
+
+## Components
+
+<Tabs>
+  <TabItem label="bun">`bun add widgets`</TabItem>
+  <TabItem label="npm">`npm install widgets`</TabItem>
+</Tabs>
+
+<Steps>
+
+1. Install it.
+2. Add it to the plugins.
+3. Build.
+
+</Steps>
+
+<FileTree>
+
+- astro.config.mjs
+- src
+  - content
+    - docs
+      - **index.mdx**
+  - styles/
+    - custom.css
+
+</FileTree>
+
+Badges: <Badge text="New" /> <Badge text="Tip" variant="tip" /> <Badge text="Caution" variant="caution" />
+
+<CardGrid>
+  <Card title="A card" icon="puzzle">
+    A panel on a rule.
+  </Card>
+  <Card title="Another" icon="rocket">
+    Two to a row.
+  </Card>
+</CardGrid>
+
+<LinkCard title="Getting started" href="/starlight-theme-hypha/getting-started/" description="Install the theme." />

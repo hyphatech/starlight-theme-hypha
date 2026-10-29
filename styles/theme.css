@@ -10,9 +10,10 @@
     --hypha-h3: 1.3125rem;
   }
 
-  /* Starlight's grays run from text to ground. */
+  /* Starlight's grays run from text to ground, in either scheme. */
   :root,
-  :root[data-theme="dark"] {
+  :root[data-theme="dark"],
+  :root[data-theme="light"] {
     color-scheme: dark;
 
     --sl-color-white: var(--hypha-color-ink);
@@ -53,6 +54,9 @@
     --sl-mobile-toc-height: 0rem;
     --sl-main-pad: 0;
   }
+  :root[data-theme="light"] {
+    color-scheme: light;
+  }
   :root:has(.site-header .site-phone-nav) {
     --sl-nav-height: calc(4rem + 1px + 3.5rem + 1px);
   }
@@ -86,7 +90,7 @@
     outline-offset: var(--hypha-ring-offset, 3px);
   }
 
-  /* The sidebar as hypha.pub's contents: labels in small capitals, links on
+  /* The sidebar as Hypha's contents: labels in small capitals, links on
      one rule, the current one marked on it. */
   .sidebar-content .group-label .large {
     font-family: var(--hypha-font-sans);
@@ -153,13 +157,13 @@
   .sidebar-content a[aria-current="page"],
   .sidebar-content a[aria-current="page"]:hover,
   .sidebar-content a[aria-current="page"]:focus {
-    border-inline-start-color: var(--hypha-color-ink);
+    border-inline-start-color: var(--hypha-color-accent);
     background: none;
     color: var(--hypha-color-ink);
     font-weight: 400;
   }
 
-  /* The page's contents, as hypha.pub's. */
+  /* The page's contents, as Hypha's. */
   starlight-toc h2 {
     font-family: var(--hypha-font-sans);
     font-size: 0.75rem;
@@ -193,12 +197,12 @@
   }
   starlight-toc a[aria-current="true"],
   starlight-toc a[aria-current="true"]:hover {
-    border-inline-start-color: var(--hypha-color-ink);
+    border-inline-start-color: var(--hypha-color-accent);
     color: var(--hypha-color-ink);
   }
 
-  /* The page's text, on hypha.pub's prose: smaller than a post's, a
-     reference is scanned as much as read. */
+  /* The page's text, on Hypha's prose, a size down: a reference is scanned
+     as much as read. */
   .sl-markdown-content {
     font-size: 1.0625rem;
     line-height: 1.7;
@@ -255,13 +259,13 @@
   .sl-markdown-content a:not(:where(.not-content *)) {
     color: var(--hypha-color-ink);
     text-decoration-line: underline;
-    text-decoration-color: color-mix(in oklab, var(--hypha-color-ink) 40%, transparent);
+    text-decoration-color: color-mix(in oklab, var(--hypha-color-accent) 60%, transparent);
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2em;
     transition: text-decoration-color 120ms var(--hypha-ease-state);
   }
   .sl-markdown-content a:not(:where(.not-content *)):hover {
-    text-decoration-color: var(--hypha-color-ink);
+    text-decoration-color: var(--hypha-color-accent);
   }
   .sl-markdown-content strong:not(:where(.not-content *)) {
     font-weight: 500;
@@ -343,7 +347,7 @@
     max-width: var(--hypha-measure);
   }
 
-  /* Code's "Copied" as one of hypha.pub's controls, not a tooltip. */
+  /* Code's "Copied" as one of Hypha's controls, not a tooltip. */
   .expressive-code .copy .feedback {
     border: 1px solid var(--hypha-color-rule);
     border-radius: var(--hypha-radius-control);
@@ -383,7 +387,7 @@
     font-size: 0.8125rem;
   }
 
-  /* Starlight's cards as hypha.pub's panels, the grid never staggered. */
+  /* Starlight's cards as Hypha's panels, the grid never staggered. */
   .sl-markdown-content .card-grid:not(:where(.not-content *)) {
     gap: 1rem;
   }
@@ -421,7 +425,103 @@
     line-height: 1.6;
   }
 
-  /* Previous and next as hypha.pub's Read next. */
+  /* Tones mark asides, badges and changed lines: the accent's colour at
+     their own hues. Marks only; text stays ink. */
+  :root {
+    --hypha-tone-note: var(--hypha-color-accent);
+    --hypha-tone-tip: hsl(150 72% 72%);
+    --hypha-tone-caution: hsl(40 72% 72%);
+    --hypha-tone-danger: hsl(5 72% 72%);
+  }
+  :root[data-theme="light"] {
+    --hypha-tone-tip: oklch(from hsl(150 72% 50%) 0.5 0.13 h);
+    --hypha-tone-caution: oklch(from hsl(40 72% 50%) 0.5 0.13 h);
+    --hypha-tone-danger: oklch(from hsl(5 72% 50%) 0.5 0.13 h);
+  }
+
+  /* Asides as panels, the tone in the icon and the leading rule. */
+  .starlight-aside {
+    --sl-color-asides-text-accent: var(--hypha-color-ink);
+    border: 1px solid var(--hypha-color-rule);
+    border-inline-start: 2px solid var(--sl-color-asides-border);
+    border-radius: 0 var(--hypha-radius-panel) var(--hypha-radius-panel) 0;
+    padding: 1rem 1.25rem;
+    background: var(--hypha-color-panel);
+    color: var(--hypha-color-ink);
+  }
+  .starlight-aside--note {
+    --sl-color-asides-border: var(--hypha-tone-note);
+  }
+  .starlight-aside--tip {
+    --sl-color-asides-border: var(--hypha-tone-tip);
+  }
+  .starlight-aside--caution {
+    --sl-color-asides-border: var(--hypha-tone-caution);
+  }
+  .starlight-aside--danger {
+    --sl-color-asides-border: var(--hypha-tone-danger);
+  }
+  .starlight-aside__title {
+    font-family: var(--hypha-font-sans);
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--hypha-color-ink);
+  }
+  .starlight-aside__icon {
+    font-size: 1.25rem;
+    color: var(--sl-color-asides-border);
+  }
+  .starlight-aside__content a {
+    text-decoration-color: color-mix(in oklab, var(--hypha-color-ink) 40%, transparent);
+  }
+
+  /* Badges as chips, the tone in the border. */
+  :root {
+    --sl-badge-default-border: var(--hypha-color-rule);
+    --sl-badge-note-border: var(--hypha-tone-note);
+    --sl-badge-tip-border: var(--hypha-tone-tip);
+    --sl-badge-success-border: var(--hypha-tone-tip);
+    --sl-badge-caution-border: var(--hypha-tone-caution);
+    --sl-badge-danger-border: var(--hypha-tone-danger);
+  }
+  :root,
+  :root[data-theme="light"] {
+    --sl-badge-default-bg: var(--hypha-color-panel);
+    --sl-badge-note-bg: var(--hypha-color-panel);
+    --sl-badge-tip-bg: var(--hypha-color-panel);
+    --sl-badge-success-bg: var(--hypha-color-panel);
+    --sl-badge-caution-bg: var(--hypha-color-panel);
+    --sl-badge-danger-bg: var(--hypha-color-panel);
+    --sl-badge-default-text: var(--hypha-color-ink);
+    --sl-badge-note-text: var(--hypha-color-ink);
+    --sl-badge-tip-text: var(--hypha-color-ink);
+    --sl-badge-success-text: var(--hypha-color-ink);
+    --sl-badge-caution-text: var(--hypha-color-ink);
+    --sl-badge-danger-text: var(--hypha-color-ink);
+  }
+  .sl-badge {
+    border-radius: var(--hypha-radius-control);
+    font-family: var(--hypha-font-sans);
+    font-weight: 500;
+  }
+
+  /* A file tree as a code panel. */
+  starlight-file-tree {
+    border: 1px solid var(--hypha-color-rule);
+    border-radius: var(--hypha-radius-panel);
+    padding: 1rem 1.25rem;
+    background: var(--hypha-color-panel);
+    font-family: var(--hypha-font-mono);
+  }
+  starlight-file-tree .highlight {
+    border-radius: var(--hypha-radius-control);
+    color: var(--hypha-color-ink);
+    background: var(--hypha-color-raised);
+  }
+
+  /* Previous and next as Hypha's Read next. */
   .pagination-links {
     margin-top: 3rem;
   }

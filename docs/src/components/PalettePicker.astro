@@ -1,0 +1,131 @@
+---
+// Tries a palette on the whole site for the visit, and shows the option that
+// gives it. Styled in the site's own Tailwind, on the theme's tokens.
+import { hypha, named, paletteCss, paletteNames, swatch, type NamedPalette } from "starlight-theme-hypha/palettes";
+
+const css = Object.fromEntries((Object.keys(named) as NamedPalette[]).map((name) => [name, paletteCss(name)]));
+const sliders = [
+  { name: "hue", label: "Hue", min: 0, max: 360, step: 1 },
+  { name: "accent", label: "Accent", min: 0, max: 360, step: 1 },
+  { name: "tint", label: "Tint", min: 0, max: 2, step: 0.05 },
+] as const;
+const control =
+  "cursor-pointer rounded-(--hypha-radius-control) border border-(--hypha-color-rule) bg-(--hypha-color-panel) text-(--hypha-color-graphite) transition-colors hover:border-(--hypha-color-graphite) hover:text-(--hypha-color-ink)";
+---
+
+<palette-picker class="not-content my-8 block rounded-(--hypha-radius-panel) border border-(--hypha-color-rule) p-5 sm:p-6" data-css={JSON.stringify(css)} data-hypha={JSON.stringify(hypha)}>
+  <div class="flex flex-wrap gap-2" role="group" aria-label="Palettes">
+    {
+      paletteNames.map((name) => {
+        const { night, day, accent } = swatch(name);
+        return (
+          <button type="button" data-palette={name} class:list={[control, "flex h-10 items-center gap-2 px-3 text-sm font-medium aria-pressed:border-(--hypha-color-ink) aria-pressed:text-(--hypha-color-ink)"]} aria-pressed="false">
+            <span class="relative flex size-5 overflow-hidden rounded-full border border-(--hypha-color-rule)" aria-hidden="true">
+              <span class="w-1/2" style={`background: ${night}`} />
+              <span class="w-1/2" style={`background: ${day}`} />
+              <span class="absolute inset-[5px] rounded-full" style={`background: ${accent}`} />
+            </span>
+            {name}
+          </button>
+        );
+      })
+    }
+  </div>
+
+  <p class="mt-6 text-xs font-medium tracking-[0.08em] text-(--hypha-color-graphite) uppercase">The theme's own, turned</p>
+  <div class="mt-3 grid gap-4 sm:grid-cols-3">
+    {
+      sliders.map(({ name, label, min, max, step }) => (
+        <label class="block">
+          <span class="flex justify-between text-sm text-(--hypha-color-graphite)">
+            {label}
+            <output data-for={name} class="font-(family-name:--hypha-font-mono) text-(--hypha-color-ink)" />
+          </span>
+          <input type="range" data-slider={name} min={min} max={max} step={step} class="mt-2 w-full accent-(--hypha-color-accent)" />
+        </label>
+      ))
+    }
+  </div>
+
+  <div class="mt-6 flex flex-wrap items-center gap-3">
+    <code data-options class="min-w-0 flex-1 rounded-(--hypha-radius-control) bg-(--hypha-color-raised) px-3 py-2 font-(family-name:--hypha-font-mono) text-sm break-all text-(--hypha-color-ink)" />
+    <button type="button" data-reset class:list={[control, "h-10 px-4 text-sm font-medium"]}>Reset</button>
+  </div>
+</palette-picker>
+
+<script>
+  type Own = { hue: number; accent: number; tint: number };
+  // Kept for the visit; the head script reapplies it.
+  type Kept = { palette: string; css?: string; vars?: Record<string, string> };
+  const key = "hypha-docs-palette";
+  const root = document.documentElement;
+  const names = { hue: "--hypha-hue", accent: "--hypha-accent-hue", tint: "--hypha-tint" } as const;
+
+  // Applies a named palette's sheet, or the theme's own variables.
+  function give(kept: Kept | null) {
+    document.getElementById(key)?.remove();
+    for (const name of Object.values(names)) root.style.removeProperty(name);
+    delete root.dataset.palette;
+    if (kept?.css) {
+      const sheet = Object.assign(document.createElement("style"), { id: key, textContent: kept.css });
+      document.head.append(sheet);
+      root.dataset.palette = kept.palette;
+    }
+    for (const [name, value] of Object.entries(kept?.vars ?? {})) root.style.setProperty(name, value);
+    try {
+      kept ? sessionStorage.setItem(key, JSON.stringify(kept)) : sessionStorage.removeItem(key);
+    } catch {}
+  }
+
+  const own = (): Own => {
+    const read = (name: string) => Number(getComputedStyle(root).getPropertyValue(name).trim());
+    return { hue: read(names.hue), accent: read(names.accent), tint: read(names.tint) };
+  };
+
+  class PalettePicker extends HTMLElement {
+    css = JSON.parse(this.dataset.css ?? "{}") as Record<string, string>;
+    hypha = JSON.parse(this.dataset.hypha ?? "{}") as Own;
+
+    connectedCallback() {
+      this.show();
+      for (const button of this.querySelectorAll<HTMLButtonElement>("[data-palette]")) {
+        button.addEventListener("click", () => {
+          const palette = button.dataset.palette!;
+          give(palette === "hypha" ? null : { palette, css: this.css[palette] });
+          this.show();
+        });
+      }
+      for (const slider of this.querySelectorAll<HTMLInputElement>("[data-slider]")) {
+        slider.addEventListener("input", () => {
+          const turned = { ...this.ownNow(), [slider.dataset.slider!]: Number(slider.value) } as Own;
+          give({ palette: "hypha", vars: Object.fromEntries(Object.entries(turned).map(([k, v]) => [names[k as keyof Own], String(v)])) });
+          this.show();
+        });
+      }
+      this.querySelector("[data-reset]")?.addEventListener("click", () => {
+        give(null);
+        this.show();
+      });
+    }
+
+    // The sliders' numbers; under a named palette, hypha's defaults.
+    ownNow(): Own {
+      return root.dataset.palette ? this.hypha : own();
+    }
+
+    // Syncs the buttons, sliders and options line with the page.
+    show() {
+      const palette = root.dataset.palette;
+      const turned = this.ownNow();
+      const isHypha = !palette && turned.hue === this.hypha.hue && turned.accent === this.hypha.accent && turned.tint === this.hypha.tint;
+      for (const button of this.querySelectorAll<HTMLButtonElement>("[data-palette]")) {
+        button.setAttribute("aria-pressed", String(button.dataset.palette === palette || (isHypha && button.dataset.palette === "hypha")));
+      }
+      for (const slider of this.querySelectorAll<HTMLInputElement>("[data-slider]")) slider.value = String(turned[slider.dataset.slider as keyof Own]);
+      for (const output of this.querySelectorAll<HTMLOutputElement>("output[data-for]")) output.value = String(turned[output.dataset.for as keyof Own]);
+      const options = palette ? `{ palette: "${palette}" }` : isHypha ? "{}" : `{ hue: ${turned.hue}, accent: ${turned.accent}, tint: ${turned.tint} }`;
+      this.querySelector("[data-options]")!.textContent = `starlightThemeHypha(${options})`;
+    }
+  }
+  customElements.define("palette-picker", PalettePicker);
+</script>

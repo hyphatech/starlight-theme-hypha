@@ -1,0 +1,68 @@
+---
+title: Customising
+description: Change a token or a component, beside your own styles.
+---
+
+## A token
+
+Every colour, face, radius and measure is a CSS variable. Set one in a sheet
+in Starlight's `customCss`, and it wins over the theme's:
+
+```js title="astro.config.mjs"
+starlight({ customCss: ["./src/styles/custom.css"] });
+```
+
+```css title="src/styles/custom.css"
+:root {
+  --hypha-font-serif: "Fraunces", serif;
+  --hypha-radius-panel: 4px;
+}
+```
+
+A colour set on `:root` holds in both schemes. Set it under
+`:root[data-theme="light"]` or `"dark"` for one. The list is under
+[Tokens](/starlight-theme-hypha/tokens/).
+
+## A component
+
+The theme replaces some of Starlight's components with its own. Replace any
+of them with yours in Starlight's `components`, and yours wins:
+
+```js title="astro.config.mjs"
+starlight({
+  components: { Footer: "./src/components/Footer.astro" },
+  plugins: [starlightThemeHypha()],
+});
+```
+
+## Beside your own styles
+
+The theme's utilities are prefixed `hypha:` and its variables `--hypha-`,
+so they share no name with your Tailwind build or design system. Its styles
+are in the `hypha` cascade layer, after Starlight's and before yours, so your
+styles win over the theme's without `!important`.
+
+If you declare your own layer order, as Starlight's guide to Tailwind does,
+put `hypha` after `starlight`:
+
+```css title="src/styles/global.css"
+@layer base, starlight, hypha, theme, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme);
+@import "tailwindcss/utilities.css" layer(utilities);
+```
+
+This site does exactly that: the palette picker on [Colours](/starlight-theme-hypha/colours/) is
+styled in its own Tailwind, on the theme's tokens.
+
+## A demo of your own
+
+The theme styles a page's text: its headings, lists, tables and links.
+Anything inside an element with the class `not-content` is left alone, so a
+demo of your own components keeps its own look:
+
+```mdx
+<div class="not-content">
+  <MyCard title="Unstyled by the theme" />
+</div>
+```

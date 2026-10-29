@@ -1,3 +1,114 @@
 ---
-// Night only: no theme to choose.
+// Light, dark or the system's: three buttons where there is room, one that
+// cycles on a phone. Stored under Starlight's key for the theme's provider;
+// nothing stored is the site's `scheme`. Only where `themeSelect` is on.
+import Laptop from "@lucide/astro/icons/laptop";
+import Moon from "@lucide/astro/icons/moon";
+import Sun from "@lucide/astro/icons/sun";
+import config from "virtual:starlight-theme-hypha/config";
+import Icon from "./Icon.astro";
+
+const t = Astro.locals.t;
+const label = t("themeSelect.accessibleLabel");
+const labels = { light: t("themeSelect.light"), dark: t("themeSelect.dark"), auto: t("themeSelect.auto") };
+const choices = [
+  ["light", Sun],
+  ["dark", Moon],
+  ["auto", Laptop],
+] as const;
 ---
+
+{
+  config.themeSelect && (
+    <>
+      <hypha-theme-select class="hypha:contents" data-label={label} data-labels={JSON.stringify(labels)} data-scheme={config.scheme}>
+        <div role="group" aria-label={label} class="hypha:hidden hypha:h-10 hypha:items-center hypha:gap-0.5 hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:p-[3px] hypha:min-[50rem]:flex">
+          {choices.map(([choice, drawn]) => (
+            <button
+              type="button"
+              data-set={choice}
+              aria-pressed={choice === config.scheme ? "true" : "false"}
+              aria-label={labels[choice]}
+              title={labels[choice]}
+              class="hypha:grid hypha:size-8 hypha:cursor-pointer hypha:place-items-center hypha:rounded-[3px] hypha:border-0 hypha:bg-transparent hypha:p-0 hypha:text-graphite hypha:transition-colors hypha:hover:text-ink hypha:aria-pressed:bg-raised hypha:aria-pressed:text-ink"
+            >
+              <Icon icon={drawn} size="sm" />
+            </button>
+          ))}
+        </div>
+        <button
+          type="button"
+          data-cycle
+          aria-label={`${label}: ${labels[config.scheme]}`}
+          class="hypha:grid hypha:size-11 hypha:cursor-pointer hypha:place-items-center hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:text-graphite hypha:transition-colors hypha:hover:border-graphite hypha:hover:text-ink hypha:min-[50rem]:hidden"
+        >
+          {choices.map(([choice, drawn]) => (
+            <span data-choice={choice} data-on={choice === config.scheme ? "" : undefined} class="hypha:hidden hypha:data-on:grid">
+              <Icon icon={drawn} size="md" />
+            </span>
+          ))}
+        </button>
+      </hypha-theme-select>
+      {/* The stored choice, shown before the page paints. */}
+      <script is:inline define:vars={{ scheme: config.scheme }}>
+        try {
+          const stored = localStorage.getItem("starlight-theme");
+          const choice = stored === "auto" || stored === "light" || stored === "dark" ? stored : scheme;
+          for (const b of document.querySelectorAll("hypha-theme-select [data-set]")) b.setAttribute("aria-pressed", String(b.dataset.set === choice));
+          for (const s of document.querySelectorAll("hypha-theme-select [data-choice]")) s.toggleAttribute("data-on", s.dataset.choice === choice);
+        } catch {}
+      </script>
+    </>
+  )
+}
+
+<script>
+  type Choice = "auto" | "light" | "dark";
+  const key = "starlight-theme";
+  const cycle: Choice[] = ["auto", "light", "dark"];
+
+  const valid = (value: unknown): value is Choice => value === "auto" || value === "light" || value === "dark";
+  // The visitor's choice, or the site's scheme where there is none.
+  const stored = (): Choice => {
+    try {
+      const value = localStorage.getItem(key);
+      if (valid(value)) return value;
+    } catch {}
+    const scheme = document.querySelector<HTMLElement>("hypha-theme-select")?.dataset.scheme;
+    return valid(scheme) ? scheme : "auto";
+  };
+  const system = matchMedia("(prefers-color-scheme: light)");
+
+  // A click's choice is stored; the site's default never is.
+  function choose(choice: Choice) {
+    try {
+      localStorage.setItem(key, choice);
+    } catch {}
+    show(choice);
+  }
+
+  function show(choice: Choice) {
+    document.documentElement.dataset.theme = choice === "auto" ? (system.matches ? "light" : "dark") : choice;
+    for (const select of document.querySelectorAll<HTMLElement>("hypha-theme-select")) {
+      const labels = JSON.parse(select.dataset.labels ?? "{}") as Record<Choice, string>;
+      for (const button of select.querySelectorAll<HTMLElement>("[data-set]")) button.setAttribute("aria-pressed", String(button.dataset.set === choice));
+      for (const icon of select.querySelectorAll<HTMLElement>("[data-choice]")) icon.toggleAttribute("data-on", icon.dataset.choice === choice);
+      select.querySelector("[data-cycle]")?.setAttribute("aria-label", `${select.dataset.label}: ${labels[choice]}`);
+    }
+  }
+
+  let following = false;
+
+  class HyphaThemeSelect extends HTMLElement {
+    connectedCallback() {
+      if (!following) {
+        following = true;
+        system.addEventListener("change", () => stored() === "auto" && show("auto"));
+      }
+      show(stored());
+      for (const button of this.querySelectorAll<HTMLElement>("[data-set]")) button.addEventListener("click", () => choose(button.dataset.set as Choice));
+      this.querySelector("[data-cycle]")?.addEventListener("click", () => choose(cycle[(cycle.indexOf(stored()) + 1) % cycle.length]!));
+    }
+  }
+  customElements.define("hypha-theme-select", HyphaThemeSelect);
+</script>

@@ -1,0 +1,82 @@
+---
+title: The header
+description: Your brand and title, search, your repository, tabs and links.
+---
+
+The header's first row holds your mark and title, search and the scheme's
+control. The second, where you give it something, holds tabs and links on the
+left and your repository on the right.
+
+## Brand and title
+
+Starlight's `title` and `logo` are your site's. The theme's `brand` comes
+before the title, the title after it in grey:
+
+```js
+starlight({
+  title: "docs",
+  plugins: [starlightThemeHypha({ brand: "acme" })], // acme.docs
+});
+```
+
+## Your repository
+
+Name it as `owner/name`, and the header links to it with its latest release,
+stars and forks:
+
+```js
+starlightThemeHypha({ github: "acme/widgets" });
+starlightThemeHypha({ github: { repo: "acme/widgets", stats: false } }); // the link alone
+```
+
+The numbers are asked of GitHub when the site is built, never in the
+browser, and kept for an hour. If GitHub refuses, the last build's are used.
+Set `GITHUB_TOKEN` where you build to avoid GitHub's rate limit.
+
+## Tabs
+
+`tabs` turns the sidebar's top-level groups into tabs under the header, and
+the sidebar shows the open tab's group alone. A tab with one page has no
+sidebar at all. Give each tab an icon by its group's label, or `true` for
+none:
+
+```js
+starlightThemeHypha({
+  tabs: { "Start here": "rocket", Guides: "compass", Reference: "book-open" },
+});
+```
+
+This site's three tabs are three groups. On a phone, the tabs are a row you
+can scroll.
+
+## Links
+
+Links sit after the tabs. One to another site opens in a new tab:
+
+```js
+starlightThemeHypha({
+  links: [
+    { label: "Changelog", href: "/changelog/", icon: "scroll-text" },
+    { label: "Starlight", href: "https://starlight.astro.build", icon: "starlight" },
+  ],
+});
+```
+
+Icons are named from [a fixed set](/starlight-theme-hypha/options/#icons).
+
+## Search
+
+Search opens with `⌘K`, `Ctrl+K` or `/`. The arrows pick a result, Enter
+opens it, Escape closes. Each result shows the groups its page is in.
+`search: false` turns it off, and Pagefind's index with it.
+
+## Copying commands
+
+In a `console` block, the copy button copies the commands alone, without
+the `$` and without their output:
+
+```console
+$ bun add github:hyphatech/starlight-theme-hypha
+bun add v1.3.14
+installed starlight-theme-hypha
+```
