@@ -16,10 +16,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
 
 📖 **[Documentation and live demo](https://hyphatech.github.io/starlight-theme-hypha/)**
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset=".github/screenshot-dark.png">
-  <img alt="The theme's documentation site, in its own theme" src=".github/screenshot-light.png">
-</picture>
+![The theme in dark and light, with its palettes, its search and its own styles kept apart](.github/preview.png)
 
 ## Getting started
 

@@ -66,7 +66,7 @@ docs/               the theme's documentation, on the theme: published to
                     GitHub Pages from main, built by the test, and a look at
                     a change. `~/` is its `src/`; it imports the theme by
                     the package's name. Its Markdown links name the base
-.github/            the docs' Pages workflow, and the README's screenshots
+.github/            the docs' Pages workflow, and the README's image
 test/               the plugin's config, contrast, and the docs' build
 ```
 
