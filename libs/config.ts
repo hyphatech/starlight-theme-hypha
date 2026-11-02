@@ -35,7 +35,7 @@ export const configSchema = z
     brand: z.string().optional(),
     // `false` also turns off Pagefind.
     search: z.boolean().default(true),
-    // Version, stars and forks are fetched at build time unless `stats` is off.
+    // `stats: false` hides version, stars and forks.
     github: z
       .union([repo, z.object({ repo, stats: z.boolean().default(true) })])
       .optional()

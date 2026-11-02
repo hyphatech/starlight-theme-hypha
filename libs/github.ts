@@ -1,5 +1,5 @@
-import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
-import { join } from "node:path";
+// Shared with the browser; the Node-only cache is in github-build.ts.
+import { type Forms, fill } from "./words";
 
 export interface Facts {
   version?: string;
@@ -8,7 +8,7 @@ export interface Facts {
 }
 
 // A token lifts GitHub's limit of 60 unauthenticated requests an hour.
-async function ask(repo: string, token?: string): Promise<Facts | undefined> {
+export async function ask(repo: string, token?: string): Promise<Facts | undefined> {
   const headers: Record<string, string> = { accept: "application/vnd.github+json" };
   if (token) headers.authorization = `Bearer ${token}`;
   const get = (path: string) => fetch(`https://api.github.com/repos/${repo}${path}`, { headers, signal: AbortSignal.timeout(5000) });
@@ -28,46 +28,54 @@ async function ask(repo: string, token?: string): Promise<Facts | undefined> {
   }
 }
 
-// Cached for an hour; when GitHub fails, the last answer is used however old.
-const FRESH_MS = 60 * 60 * 1000;
-type Kept = Record<string, { at: number; facts: Facts }>;
-
-function kept(file: string): Kept {
-  try {
-    return JSON.parse(readFileSync(file, "utf-8")) as Kept;
-  } catch {
-    return {};
+// Once a session, as Material for MkDocs does, to stay under the rate limit.
+const asked = new Map<string, Promise<Facts | undefined>>();
+export function inBrowser(repo: string): Promise<Facts | undefined> {
+  if (!asked.has(repo)) {
+    const key = `hypha.github:${repo}`;
+    let kept: Facts | undefined;
+    try {
+      kept = JSON.parse(sessionStorage.getItem(key) ?? "null") ?? undefined;
+    } catch {}
+    const facts = kept
+      ? Promise.resolve(kept)
+      : ask(repo).then((facts) => {
+          try {
+            if (facts) sessionStorage.setItem(key, JSON.stringify(facts));
+          } catch {}
+          return facts;
+        });
+    asked.set(repo, facts);
   }
+  return asked.get(repo)!;
 }
 
-async function remembered(repo: string, cacheDir: string): Promise<Facts | undefined> {
-  const file = join(cacheDir, "github.json");
-  const last = kept(file)[repo];
-  if (last && Date.now() - last.at < FRESH_MS) return last.facts;
-  const facts = await ask(repo, process.env.GITHUB_TOKEN);
-  if (!facts) return last?.facts;
-  try {
-    mkdirSync(cacheDir, { recursive: true });
-    writeFileSync(file, JSON.stringify({ ...kept(file), [repo]: { at: Date.now(), facts } }));
-  } catch {}
-  return facts;
-}
+export type Fact = "version" | "stars" | "forks";
 
-// Once per repository per build.
-const built = new Map<string, Promise<Facts | undefined>>();
-export function atBuild(repo: string, cacheDir: string): Promise<Facts | undefined> {
-  if (!built.has(repo)) built.set(repo, remembered(repo, cacheDir));
-  return built.get(repo)!;
-}
-
-export function shown(facts: Facts | undefined, lang = "en") {
+export function shown(facts: Facts | undefined, lang = "en"): { name: Fact; text: string }[] {
+  if (!facts) return [];
   const count = new Intl.NumberFormat(lang, { notation: "compact" });
-  const items = facts
-    ? [
-        { name: "version" as const, text: facts.version, word: "hypha.github.version" as const, values: { version: facts.version ?? "" } },
-        { name: "stars" as const, text: count.format(facts.stars), word: "hypha.github.stars" as const, values: { count: facts.stars } },
-        { name: "forks" as const, text: count.format(facts.forks), word: "hypha.github.forks" as const, values: { count: facts.forks } },
-      ].filter((item) => item.text !== undefined)
-    : [];
-  return items;
+  const items = [
+    { name: "version" as const, text: facts.version },
+    { name: "stars" as const, text: count.format(facts.stars) },
+    { name: "forks" as const, text: count.format(facts.forks) },
+  ];
+  return items.filter((item): item is { name: Fact; text: string } => item.text !== undefined);
+}
+
+export interface Words {
+  label: string;
+  version: string;
+  stars: Forms;
+  forks: Forms;
+}
+
+export function described(words: Words, facts: Facts | undefined): string {
+  if (!facts) return words.label;
+  return [
+    words.label,
+    ...(facts.version === undefined ? [] : [fill(words.version, { version: facts.version })]),
+    fill(words.stars, { count: facts.stars }),
+    fill(words.forks, { count: facts.forks }),
+  ].join(", ");
 }

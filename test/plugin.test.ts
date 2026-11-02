@@ -2,8 +2,9 @@ import { describe, expect, test } from "bun:test";
 import hypha from "../index";
 import { onRequest } from "../libs/route-middleware";
 import { contrast, groundHex, roles } from "../libs/color";
-import { atBuild, shown } from "../libs/github";
-import { en, say } from "../libs/words";
+import { described, inBrowser, shown } from "../libs/github";
+import { atBuild } from "../libs/github-build";
+import { en, forms, say } from "../libs/words";
 import { componentName, configSchema, icons } from "../libs/config";
 import { adopt, bar, layers, named, paletteCss } from "../libs/palettes";
 import { fromHex, mix } from "../libs/color";
@@ -355,11 +356,51 @@ describe("the repository's facts", () => {
       globalThis.fetch = real;
     }
   });
+
+  // A visitor's browser, with its session's storage.
+  const browse = async (answer: () => Response, run: (asked: () => number, kept: Map<string, string>) => Promise<void>) => {
+    const kept = new Map<string, string>();
+    let asked = 0;
+    const real = { fetch: globalThis.fetch, sessionStorage: (globalThis as { sessionStorage?: unknown }).sessionStorage };
+    globalThis.fetch = (async () => (asked++, answer())) as unknown as typeof fetch;
+    Object.assign(globalThis, { sessionStorage: { getItem: (k: string) => kept.get(k) ?? null, setItem: (k: string, v: string) => kept.set(k, v) } });
+    try {
+      await run(() => asked, kept);
+    } finally {
+      Object.assign(globalThis, real);
+    }
+  };
+
+  test("are asked again in the browser, once a session", async () => {
+    const answer = () => Response.json({ stargazers_count: 9, forks_count: 3, tag_name: "v2.0.0" });
+    await browse(answer, async (asked, kept) => {
+      const [tabs, row] = await Promise.all([inBrowser("o/live"), inBrowser("o/live")]);
+      expect(tabs).toEqual({ version: "2.0.0", stars: 9, forks: 3 });
+      expect(row).toBe(tabs);
+      expect(asked()).toBe(2);
+      expect(JSON.parse(kept.get("hypha.github:o/live")!)).toEqual(tabs);
+    });
+    await browse(answer, async (asked, kept) => {
+      kept.set("hypha.github:o/kept", JSON.stringify({ version: "1.0.0", stars: 1, forks: 0 }));
+      expect((await inBrowser("o/kept"))?.version).toBe("1.0.0");
+      expect(asked()).toBe(0);
+    });
+  });
+
+  test("are the build's in the browser when GitHub refuses, and asked again next visit", async () => {
+    await browse(
+      () => new Response("rate limited", { status: 403 }),
+      async (_, kept) => {
+        expect(await inBrowser("o/limited")).toBeUndefined();
+        expect(kept.size).toBe(0);
+      },
+    );
+  });
 });
 
 describe("the theme's words", () => {
   const translate = (words: Record<string, string>) => {
-    const t = (key: string, o: Record<string, unknown> = {}) => words[key]!.replace(/\{\{(\w+)\}\}/g, (_, n) => String(o[n]));
+    const t = (key: string, o: Record<string, unknown> = {}) => words[key]!.replace(/\{\{(\w+)\}\}/g, (m, n) => (n in o ? String(o[n]) : m));
     t.exists = (key: string) => key in words;
     return t;
   };
@@ -387,5 +428,25 @@ describe("the theme's words", () => {
     expect(shown(facts, "en").map((f) => f.text)).toEqual(["1.0.0", "12K", "2"]);
     expect(shown(facts, "de").find((f) => f.name === "stars")?.text).toBe("12.345");
     expect(shown(undefined)).toEqual([]);
+  });
+
+  test("label the link in the page's language, as the browser relabels it", () => {
+    const ru = translate({
+      "hypha.github.stars_one": "{{count}} звезда",
+      "hypha.github.stars_few": "{{count}} звезды",
+      "hypha.github.stars_many": "{{count}} звёзд",
+      "hypha.github.stars_other": "{{count}} звезды",
+    });
+    const words = (t: ReturnType<typeof translate>) => ({
+      label: "o/r on GitHub",
+      version: "version {{version}}",
+      stars: forms(t, "hypha.github.stars", "ru"),
+      forks: forms(t, "hypha.github.forks", "ru"),
+    });
+    const facts = { version: "1.0.0", stars: 3, forks: 5 };
+    // Through JSON, as the page hands the words to the browser.
+    expect(described(JSON.parse(JSON.stringify(words(ru))), facts)).toBe("o/r on GitHub, version 1.0.0, 3 звезды, 5 forks");
+    expect(described(words(translate({})), { stars: 1, forks: 1 })).toBe("o/r on GitHub, 1 star, 1 fork");
+    expect(described(words(ru), undefined)).toBe("o/r on GitHub");
   });
 });

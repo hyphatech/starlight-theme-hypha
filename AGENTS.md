@@ -43,8 +43,8 @@ libs/palettes       the theme's own palette's defaults, and known palettes,
                     head, and their code themes
 libs/link           a link from the root put under the site's base
 libs/console        a console block's copy button, copying its commands alone
-libs/github         a repository's version, stars and forks, asked at build
-                    time
+libs/github         a repository's version, stars and forks, from GitHub
+libs/github-build   their cache at build time
 libs/trail          the sidebar's groups a page is in, for search's results
 libs/words          the theme's own words, in English, for a site's
                     translations to override; English where they do not

@@ -1,11 +1,12 @@
 ---
-// Facts are fetched at build time; the browser makes no request to GitHub.
+// The build's facts, refreshed in the browser: they change without a build.
 import GitFork from "@lucide/astro/icons/git-fork";
 import Star from "@lucide/astro/icons/star";
 import Tag from "@lucide/astro/icons/tag";
 import config, { cacheDir } from "virtual:starlight-theme-hypha/config";
-import { atBuild, shown } from "../libs/github";
-import { say } from "../libs/words";
+import { described, shown, type Fact, type Words } from "../libs/github";
+import { atBuild } from "../libs/github-build";
+import { forms, say } from "../libs/words";
 import Icon from "./Icon.astro";
 
 interface Props {
@@ -16,32 +17,67 @@ interface Props {
 const { row = false } = Astro.props;
 const github = config.github;
 const t = Astro.locals.t;
-const facts = github ? shown(github.stats ? await atBuild(github.repo, cacheDir) : undefined, Astro.locals.starlightRoute.lang) : [];
-const label = github && [say(t, "hypha.github.label", { repo: github.repo }), ...facts.map(({ word, values }) => say(t, word, values))].join(", ");
+const lang = Astro.locals.starlightRoute.lang;
+const facts = github?.stats ? await atBuild(github.repo, cacheDir) : undefined;
+const texts = Object.fromEntries(shown(facts, lang).map(({ name, text }) => [name, text]));
+const words: Words | undefined = github && {
+  label: say(t, "hypha.github.label", { repo: github.repo }),
+  version: say(t, "hypha.github.version", { version: "{{version}}" }),
+  stars: forms(t, "hypha.github.stars", lang),
+  forks: forms(t, "hypha.github.forks", lang),
+};
 const icons = { version: Tag, stars: Star, forks: GitFork };
 // The phone row fits only the stars; the label still reads all facts.
-const items = facts.filter(({ name }) => !row || name === "stars");
+const slots: Fact[] = !github?.stats ? [] : row ? ["stars"] : ["version", "stars", "forks"];
+const shows = slots.some((name) => texts[name] !== undefined);
 ---
 
 {
-  github && (
-    <a href={`https://github.com/${github.repo}`} target="_blank" rel="noopener" class={row ? "hypha:row-link" : "hypha:tab-link"} aria-label={label}>
-      <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" class="hypha:shrink-0">
-        <path
-          fill="currentColor"
-          d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
-        />
-      </svg>
-      {items.length > 0 && (
-        <span class="hypha:flex hypha:gap-2.5 hypha:text-xs/none hypha:font-medium hypha:tabular-nums" aria-hidden="true">
-          {items.map(({ name, text }) => (
-            <span class="hypha:inline-flex hypha:items-center hypha:gap-1">
-              <Icon icon={icons[name]} size="xs" />
-              <span>{text}</span>
-            </span>
-          ))}
-        </span>
-      )}
-    </a>
+  github && words && (
+    <hypha-github class="hypha:contents" data-repo={github.stats ? github.repo : undefined} data-lang={lang} data-words={JSON.stringify(words)}>
+      <a href={`https://github.com/${github.repo}`} target="_blank" rel="noopener" class={row ? "hypha:row-link" : "hypha:tab-link"} aria-label={described(words, facts)}>
+        <svg viewBox="0 0 16 16" width="18" height="18" aria-hidden="true" class="hypha:shrink-0">
+          <path
+            fill="currentColor"
+            d="M8 0c4.42 0 8 3.58 8 8a8.013 8.013 0 0 1-5.45 7.59c-.4.08-.55-.17-.55-.38 0-.27.01-1.13.01-2.2 0-.75-.25-1.23-.54-1.48 1.78-.2 3.65-.88 3.65-3.95 0-.88-.31-1.59-.82-2.15.08-.2.36-1.02-.08-2.12 0 0-.67-.22-2.2.82-.64-.18-1.32-.27-2-.27-.68 0-1.36.09-2 .27-1.53-1.03-2.2-.82-2.2-.82-.44 1.1-.16 1.92-.08 2.12-.51.56-.82 1.28-.82 2.15 0 3.06 1.86 3.75 3.64 3.95-.23.2-.44.55-.51 1.07-.46.21-1.61.55-2.33-.66-.15-.24-.6-.83-1.23-.82-.67.01-.27.38.01.53.34.19.73.9.82 1.13.16.45.68 1.31 2.69.94 0 .67.01 1.3.01 1.49 0 .21-.15.45-.55.38A7.995 7.995 0 0 1 0 8c0-4.42 3.58-8 8-8Z"
+          />
+        </svg>
+        {slots.length > 0 && (
+          <span class="hypha:flex hypha:gap-2.5 hypha:[&[hidden]]:hidden hypha:text-xs/none hypha:font-medium hypha:tabular-nums" aria-hidden="true" hidden={!shows}>
+            {slots.map((name) => (
+              <span class="hypha:inline-flex hypha:items-center hypha:gap-1 hypha:[&[hidden]]:hidden" data-fact={name} hidden={texts[name] === undefined}>
+                <Icon icon={icons[name]} size="xs" />
+                <span>{texts[name]}</span>
+              </span>
+            ))}
+          </span>
+        )}
+      </a>
+    </hypha-github>
   )
 }
+
+<script>
+  import { described, inBrowser, shown, type Words } from "../libs/github";
+
+  class HyphaGitHub extends HTMLElement {
+    async connectedCallback() {
+      const repo = this.dataset.repo;
+      if (!repo) return;
+      const facts = await inBrowser(repo);
+      // GitHub refused: the build's stay.
+      if (!facts) return;
+      const words = JSON.parse(this.dataset.words!) as Words;
+      const texts = new Map(shown(facts, this.dataset.lang).map(({ name, text }) => [name, text]));
+      this.querySelector("a")!.setAttribute("aria-label", described(words, facts));
+      for (const slot of this.querySelectorAll<HTMLElement>("[data-fact]")) {
+        const text = texts.get(slot.dataset.fact as never);
+        slot.hidden = text === undefined;
+        if (text !== undefined) slot.lastElementChild!.textContent = text;
+      }
+      const row = this.querySelector<HTMLElement>("[data-fact]")?.parentElement;
+      if (row) row.hidden = [...row.children].every((slot) => (slot as HTMLElement).hidden);
+    }
+  }
+  customElements.define("hypha-github", HyphaGitHub);
+</script>

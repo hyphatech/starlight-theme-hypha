@@ -29,9 +29,8 @@ starlightThemeHypha({ github: "acme/widgets" });
 starlightThemeHypha({ github: { repo: "acme/widgets", stats: false } }); // the link alone
 ```
 
-The numbers are asked of GitHub when the site is built, never in the
-browser, and kept for an hour. If GitHub refuses, the last build's are used.
-Set `GITHUB_TOKEN` where you build to avoid GitHub's rate limit.
+The numbers are fetched at build time and refreshed in the browser once a
+session. Set `GITHUB_TOKEN` where you build to avoid GitHub's rate limit.
 
 ## Tabs
 

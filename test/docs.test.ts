@@ -13,7 +13,11 @@ test("the docs build in the theme's frame", async () => {
   expect(html).toContain('class="site-header');
   expect(html).toContain('href="https://github.com/hyphatech/starlight-theme-hypha"');
   expect(html).toMatch(/<a href="https:\/\/github\.com\/hyphatech\/starlight-theme-hypha"[^>]*class="hypha:tab-link"/);
-  expect(html).not.toContain("api.github.com");
+  // The build's facts, then the browser's, from the component's own script,
+  // inlined.
+  expect(html).toContain('<hypha-github class="hypha:contents" data-repo="hyphatech/starlight-theme-hypha"');
+  expect(html).toMatch(/customElements\.define\(.hypha-github./);
+  expect(html).toContain("api.github.com");
   expect(html).toContain('aria-label="Sections"');
   expect(html).toContain("<hypha-search");
   // A development build would keep the branch that disables search.
