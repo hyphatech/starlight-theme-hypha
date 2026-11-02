@@ -1,27 +1,24 @@
 ---
-// Hypha's grid: the header across the window, staying as the page
-// scrolls, then the page's width with the navigation in its margin. On a phone the navigation is a sheet
-// over the page; Starlight's scripts find it by its id.
+// Starlight's scripts find the sidebar by its id.
 import X from "@lucide/astro/icons/x";
 import config from "virtual:starlight-theme-hypha/config";
+import { say } from "../libs/words";
 import Icon from "./Icon.astro";
 import NamedIcon from "./NamedIcon.astro";
 import PhoneNav from "./PhoneNav.astro";
 import Tabs from "./Tabs.astro";
 
 const { hasSidebar, sidebar } = Astro.locals.starlightRoute;
-// An empty sidebar keeps its margin, so the page stands where its
-// neighbours' do.
+// An empty sidebar keeps its column, so the page doesn't shift between pages.
 const navigable = hasSidebar && sidebar.length > 0;
 const tabbed = (Astro.locals.hyphaTabs?.length ?? 0) > 0;
-// The open tab, named in the sheet's bar above its pages.
 const open = Astro.locals.hyphaTabs?.find((tab) => tab.isCurrent);
 const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.label] : undefined;
 ---
 
 <div>
-  {/* Not `.header`, which a page's own styles may take: HeroUI's do. */}
-  <header class="site-header hypha:sticky hypha:top-0 hypha:z-(--sl-z-index-navbar) hypha:border-b hypha:border-rule hypha:bg-ivory"><slot name="header" /><Tabs /><PhoneNav /></header>
+  {/* Not `.header`: a page's own styles may use it (HeroUI's do). */}
+  <header class="site-header hypha:sticky hypha:top-0 hypha:z-(--sl-z-index-navbar) hypha:[@media(height<30rem)]:static hypha:border-b hypha:border-rule hypha:bg-ivory"><slot name="header" /><Tabs /><PhoneNav /></header>
   <div
     class:list={[
       "hypha:mx-auto hypha:max-w-page hypha:px-(--hypha-gutter)",
@@ -35,8 +32,7 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
       navigable && (
         <nav class="hypha:print:hidden" aria-label={Astro.locals.t("sidebarNav.accessibleLabel")}>
           <script>
-            // A popover on a phone, part of the page wider. While it is open,
-            // the page behind it takes no focus.
+            // A popover below md; while open, the page behind is inert.
             class StarlightSidebarPane extends HTMLElement {
               constructor() {
                 super();
@@ -56,9 +52,8 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
             customElements.define("sl-sidebar-pane", StarlightSidebarPane);
           </script>
           <script>
-            // A group slides open and shut from wherever it stands. Its state
-            // changes after the click, which Starlight's script reads to keep
-            // the open groups from page to page.
+            // The state changes a tick after the click, where Starlight's
+            // script reads it to keep open groups across pages.
             const still = matchMedia("(prefers-reduced-motion: reduce)");
             document.querySelectorAll<HTMLDetailsElement>("#starlight__sidebar details").forEach((details) => {
               const summary = details.querySelector<HTMLElement>(":scope > summary");
@@ -90,8 +85,7 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
               });
             });
           </script>
-          {/* Wider, sticky; its padding, taken back by its margin, is room
-             for a link's focus ring. */}
+          {/* Padding offset by negative margin leaves room for focus rings. */}
           <sl-sidebar-pane
             popover=""
             id="starlight__sidebar"
@@ -106,7 +100,7 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
                 type="button"
                 popovertarget="starlight__sidebar"
                 popovertargetaction="hide"
-                aria-label="Close the menu"
+                aria-label={say(Astro.locals.t, "hypha.menu.close")}
                 class="hypha:grid hypha:size-11 hypha:cursor-pointer hypha:place-items-center hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:text-graphite"
               >
                 <Icon icon={X} size="md" />

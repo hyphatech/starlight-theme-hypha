@@ -35,6 +35,37 @@ starlight({
 });
 ```
 
+## The theme's words
+
+The theme says a few things of its own: "Close the menu", "Read more", the
+keys under search. Translate them as you translate Starlight's, in a file per
+language in `src/content/i18n/`:
+
+```json title="src/content/i18n/fr.json"
+{
+  "hypha.menu.close": "Fermer le menu",
+  "hypha.nav.sections": "Sections",
+  "hypha.nav.site": "Site",
+  "hypha.siteTitle.home": "{{title}}, accueil",
+  "hypha.feature.readMore": "En savoir plus",
+  "hypha.notFound.title": "Rien n’est écrit ici.",
+  "hypha.notFound.home": "Retour au début",
+  "hypha.search.choose": "pour choisir",
+  "hypha.search.open": "pour ouvrir",
+  "hypha.search.close": "pour fermer",
+  "hypha.search.failed": "La recherche n’a pas pu se charger. Vérifiez votre connexion, puis tapez à nouveau.",
+  "hypha.github.label": "{{repo}} sur GitHub",
+  "hypha.github.version": "version {{version}}",
+  "hypha.github.stars_one": "{{count}} étoile",
+  "hypha.github.stars_other": "{{count}} étoiles",
+  "hypha.github.forks_one": "{{count}} fork",
+  "hypha.github.forks_other": "{{count}} forks"
+}
+```
+
+The file needs Starlight's [i18n collection](https://starlight.astro.build/guides/i18n/#translate-starlights-ui).
+A word you leave out is said in English.
+
 ## Beside your own styles
 
 The theme's utilities are prefixed `hypha:` and its variables `--hypha-`,

@@ -2,8 +2,7 @@ import type { StarlightRouteData } from "@astrojs/starlight/route-data";
 
 type Entry = StarlightRouteData["sidebar"][number];
 
-// The labels of the sidebar's groups the current page is in, outermost
-// first: the trail search shows above the page's results.
+// For search's result trail, outermost group first.
 export function trail(entries: Entry[]): string[] {
   for (const entry of entries) {
     if (entry.type !== "group") continue;

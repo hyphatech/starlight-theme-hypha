@@ -1,5 +1,3 @@
-// A repository's latest version, stars and forks, from GitHub's API.
-
 import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 
@@ -9,8 +7,7 @@ export interface Facts {
   forks: number;
 }
 
-// A token, where the build has one, lifts GitHub's limit of sixty
-// unauthenticated requests an hour.
+// A token lifts GitHub's limit of 60 unauthenticated requests an hour.
 async function ask(repo: string, token?: string): Promise<Facts | undefined> {
   const headers: Record<string, string> = { accept: "application/vnd.github+json" };
   if (token) headers.authorization = `Bearer ${token}`;
@@ -19,7 +16,7 @@ async function ask(repo: string, token?: string): Promise<Facts | undefined> {
     const [found, release] = await Promise.all([get(""), get("/releases/latest")]);
     if (!found.ok) return undefined;
     const { stargazers_count: stars, forks_count: forks } = await found.json();
-    // A repository with tags and no release names its version by its tag.
+    // Without a release, the latest tag.
     let tag: string | undefined = release.ok ? (await release.json()).tag_name : undefined;
     if (!tag) {
       const tags = await get("/tags?per_page=1");
@@ -31,8 +28,7 @@ async function ask(repo: string, token?: string): Promise<Facts | undefined> {
   }
 }
 
-// The last answer, kept in Astro's cache: a build within the hour takes it
-// without asking, and one GitHub fails takes it however old.
+// Cached for an hour; when GitHub fails, the last answer is used however old.
 const FRESH_MS = 60 * 60 * 1000;
 type Kept = Record<string, { at: number; facts: Facts }>;
 
@@ -57,23 +53,21 @@ async function remembered(repo: string, cacheDir: string): Promise<Facts | undef
   return facts;
 }
 
-// At build time, once per repository however many pages show it.
+// Once per repository per build.
 const built = new Map<string, Promise<Facts | undefined>>();
 export function atBuild(repo: string, cacheDir: string): Promise<Facts | undefined> {
   if (!built.has(repo)) built.set(repo, remembered(repo, cacheDir));
   return built.get(repo)!;
 }
 
-const count = new Intl.NumberFormat("en", { notation: "compact" });
-
-// Each fact as it is shown, and as it is read aloud.
-export function shown(repo: string, facts: Facts | undefined) {
+export function shown(facts: Facts | undefined, lang = "en") {
+  const count = new Intl.NumberFormat(lang, { notation: "compact" });
   const items = facts
     ? [
-        { name: "version" as const, text: facts.version, spoken: `version ${facts.version}` },
-        { name: "stars" as const, text: count.format(facts.stars), spoken: `${facts.stars} stars` },
-        { name: "forks" as const, text: count.format(facts.forks), spoken: `${facts.forks} forks` },
+        { name: "version" as const, text: facts.version, word: "hypha.github.version" as const, values: { version: facts.version ?? "" } },
+        { name: "stars" as const, text: count.format(facts.stars), word: "hypha.github.stars" as const, values: { count: facts.stars } },
+        { name: "forks" as const, text: count.format(facts.forks), word: "hypha.github.forks" as const, values: { count: facts.forks } },
       ].filter((item) => item.text !== undefined)
     : [];
-  return { items, label: [`${repo} on GitHub`, ...items.map((item) => item.spoken)].join(", ") };
+  return items;
 }

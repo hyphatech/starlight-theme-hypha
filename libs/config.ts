@@ -1,11 +1,20 @@
+import { readdirSync } from "node:fs";
+import { dirname } from "node:path";
+import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
 import { hypha, paletteNames } from "./palettes";
 
-// Plain data: the options reach the components as JSON through a virtual
-// module, so a link names its icon rather than passing a component. Each is
-// Lucide's, but `starlight`, Starlight's own mark.
-export const icons = ["archive", "blocks", "book-open", "boxes", "braces", "code-xml", "compass", "component", "file-text", "globe", "graduation-cap", "house", "layers", "library", "list-checks", "map", "newspaper", "play", "puzzle", "rocket", "rss", "scroll-text", "settings", "shield-check", "sparkles", "starlight", "terminal", "wand-sparkles", "waves-horizontal", "wrench", "zap"] as const;
-export type IconName = (typeof icons)[number];
+// Options reach the components as JSON, so icons are named, not passed: any
+// of Lucide's, by its file's name, or `starlight`, Starlight's own mark.
+const lucide = dirname(fileURLToPath(import.meta.resolve("@lucide/astro/icons/zap")));
+export const icons = ["starlight", ...readdirSync(lucide).flatMap((file) => (file.endsWith(".ts") && file !== "index.ts" ? [file.slice(0, -3)] : []))];
+export type IconName = string;
+
+// The name Lucide exports an icon's component by: "book-open" is BookOpen.
+export const componentName = (icon: string) => icon.replace(/(?:^|-)(\w)/g, (_, c: string) => c.toUpperCase());
+
+const known = new Set(icons);
+const icon = z.string().refine((name) => known.has(name), "a Lucide icon's name, as lucide.dev shows it, or starlight");
 
 const degrees = z.number().min(0).max(360);
 
@@ -13,40 +22,32 @@ const repo = z.string().regex(/^[\w.-]+\/[\w.-]+$/, "owner/name");
 
 export const configSchema = z
   .object({
-    // The theme's own palette, or a known one.
     palette: z.enum(paletteNames).default("hypha"),
-    // `hypha` only: the greys' hue, in degrees; alone, the accent follows.
+    // `hypha` only. Greys' hue; the accent follows unless set.
     hue: degrees.optional(),
-    // `hypha` only: the accent's hue.
+    // `hypha` only.
     accent: degrees.optional(),
-    // `hypha` only: the greys' saturation, as a share of the default.
+    // `hypha` only. Greys' saturation, as a share of the default.
     tint: z.number().min(0).max(2).optional(),
-    // The scheme a visit starts in: `auto` follows the visitor's system.
     scheme: z.enum(["auto", "dark", "light"]).default("auto"),
-    // The header's control, for the visitor to change the scheme.
     themeSelect: z.boolean().default(true),
-    // A name before Starlight's title, which then follows it in graphite after
-    // a dot: "hypha" and "solidtype" read "hypha.solidtype".
+    // Shown before the title: "hypha" + "solidtype" reads "hypha.solidtype".
     brand: z.string().optional(),
-    // Starlight's search in the header; `false` turns off Pagefind too.
+    // `false` also turns off Pagefind.
     search: z.boolean().default(true),
-    // The repository, linked from the header with its version, stars and
-    // forks, asked of GitHub at build time unless `stats` is off.
+    // Version, stars and forks are fetched at build time unless `stats` is off.
     github: z
       .union([repo, z.object({ repo, stats: z.boolean().default(true) })])
       .optional()
       .transform((github) => (typeof github === "string" ? { repo: github, stats: true } : github)),
-    // The sidebar's top-level entries as tabs under the header: `true`, or
-    // each tab's icon by its entry's label.
-    tabs: z.union([z.boolean(), z.record(z.string(), z.enum(icons))]).default(false),
-    // Links in the row under the header, after the tabs. One to another site
-    // opens in a new tab.
+    // Top-level sidebar entries as tabs: `true`, or an icon per label.
+    tabs: z.union([z.boolean(), z.record(z.string(), icon)]).default(false),
     links: z
       .array(
         z.object({
           label: z.string(),
           href: z.string(),
-          icon: z.enum(icons).optional(),
+          icon: icon.optional(),
         }),
       )
       .default([]),
@@ -57,7 +58,7 @@ export const configSchema = z
   })
   .transform(({ palette, hue, accent, tint, ...rest }) => ({
     ...rest,
-    // The schemes a page can show: both, unless one is fixed without a control.
+    // Both, unless one is fixed and there is no control.
     schemes: (rest.themeSelect || rest.scheme === "auto" ? ["dark", "light"] : [rest.scheme]) as ("dark" | "light")[],
     palette,
     hue: hue ?? hypha.hue,

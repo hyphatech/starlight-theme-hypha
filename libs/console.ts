@@ -1,11 +1,8 @@
-// A console block is commands and what they print, so its copy button
-// copies the commands alone, without their `$ ` prompt. The page sets it,
-// not an Expressive Code plugin: a plugin in Starlight's options is a
-// function, and Expressive Code's <Code> component refuses options that
-// are not JSON.
+// A console block's copy button copies only the commands, without `$ `.
+// Done in the page, not an Expressive Code plugin: <Code> refuses options
+// that aren't JSON, and a plugin is a function.
 
-// Expressive Code's copy button holds a block's newlines as U+007F, and
-// reads the button's `data-code` when it is clicked.
+// Expressive Code stores newlines in `data-code` as U+007F and reads it on click.
 const newline = "\u007f";
 
 export const commands = (code: string) =>

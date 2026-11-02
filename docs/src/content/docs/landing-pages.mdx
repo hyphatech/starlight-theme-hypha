@@ -67,6 +67,10 @@ export const widget = () => "one";
 </Features>
 ````
 
-A feature's `icon` is one of [the theme's icons](/starlight-theme-hypha/options/#icons). Write
+A feature's `icon` is [any of Lucide's](/starlight-theme-hypha/options/#icons). Write
 links from your site's root, `/guides/`: on a site with a `base`, the theme
 puts them under it.
+
+A feature's title is a second-level heading, under the page's title. Where
+the features sit under a heading of your own, give them the next level, so a
+screen reader's outline skips none: `<Feature level={3} …>`.

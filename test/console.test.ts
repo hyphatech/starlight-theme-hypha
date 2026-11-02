@@ -1,8 +1,6 @@
 import { expect, test } from "bun:test";
 import { commands, copyCommands } from "../libs/console";
 
-// A console block's copy text is its commands, without their prompt, and
-// without what they printed.
 const nl = "\u007f";
 
 test("the commands alone", () => {

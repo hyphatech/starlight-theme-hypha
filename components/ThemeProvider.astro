@@ -1,20 +1,23 @@
 ---
-// The scheme before the page paints: the visitor's stored choice where the
-// control is on, else the site's `scheme`; `auto` follows the system.
+// Sets the scheme before paint. ThemeSelect reads the choice from `data-hypha-choice`.
 import config from "virtual:starlight-theme-hypha/config";
 ---
 
 <script is:inline define:vars={{ scheme: config.scheme, remembers: config.themeSelect }}>
+  const root = document.documentElement;
+  const light = matchMedia("(prefers-color-scheme: light)");
   let choice = scheme;
   if (remembers) {
     try {
       const stored = localStorage.getItem("starlight-theme");
-      if (stored === "auto" || stored === "light" || stored === "dark") choice = stored;
+      if (["auto", "light", "dark"].includes(stored)) choice = stored;
     } catch {}
   }
-  const light = matchMedia("(prefers-color-scheme: light)");
-  const show = () => (document.documentElement.dataset.theme = choice === "auto" ? (light.matches ? "light" : "dark") : choice);
-  show();
-  // Without the control, nothing else follows the system.
-  if (!remembers && choice === "auto") light.addEventListener("change", show);
+  root.dataset.hyphaChoice = choice;
+  const apply = () => {
+    const chosen = root.dataset.hyphaChoice;
+    root.dataset.theme = chosen === "auto" ? (light.matches ? "light" : "dark") : chosen;
+  };
+  apply();
+  light.addEventListener("change", apply);
 </script>

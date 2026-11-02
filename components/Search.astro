@@ -1,17 +1,15 @@
 ---
-// Search, as Zensical's: a panel over the page, each result a heading under
-// its trail. The arrows choose, Enter opens, Escape closes. It asks
-// Pagefind's index directly: Pagefind's default UI knows no arrows.
+// Uses Pagefind's API directly: its default UI has no arrow-key navigation.
 import ArrowDown from "@lucide/astro/icons/arrow-down";
 import ArrowUp from "@lucide/astro/icons/arrow-up";
 import CornerDownLeft from "@lucide/astro/icons/corner-down-left";
 import Magnifier from "@lucide/astro/icons/search";
 import project from "virtual:starlight/project-context";
 import starlight from "virtual:starlight/user-config";
+import { say } from "../libs/words";
 import Icon from "./Icon.astro";
 
 const t = Astro.locals.t;
-// Pagefind's words as Starlight translates them, English where it does not.
 const pagefind = Object.fromEntries(
   Object.entries(t.all())
     .filter(([key]) => key.startsWith("pagefind."))
@@ -23,6 +21,7 @@ const words = {
   many: pagefind.many_results ?? "[COUNT] results for [SEARCH_TERM]",
   more: pagefind.load_more ?? "Load more results",
   dev: t("search.devWarning"),
+  failed: say(t, "hypha.search.failed"),
 };
 const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center hypha:rounded-control hypha:bg-raised hypha:px-1 hypha:font-sans hypha:text-[0.6875rem] hypha:text-ink";
 ---
@@ -30,10 +29,9 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
 {
   starlight.pagefind && (
     <hypha-search class="hypha:contents" data-words={JSON.stringify(words)} data-strip-trailing-slash={project.trailingSlash === "never" ? "" : undefined}>
-      {/* On a phone a square, as the menu's button beside it. */}
       <button
         type="button"
-        class="open hypha:flex hypha:size-11 hypha:cursor-pointer hypha:items-center hypha:justify-center hypha:gap-2 hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:p-0 hypha:font-sans hypha:text-[0.875rem]/none hypha:font-medium hypha:text-graphite hypha:transition-colors hypha:hover:border-graphite hypha:hover:text-ink hypha:min-[50rem]:h-10 hypha:min-[50rem]:w-72 hypha:min-[50rem]:justify-start hypha:min-[50rem]:ps-3 hypha:min-[50rem]:pe-2"
+        class="open hypha:flex hypha:size-11 hypha:cursor-pointer hypha:items-center hypha:justify-center hypha:gap-2 hypha:rounded-control hypha:border hypha:border-rule hypha:bg-panel hypha:p-0 hypha:font-sans hypha:text-[0.875rem]/none hypha:font-medium hypha:text-graphite hypha:transition-colors hypha:hover:border-graphite hypha:hover:text-ink hypha:min-[50rem]:h-10 hypha:min-[50rem]:pointer-coarse:h-11 hypha:min-[50rem]:w-72 hypha:min-[50rem]:justify-start hypha:min-[50rem]:ps-3 hypha:min-[50rem]:pe-2"
         disabled
         aria-label={t("search.label")}
         aria-keyshortcuts="Control+K"
@@ -47,7 +45,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
           <kbd>K</kbd>
         </kbd>
       </button>
-      {/* Before the page paints, Apple's key where it is the one. */}
+      {/* ⌘ on Apple platforms, set before paint. */}
       <script is:inline>
         (() => {
           const button = document.currentScript?.previousElementSibling;
@@ -59,14 +57,13 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
         })();
       </script>
 
-      {/* On a phone the whole screen. It goes quicker than it comes. */}
       <dialog
         aria-label={t("search.label")}
         class="hypha:m-0 hypha:h-dvh hypha:max-h-dvh hypha:w-full hypha:max-w-full hypha:flex-col hypha:focus-visible:outline-none! hypha:overflow-hidden hypha:border-0 hypha:bg-panel hypha:p-0 hypha:text-ink hypha:transition-[opacity,translate] hypha:duration-200 hypha:ease-glide hypha:open:flex hypha:starting:open:-translate-y-2 hypha:starting:open:opacity-0 hypha:data-closing:-translate-y-1 hypha:data-closing:opacity-0 hypha:data-closing:duration-120 hypha:data-closing:ease-state hypha:motion-reduce:transition-none hypha:min-[50rem]:inset-y-auto hypha:min-[50rem]:top-0 hypha:min-[50rem]:mx-auto hypha:min-[50rem]:mt-20 hypha:min-[50rem]:h-auto hypha:min-[50rem]:max-h-[min(36rem,100dvh_-_8rem)] hypha:min-[50rem]:w-[min(40rem,100%_-_2*var(--hypha-gutter))] hypha:min-[50rem]:rounded-panel hypha:min-[50rem]:border hypha:min-[50rem]:border-rule hypha:backdrop:bg-ivory/72 hypha:backdrop:backdrop-blur-[3px] hypha:backdrop:transition-opacity hypha:backdrop:duration-180 hypha:backdrop:ease-glide hypha:starting:open:backdrop:opacity-0 hypha:data-closing:backdrop:opacity-0 hypha:data-closing:backdrop:duration-120 hypha:data-closing:backdrop:ease-state hypha:motion-reduce:backdrop:transition-none"
       >
         <div class="hypha:flex hypha:h-14 hypha:shrink-0 hypha:items-center hypha:gap-3 hypha:border-b hypha:border-rule hypha:ps-5 hypha:pe-3 hypha:text-graphite">
           <Icon icon={Magnifier} size="md" />
-          {/* The caret is the field's focus; the page's ring would box it twice. */}
+          {/* The caret shows focus; a ring would double it. */}
           <input
             type="text"
             role="combobox"
@@ -103,7 +100,6 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
         >
           {words.more}
         </button>
-        {/* The keys, where there is a keyboard to press them on. */}
         <footer class="hypha:hidden hypha:shrink-0 hypha:gap-5 hypha:border-t hypha:border-rule hypha:px-5 hypha:py-2.5 hypha:text-[0.75rem] hypha:text-graphite hypha:*:inline-flex hypha:*:items-center hypha:*:gap-1 hypha:min-[50rem]:flex" aria-hidden="true">
           <span>
             <kbd class={key}>
@@ -112,17 +108,17 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
             <kbd class:list={[key, "hypha:me-0.5"]}>
               <Icon icon={ArrowDown} size="xs" />
             </kbd>
-            to choose
+            {say(t, "hypha.search.choose")}
           </span>
           <span>
             <kbd class:list={[key, "hypha:me-0.5"]}>
               <Icon icon={CornerDownLeft} size="xs" />
             </kbd>
-            to open
+            {say(t, "hypha.search.open")}
           </span>
           <span>
             <kbd class:list={[key, "hypha:me-0.5"]}>esc</kbd>
-            to close
+            {say(t, "hypha.search.close")}
           </span>
         </footer>
       </dialog>
@@ -131,7 +127,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
 }
 
 <script>
-  // As much of Pagefind's API as is used.
+  // The subset of Pagefind's API used here.
   interface SubResult {
     title: string;
     url: string;
@@ -157,9 +153,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
     excerpt: string;
   }
 
-  // A page's rows: its three headings with the most found under them. A
-  // heading's trail ends with its page; a group named as its page is named
-  // once.
+  // Up to three sub-results per page, most matches first.
   function rows(page: Page): Row[] {
     const title = page.meta.title ?? page.url;
     const groups = page.meta.section ? page.meta.section.split(" / ") : [];
@@ -175,7 +169,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
   }
 
   const PAGES_AT_ONCE = 8;
-  const reduced = window.matchMedia("(prefers-reduced-motion: reduce)");
+  const reduced = matchMedia("(prefers-reduced-motion: reduce)");
 
   class HyphaSearch extends HTMLElement {
     connectedCallback() {
@@ -190,6 +184,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
       const href = (url: string) => (strip ? url.replace(/(.)\/(#.*)?$/, "$1$2") : url);
       const base = import.meta.env.BASE_URL.replace(/\/$/, "");
 
+      // Cleared on failure, so the next search retries.
       let pagefind: Promise<Pagefind | undefined> | undefined;
       const index = () =>
         (pagefind ??= import(/* @vite-ignore */ `${base}/pagefind/pagefind.js`)
@@ -198,9 +193,12 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
             await module.init();
             return module;
           })
-          .catch(() => undefined));
+          .catch(() => {
+            pagefind = undefined;
+            return undefined;
+          }));
 
-      // A search begun after another makes the other's answer stale.
+      // Answers to a superseded search are dropped.
       let pages: { data(): Promise<Page> }[] = [];
       let drawn = 0;
       let chosen = -1;
@@ -237,7 +235,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
         const title = document.createElement("span");
         title.className = "hypha:text-[0.9375rem]/[1.4] hypha:font-medium hypha:text-ink";
         title.textContent = row.title;
-        // Pagefind's excerpt is escaped, with the words found in <mark>.
+        // Pagefind escapes the excerpt, so innerHTML is safe.
         const excerpt = document.createElement("span");
         excerpt.className =
           "hypha:line-clamp-2 hypha:text-[0.8125rem]/[1.55] hypha:wrap-anywhere hypha:[&_mark]:bg-transparent hypha:[&_mark]:text-ink hypha:[&_mark]:underline hypha:[&_mark]:decoration-accent hypha:[&_mark]:decoration-1 hypha:[&_mark]:underline-offset-3";
@@ -259,34 +257,34 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
         if (first) choose(0, false);
       };
 
-      const search = async () => {
-        const query = input.value.trim();
-        const ask = ++asked;
-        if (query === "") {
-          pages = [];
-          drawn = 0;
-          chosen = -1;
-          list.replaceChildren();
-          status.textContent = "";
-          more.hidden = true;
-          input.setAttribute("aria-expanded", "false");
-          input.removeAttribute("aria-activedescendant");
-          return;
-        }
-        const found = await (await index())?.debouncedSearch(query, {}, 120);
-        if (!found || ask !== asked) return;
-        pages = found.results;
+      const clear = (said = "") => {
+        pages = [];
         drawn = 0;
         chosen = -1;
         list.replaceChildren();
-        input.removeAttribute("aria-activedescendant");
-        input.setAttribute("aria-expanded", String(pages.length > 0));
+        status.textContent = said;
         more.hidden = true;
+        input.setAttribute("aria-expanded", "false");
+        input.removeAttribute("aria-activedescendant");
+      };
+
+      const search = async () => {
+        const query = input.value.trim();
+        const ask = ++asked;
+        if (query === "") return clear();
+        const module = await index();
+        if (ask !== asked) return;
+        if (!module) return clear(words.failed);
+        const found = await module.debouncedSearch(query, {}, 120);
+        if (!found || ask !== asked) return;
+        clear();
+        pages = found.results;
+        input.setAttribute("aria-expanded", String(pages.length > 0));
         if (pages.length === 0) say(words.zero, 0, query);
         else await drawMore(query, ask);
       };
 
-      // Closed after it has faded: a closed dialog leaves the page at once.
+      // close() removes the dialog at once, so it waits for the fade.
       const show = () => {
         delete dialog.dataset.closing;
         document.documentElement.classList.add("hypha:overflow-hidden");
@@ -311,7 +309,6 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
       open.addEventListener("click", show);
       open.disabled = false;
       dialog.querySelector("[data-close]")!.addEventListener("click", hide);
-      // Escape, and a click on the dimmed page around the panel.
       dialog.addEventListener("cancel", (event) => {
         event.preventDefault();
         hide();
@@ -319,11 +316,11 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) hide();
       });
-      // The page followed may be this one, at another heading.
+      // A result may be on this page, which doesn't reload.
       list.addEventListener("click", (event) => {
         if ((event.target as Element).closest("[role=option]")) hide();
       });
-      // The mouse chooses as it moves, not as the list scrolls under it.
+      // pointermove, not hover: scrolling under a still mouse keeps the choice.
       list.addEventListener("pointermove", (event) => {
         const option = (event.target as Element).closest<HTMLAnchorElement>("[role=option]");
         if (option) choose(options().indexOf(option), false);
@@ -345,11 +342,11 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
         }
       });
 
-      // ⌘K or Ctrl+K anywhere, and / where nothing is being written.
       window.addEventListener("keydown", (event) => {
         if ((event.metaKey || event.ctrlKey) && event.key === "k") {
           event.preventDefault();
-          dialog.open ? hide() : show();
+          if (dialog.open) hide();
+          else show();
         } else if (event.key === "/" && !dialog.open) {
           const target = event.target as HTMLElement;
           if (target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(target.tagName)) return;
@@ -358,7 +355,7 @@ const key = "hypha:inline-grid hypha:h-5 hypha:min-w-5 hypha:place-items-center 
         }
       });
 
-      // The index is built with the site: none in the dev server.
+      // The index is built with the site, so the dev server has none.
       if (import.meta.env.DEV) {
         status.textContent = words.dev;
         input.disabled = true;

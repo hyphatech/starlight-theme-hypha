@@ -23,7 +23,7 @@ Hypha's look for [Starlight](https://starlight.astro.build).
 1. Install the theme:
 
    ```sh
-   bun add github:hyphatech/starlight-theme-hypha#v0.5.0
+   bun add github:hyphatech/starlight-theme-hypha#v0.6.0
    ```
 
 2. Add it to `plugins` in your `astro.config.mjs`:

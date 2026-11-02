@@ -1,6 +1,5 @@
 ---
-// A part of the page without Starlight's width or padding: the grid gives
-// both. `:where`, so a part's own margin wins.
+// The grid sets width and padding; `:where` lets a child's own margin win.
 ---
 
 <div class="content-panel hypha:[&+&]:mt-7 hypha:md:[&+&]:mt-8 hypha:[:where(&>*+*)]:mt-6"><slot /></div>

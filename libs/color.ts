@@ -1,10 +1,8 @@
-// The theme's own roles as styles/tokens.css computes them, in sRGB, for
-// theme-color and the tests. Change both together.
+// Mirrors styles/tokens.css, for theme-color and the tests. Change both together.
 
 export type Scheme = "dark" | "light";
-type Rgb = [number, number, number];
+export type Rgb = [number, number, number];
 
-// hsl(h s l), s and l in 0..1.
 export function hsl(h: number, s: number, l: number): Rgb {
   const a = s * Math.min(l, 1 - l);
   const f = (n: number) => {
@@ -41,13 +39,11 @@ function fromOklab([L, a, b]: Rgb): Rgb {
   return rgb.map((c) => Math.min(1, Math.max(0, gamma(c)))) as Rgb;
 }
 
-// `color-mix(in oklab, a p, b)`.
 export function mix(a: Rgb, p: number, b: Rgb): Rgb {
   const [x, y] = [oklab(a), oklab(b)];
   return fromOklab(x.map((v, i) => v * p + y[i]! * (1 - p)) as Rgb);
 }
 
-// `oklch(from c L C h)`: an even lightness at every hue.
 function oklchFrom(c: Rgb, L: number, C: number): Rgb {
   const [, a, b] = oklab(c);
   const h = Math.atan2(b, a);
@@ -58,7 +54,7 @@ export function fromHex(h: string): Rgb {
   return [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16) / 255) as Rgb;
 }
 
-// A colour's OKLab lightness moved away from its ground until `ok`.
+// Moves only lightness, away from the ground, until `ok`.
 export function toward(c: Rgb, ok: (c: Rgb) => boolean, ground: Rgb): Rgb {
   const [L, a, b] = oklab(c);
   const step = oklab(ground)[0] > 0.6 ? -0.005 : 0.005;
@@ -71,7 +67,6 @@ export function hex(c: Rgb): string {
   return `#${c.map((v) => Math.round(v * 255).toString(16).padStart(2, "0")).join("")}`.toUpperCase();
 }
 
-// WCAG's contrast.
 export function contrast(a: Rgb, b: Rgb): number {
   const lum = (c: Rgb) => {
     const [r, g, bl] = c.map(linear) as Rgb;
@@ -81,7 +76,6 @@ export function contrast(a: Rgb, b: Rgb): number {
   return (hi + 0.05) / (lo + 0.05);
 }
 
-// The theme's own roles in a scheme.
 export function roles(scheme: Scheme, hue: number, accent: number, tint: number) {
   const night = scheme === "dark";
   const ivory = night ? hsl(hue, 0.15 * tint, 0.05) : hsl(hue, 0.2 * tint, 0.975);
@@ -97,7 +91,6 @@ export function roles(scheme: Scheme, hue: number, accent: number, tint: number)
   };
 }
 
-// The ground as hex, for the browser's theme-color.
 export function groundHex(scheme: Scheme, hue: number, tint = 1): string {
   return hex(roles(scheme, hue, hue, tint).ivory);
 }

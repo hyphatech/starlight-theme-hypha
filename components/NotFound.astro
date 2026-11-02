@@ -1,0 +1,45 @@
+---
+// The mark sits in the sidebar's column, the title where a page's title starts.
+import House from "@lucide/astro/icons/house";
+import type { ComponentProps } from "astro/types";
+import { say } from "../libs/words";
+import Actions from "./Actions.astro";
+import Icon from "./Icon.astro";
+
+interface Props {
+  title?: string;
+  tagline?: string;
+  actions?: ComponentProps<typeof Actions>["actions"];
+}
+
+const t = Astro.locals.t;
+const { title = say(t, "hypha.notFound.title"), tagline, actions = [] } = Astro.props;
+---
+
+<div class="not-content hypha:grid hypha:gap-y-5 hypha:pt-(--hypha-page-top) hypha:pb-16 hypha:md:grid-cols-[calc(var(--hypha-margin)_-_var(--hypha-column-gap))_minmax(0,1fr)] hypha:md:gap-x-(--hypha-column-gap)">
+  <span
+    class="hypha:font-serif hypha:text-(length:--hypha-h2) hypha:leading-none hypha:tracking-[-0.02em] hypha:text-graphite hypha:lining-nums hypha:tabular-nums hypha:md:-mt-[0.1em] hypha:md:text-[clamp(2.375rem,4.8vw,3.5rem)] hypha:md:leading-[1.05]"
+    aria-hidden="true">404</span
+  >
+  <div class="hypha:min-w-0 hypha:md:col-start-2">
+    <h1
+      id="_top"
+      data-page-title
+      class="hypha:-mt-[0.1em] hypha:max-w-2xl hypha:font-serif hypha:text-[clamp(2.375rem,4.8vw,3.5rem)] hypha:leading-[1.05] hypha:font-normal hypha:tracking-[-0.02em] hypha:text-balance hypha:text-ink"
+      set:html={title}
+    />
+    {tagline && <p class="hypha:t-lede hypha:mt-5 hypha:max-w-2xl hypha:text-graphite hypha:md:mt-6" set:html={tagline} />}
+    <div class="hypha:mt-10 hypha:flex hypha:flex-wrap hypha:gap-3">
+      {
+        actions.length > 0 ? (
+          <Actions actions={actions} />
+        ) : (
+          <a href={Astro.locals.starlightRoute.siteTitleHref} class="hypha:btn hypha:no-underline">
+            <Icon icon={House} />
+            {say(t, "hypha.notFound.home")}
+          </a>
+        )
+      }
+    </div>
+  </div>
+</div>

@@ -1,8 +1,7 @@
-// Known palettes, from their published colours, with Shiki's code themes.
-// Secondary text and lines are mixed from text and ground. A colour below the
+// Published colours, with Shiki's code themes. A colour below the contrast
 // bar moves in lightness only, as far as it must.
 
-import { contrast, fromHex, groundHex, hex, mix, toward, type Scheme } from "./color";
+import { contrast, fromHex, groundHex, hex, mix, toward, type Rgb, type Scheme } from "./color";
 
 type Colours = { ivory: string; ink: string; accent: string; tip: string; caution: string; danger: string };
 type Palette = { dark: Colours; light: Colours; code: { dark: string; light: string } };
@@ -64,41 +63,38 @@ export const named = {
 
 export type NamedPalette = keyof typeof named;
 
-// The theme's own palette's defaults.
 export const hypha = { hue: 225, accent: 231, tint: 1 } as const;
 export const paletteNames = ["hypha", ...(Object.keys(named) as NamedPalette[])] as ["hypha", ...NamedPalette[]];
 export type PaletteName = (typeof paletteNames)[number];
 
-// The layer order, as in styles/standalone.css.
 export const layers = "base, starlight, hypha, theme, components, utilities";
 
-// Least contrast on the ground and surfaces: text, secondary text, marks.
+// Minimum contrast for text, secondary text and marks.
 export const bar = { ink: 7, graphite: 4.5, mark: 3 };
 
-// A named palette's roles in a scheme, as hex, met to the bar.
 export function adopt(name: NamedPalette, scheme: Scheme) {
   const c = named[name][scheme];
   const ivory = fromHex(c.ivory);
-  // The ground, panel and raised surface, as the theme mixes them.
-  const surfaces = (ink: ReturnType<typeof fromHex>) => [ivory, mix(ink, 0.04, ivory), mix(ink, 0.07, ivory)];
+  const surfaces = (ink: Rgb) => [ivory, mix(ink, 0.04, ivory), mix(ink, 0.07, ivory)];
   const ink = toward(fromHex(c.ink), (x) => Math.min(...surfaces(x).map((s) => contrast(x, s))) >= bar.ink + 0.02, ivory);
   const grounds = surfaces(ink);
-  // A hair over the bar survives rounding to hex.
-  const meets = (target: number) => (x: ReturnType<typeof fromHex>) => Math.min(...grounds.map((s) => contrast(x, s))) >= target + 0.02;
+  // A hair over the bar, to survive rounding to hex.
+  const meets = (target: number) => (x: Rgb) => Math.min(...grounds.map((s) => contrast(x, s))) >= target + 0.02;
+  const mark = (colour: string) => hex(toward(fromHex(colour), meets(bar.mark), ivory));
   return {
     ivory: hex(ivory),
     ink: hex(ink),
     graphite: hex(toward(mix(ink, 0.72, ivory), meets(bar.graphite), ivory)),
     rule: hex(mix(ink, 0.16, ivory)),
-    accent: hex(toward(fromHex(c.accent), meets(bar.mark), ivory)),
-    tip: hex(toward(fromHex(c.tip), meets(bar.mark), ivory)),
-    caution: hex(toward(fromHex(c.caution), meets(bar.mark), ivory)),
-    danger: hex(toward(fromHex(c.danger), meets(bar.mark), ivory)),
+    accent: mark(c.accent),
+    tip: mark(c.tip),
+    caution: mark(c.caution),
+    danger: mark(c.danger),
   };
 }
 
-// A named palette as CSS for the head. It states the layer order first: it
-// comes before the sheets, and a layer first named here would rank lowest.
+// States the layer order first: this sheet precedes the theme's, and a layer
+// first named here would rank lowest.
 export function paletteCss(name: NamedPalette): string {
   const block = (scheme: Scheme) => {
     const r = adopt(name, scheme);
@@ -116,8 +112,8 @@ export function paletteCss(name: NamedPalette): string {
   return `@layer ${layers};@layer hypha{:root:root{${block("dark")}}:root:root[data-theme=light]{${block("light")}}}`;
 }
 
-// A palette at a glance: its dark ground, its light ground, its accent.
 export function swatch(name: PaletteName) {
   if (name === "hypha") return { night: groundHex("dark", hypha.hue), day: groundHex("light", hypha.hue), accent: `hsl(${hypha.accent} 72% 72%)` };
-  return { night: adopt(name, "dark").ivory, day: adopt(name, "light").ivory, accent: adopt(name, "dark").accent };
+  const night = adopt(name, "dark");
+  return { night: night.ivory, day: adopt(name, "light").ivory, accent: night.accent };
 }

@@ -1,9 +1,8 @@
 ---
-// A feature: its icon and title over a rule, what it is, and a link to
-// read more, each a row of the grid's, so a row of cards lines up.
 import ArrowRight from "@lucide/astro/icons/arrow-right";
 import type { IconName } from "../libs/config";
 import { withBase } from "../libs/link";
+import { say } from "../libs/words";
 import Icon from "./Icon.astro";
 import NamedIcon from "./NamedIcon.astro";
 
@@ -12,16 +11,18 @@ interface Props {
   icon?: IconName;
   href?: string;
   linkText?: string;
+  level?: 2 | 3 | 4 | 5 | 6;
 }
 
-const { title, icon, href, linkText = "Read more" } = Astro.props;
+const { title, icon, href, linkText = say(Astro.locals.t, "hypha.feature.readMore"), level = 2 } = Astro.props;
+const Heading = `h${level}` as const;
 ---
 
 <article class="hypha:row-span-3 hypha:grid hypha:grid-rows-subgrid hypha:gap-y-4 hypha:rounded-panel hypha:border hypha:border-rule hypha:bg-panel hypha:p-6">
-  <h3 class="hypha:flex hypha:items-center hypha:gap-3 hypha:border-b hypha:border-rule hypha:pb-4 hypha:font-serif hypha:text-lg hypha:leading-tight hypha:font-normal hypha:text-ink">
+  <Heading class="hypha:flex hypha:items-center hypha:gap-3 hypha:border-b hypha:border-rule hypha:pb-4 hypha:font-serif hypha:text-lg hypha:leading-tight hypha:font-normal hypha:text-ink">
     {icon && <span class="hypha:text-graphite"><NamedIcon name={icon} size="md" /></span>}
     {title}
-  </h3>
+  </Heading>
   <div
     class="hypha:leading-relaxed hypha:text-graphite hypha:[&_code]:rounded-control hypha:[&_code]:bg-raised hypha:[&_code]:px-[0.36em] hypha:[&_code]:py-[0.12em] hypha:[&_code]:font-mono hypha:[&_code]:text-[0.875em]"
   >
@@ -32,7 +33,7 @@ const { title, icon, href, linkText = "Read more" } = Astro.props;
       href && (
         <a href={withBase(href)} class="hypha:btn hypha:mt-2 hypha:no-underline">
           {linkText}
-          <Icon icon={ArrowRight} />
+          <Icon icon={ArrowRight} class="hypha:rtl:-scale-x-100" />
         </a>
       )
     }

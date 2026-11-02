@@ -1,11 +1,8 @@
 ---
-// A page's title as Hypha heads a page, its description the lede.
-// The groups the page is in go to search's index as its results' trail. A
-// splash page without a hero opens with its own `<Landing>`, which holds
-// its title.
+// A splash page without a hero renders its own <Landing>, which holds the title.
 import { trail } from "../libs/trail";
 
-// Starlight's own title's id, which it does not export.
+// Starlight's title id, which it does not export.
 const PAGE_TITLE_ID = "_top";
 const { title, description, template, hero } = Astro.locals.starlightRoute.entry.data;
 const own = template === "splash" && !hero;
@@ -15,7 +12,7 @@ const section = (Astro.locals.hyphaTrail ?? trail(Astro.locals.starlightRoute.si
 {
   !own && (
     <>
-      {/* Less a tenth of an em: the slab's capitals, not its box, on the top line. */}
+      {/* -0.1em aligns the cap height, not the line box, with the sidebar. */}
       <h1
         id={PAGE_TITLE_ID}
         class="hypha:mt-[calc(var(--hypha-page-top)_-_0.1em)] hypha:max-w-2xl hypha:font-serif hypha:text-[clamp(2.375rem,4.8vw,3.5rem)] hypha:leading-[1.05] hypha:font-normal hypha:tracking-[-0.02em] hypha:text-balance hypha:text-ink hypha:lining-nums hypha:tabular-nums"

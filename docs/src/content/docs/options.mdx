@@ -3,7 +3,6 @@ title: Options
 description: Every option the plugin takes.
 ---
 
-import { icons } from "starlight-theme-hypha/config";
 import { paletteNames } from "starlight-theme-hypha/palettes";
 
 ```js
@@ -47,7 +46,13 @@ See [The header](/starlight-theme-hypha/header/).
 
 ## Icons
 
-An icon is one of [Lucide](https://lucide.dev)'s, or `starlight`, Starlight's
-own mark:
+A tab, a link and a [feature](/starlight-theme-hypha/landing-pages/) take an
+icon by its name: any of [Lucide's](https://lucide.dev/icons/), as lucide.dev
+names it, or `starlight`, Starlight's own mark. Any other name stops the build.
 
-{icons.map((icon, i) => <span><code>{icon}</code>{i < icons.length - 1 ? ", " : "."}</span>)}
+```js
+starlightThemeHypha({
+  tabs: { Guides: "compass" },
+  links: [{ label: "Changelog", href: "/changelog/", icon: "scroll-text" }],
+});
+```

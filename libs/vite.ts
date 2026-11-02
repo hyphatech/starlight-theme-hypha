@@ -4,8 +4,6 @@ import type { HyphaThemeConfig } from "./config";
 const moduleId = "virtual:starlight-theme-hypha/config";
 const resolvedModuleId = `\0${moduleId}`;
 
-// The theme's options, for its components to import, and the directory in
-// Astro's cache where it keeps what it asked at build time.
 export function vitePluginHyphaTheme(config: HyphaThemeConfig, cacheDir: string): NonNullable<ViteUserConfig["plugins"]>[number] {
   return {
     name: "vite-plugin-starlight-theme-hypha",

@@ -46,11 +46,14 @@ libs/console        a console block's copy button, copying its commands alone
 libs/github         a repository's version, stars and forks, asked at build
                     time
 libs/trail          the sidebar's groups a page is in, for search's results
+libs/words          the theme's own words, in English, for a site's
+                    translations to override; English where they do not
 components/         the parts of Starlight's page the theme takes over, and
                     its own: Links, GitHub, Tabs, PhoneNav, Icon, NamedIcon;
                     Search, on Pagefind's index rather than its UI;
                     Landing, a landing page's opening, and Hero, one
-                    from the frontmatter; Features and Feature, its cards
+                    from the frontmatter, or NotFound on the 404 page;
+                    Actions, their buttons; Features and Feature, its cards
 styles/tokens.css   Hypha's design system as Tailwind's theme: its roles,
                     faces, type, grid and utilities
 styles/standalone.css
@@ -139,10 +142,12 @@ test/               the plugin's config, contrast, and the docs' build
   served under a path, as the docs are, would otherwise link out of it.
   Test: `test/plugin.test.ts`, and `test/docs.test.ts` finds the base on
   the built links.
-- **The options are plain data.** A link names its icon from a fixed set
-  rather than passing a component, since the options reach the components
-  through a virtual module as JSON. Adding an icon is a name in
-  `libs/config.ts` and an import in `components/NamedIcon.astro`.
+- **The options are plain data.** A link names its icon, any of Lucide's
+  or `starlight`, rather than passing a component, since the options reach
+  the components through a virtual module as JSON. The names are Lucide's
+  own files, read from the package; `NamedIcon` draws one by the component
+  Lucide exports for it. Test: `test/plugin.test.ts` checks each name
+  against Lucide's exports.
 
 ## Releases
 

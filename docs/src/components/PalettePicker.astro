@@ -1,6 +1,4 @@
 ---
-// Tries a palette on the whole site for the visit, and shows the option that
-// gives it. Styled in the site's own Tailwind, on the theme's tokens.
 import { hypha, named, paletteCss, paletteNames, swatch, type NamedPalette } from "starlight-theme-hypha/palettes";
 
 const css = Object.fromEntries((Object.keys(named) as NamedPalette[]).map((name) => [name, paletteCss(name)]));
@@ -55,13 +53,12 @@ const control =
 
 <script>
   type Own = { hue: number; accent: number; tint: number };
-  // Kept for the visit; the head script reapplies it.
+  // The head script reapplies it on each page.
   type Kept = { palette: string; css?: string; vars?: Record<string, string> };
   const key = "hypha-docs-palette";
   const root = document.documentElement;
   const names = { hue: "--hypha-hue", accent: "--hypha-accent-hue", tint: "--hypha-tint" } as const;
 
-  // Applies a named palette's sheet, or the theme's own variables.
   function give(kept: Kept | null) {
     document.getElementById(key)?.remove();
     for (const name of Object.values(names)) root.style.removeProperty(name);
@@ -108,12 +105,10 @@ const control =
       });
     }
 
-    // The sliders' numbers; under a named palette, hypha's defaults.
     ownNow(): Own {
       return root.dataset.palette ? this.hypha : own();
     }
 
-    // Syncs the buttons, sliders and options line with the page.
     show() {
       const palette = root.dataset.palette;
       const turned = this.ownNow();

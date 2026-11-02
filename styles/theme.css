@@ -1,16 +1,12 @@
-/* Starlight's tokens from tokens.css, and the parts of Starlight's page the
-   theme does not render, whose markup takes no classes. In the theme's
-   layer, `hypha`, so it wins over Starlight's own, and a project's styles,
-   in a layer after it or none, win over it. */
+/* Styles for the markup Starlight renders itself. In layer `hypha`: above
+   Starlight's, below a project's. */
 
 @layer hypha {
-  /* Headings' sizes, which their spacing is reckoned in. */
   :root {
     --hypha-h2: clamp(1.5rem, 2.4vw, 1.875rem);
     --hypha-h3: 1.3125rem;
   }
 
-  /* Starlight's grays run from text to ground, in either scheme. */
   :root,
   :root[data-theme="dark"],
   :root[data-theme="light"] {
@@ -47,9 +43,8 @@
     --sl-font-mono: var(--hypha-font-mono);
     --sl-line-height: 1.7;
 
-    /* The page's own frame lays it out; Starlight's measures are spent,
-       but for the header's height, which its anchors clear: the first row
-       and the header's rule, and the second row below where there is one. */
+    /* The theme's frame does the layout; only the header height matters,
+       for Starlight's anchors to clear. */
     --sl-nav-height: calc(4rem + 1px);
     --sl-mobile-toc-height: 0rem;
     --sl-main-pad: 0;
@@ -68,8 +63,14 @@
       --sl-nav-height: calc(4rem + 1px + 3rem);
     }
   }
+  /* On short screens the header doesn't stick. Matches the specificity of
+     the rules above, so it must come after them. */
+  @media (height < 30rem) {
+    :root:is(:has(.site-header .site-tabs), :has(.site-header .site-phone-nav), :has(.site-header)) {
+      --sl-nav-height: 0rem;
+    }
+  }
 
-  /* The scrollbar's room is kept, so the page does not move sideways. */
   html {
     scrollbar-gutter: stable;
     background: var(--hypha-color-ivory);
@@ -90,8 +91,6 @@
     outline-offset: var(--hypha-ring-offset, 3px);
   }
 
-  /* The sidebar as Hypha's contents: labels in small capitals, links on
-     one rule, the current one marked on it. */
   .sidebar-content .group-label .large {
     font-family: var(--hypha-font-sans);
     font-size: 0.75rem;
@@ -100,23 +99,23 @@
     text-transform: uppercase;
     color: var(--hypha-color-graphite);
   }
-  /* On the page's top line, beside the title's capitals. */
+  /* Aligns with the title's cap height. */
   .sidebar-content summary {
     padding: 0;
     font-size: 0.75rem;
     line-height: 1.4;
     color: var(--hypha-color-graphite);
   }
-  /* Within the line, which a taller caret would stretch. */
+  /* A larger caret would stretch the line. */
   .sidebar-content summary .caret {
     width: 1rem;
     height: 1rem;
   }
-  /* A group shutting turns its caret back as it starts, not when it is shut. */
+  /* Turn the caret back as closing starts, not when it ends. */
   .sidebar-content details[data-closing] > summary .caret {
     transform: none;
   }
-  /* Under tabs the open tab's group stands alone, without its heading. */
+  /* With tabs, the open tab names the group, so its heading is hidden. */
   .sidebar-content[data-tabbed] .top-level > li > details > summary {
     display: none;
   }
@@ -139,7 +138,8 @@
     margin-inline-start: -1px;
     border-inline-start: 1px solid transparent;
     border-radius: 0;
-    padding: 0.3rem 0 0.3rem 0.75rem;
+    padding-block: 0.3rem;
+    padding-inline: 0.75rem 0;
     color: var(--hypha-color-graphite);
     font-size: 0.875rem;
     line-height: 1.4;
@@ -154,6 +154,15 @@
   .sidebar-content a:focus-visible {
     color: var(--hypha-color-ink);
   }
+  @media (pointer: coarse) {
+    .sidebar-content a {
+      min-height: 2.75rem;
+      padding-block: calc((2.75rem - 1.4em) / 2);
+    }
+    .sidebar-content summary {
+      min-height: 2.75rem;
+    }
+  }
   .sidebar-content a[aria-current="page"],
   .sidebar-content a[aria-current="page"]:hover,
   .sidebar-content a[aria-current="page"]:focus {
@@ -163,7 +172,6 @@
     font-weight: 400;
   }
 
-  /* The page's contents, as Hypha's. */
   starlight-toc h2 {
     font-family: var(--hypha-font-sans);
     font-size: 0.75rem;
@@ -192,6 +200,12 @@
     line-height: 1.35;
     transition: color 120ms var(--hypha-ease-state);
   }
+  @media (pointer: coarse) {
+    starlight-toc a {
+      min-height: 2.75rem;
+      padding-block: calc((2.75rem - 1.35em) / 2);
+    }
+  }
   starlight-toc a:hover {
     color: var(--hypha-color-ink);
   }
@@ -201,8 +215,7 @@
     color: var(--hypha-color-ink);
   }
 
-  /* The page's text, on Hypha's prose, a size down: a reference is scanned
-     as much as read. */
+  /* A size below Hypha's prose: a reference is scanned as much as read. */
   .sl-markdown-content {
     font-size: 1.0625rem;
     line-height: 1.7;
@@ -213,7 +226,6 @@
   .sl-markdown-content p:not(:where(.not-content *)) {
     text-wrap: pretty;
   }
-  /* Paragraphs and lists a line and a quarter apart, as a post's are. */
   .sl-markdown-content > :not(.sl-heading-wrapper) + :is(p, ul, ol, blockquote) {
     margin-top: 1.25em;
   }
@@ -237,7 +249,7 @@
     font-weight: 500;
     color: var(--hypha-color-ink);
   }
-  /* A heading's space is its wrapper's, which holds its anchor link. */
+  /* The wrapper, which also holds the anchor link, carries the spacing. */
   .sl-markdown-content .sl-heading-wrapper :is(h2, h3, h4):not(:where(.not-content *)) {
     margin: 0;
   }
@@ -280,7 +292,7 @@
   .sl-markdown-content ul:not(:where(.not-content *)) > li::before {
     content: "";
     position: absolute;
-    left: -1.05em;
+    inset-inline-start: -1.05em;
     top: 0.82em;
     width: 0.45em;
     height: 1px;
@@ -313,7 +325,7 @@
     background: var(--hypha-color-raised);
   }
 
-  /* Tables ruled by row; a chip stays on one line, the table scrolls. */
+  /* Code in a cell stays on one line; the table scrolls instead. */
   .sl-markdown-content table:not(:where(.not-content *)) {
     border-collapse: collapse;
     font-size: 0.9375rem;
@@ -323,7 +335,8 @@
     border: none;
     border-bottom: 1px solid var(--hypha-color-rule);
     background: transparent;
-    padding: 0.625rem 1rem 0.625rem 0;
+    padding-block: 0.625rem;
+    padding-inline: 0 1rem;
     vertical-align: top;
   }
   .sl-markdown-content th:not(:where(.not-content *)) {
@@ -342,12 +355,10 @@
     padding-inline-end: 0;
   }
 
-  /* A landing page's text at the measure, under a hero the page's width. */
   [data-has-hero] .sl-markdown-content > :not(.card-grid, .landing, .features) {
     max-width: var(--hypha-measure);
   }
 
-  /* Code's "Copied" as one of Hypha's controls, not a tooltip. */
   .expressive-code .copy .feedback {
     border: 1px solid var(--hypha-color-rule);
     border-radius: var(--hypha-radius-control);
@@ -362,8 +373,7 @@
     display: none;
   }
 
-  /* A landing page's code without a title bar; its aside's reads as text on
-     the page, not a panel, a size down so a program's line fits the column. */
+  /* In the aside, code is set as text, a size down so a line fits. */
   .landing .expressive-code .frame .header {
     display: none;
   }
@@ -387,7 +397,6 @@
     font-size: 0.8125rem;
   }
 
-  /* Starlight's cards as Hypha's panels, the grid never staggered. */
   .sl-markdown-content .card-grid:not(:where(.not-content *)) {
     gap: 1rem;
   }
@@ -425,8 +434,7 @@
     line-height: 1.6;
   }
 
-  /* Tones mark asides, badges and changed lines: the accent's colour at
-     their own hues. Marks only; text stays ink. */
+  /* Tones are for marks only; text stays ink. */
   :root {
     --hypha-tone-note: var(--hypha-color-accent);
     --hypha-tone-tip: hsl(150 72% 72%);
@@ -439,12 +447,14 @@
     --hypha-tone-danger: oklch(from hsl(5 72% 50%) 0.5 0.13 h);
   }
 
-  /* Asides as panels, the tone in the icon and the leading rule. */
   .starlight-aside {
     --sl-color-asides-text-accent: var(--hypha-color-ink);
     border: 1px solid var(--hypha-color-rule);
     border-inline-start: 2px solid var(--sl-color-asides-border);
-    border-radius: 0 var(--hypha-radius-panel) var(--hypha-radius-panel) 0;
+    border-start-start-radius: 0;
+    border-end-start-radius: 0;
+    border-start-end-radius: var(--hypha-radius-panel);
+    border-end-end-radius: var(--hypha-radius-panel);
     padding: 1rem 1.25rem;
     background: var(--hypha-color-panel);
     color: var(--hypha-color-ink);
@@ -477,7 +487,6 @@
     text-decoration-color: color-mix(in oklab, var(--hypha-color-ink) 40%, transparent);
   }
 
-  /* Badges as chips, the tone in the border. */
   :root {
     --sl-badge-default-border: var(--hypha-color-rule);
     --sl-badge-note-border: var(--hypha-tone-note);
@@ -507,7 +516,6 @@
     font-weight: 500;
   }
 
-  /* A file tree as a code panel. */
   starlight-file-tree {
     border: 1px solid var(--hypha-color-rule);
     border-radius: var(--hypha-radius-panel);
@@ -515,13 +523,16 @@
     background: var(--hypha-color-panel);
     font-family: var(--hypha-font-mono);
   }
+  /* A folder row is a target: at least 24px (WCAG 2.5.8). */
+  starlight-file-tree .tree-entry {
+    min-height: 1.5rem;
+  }
   starlight-file-tree .highlight {
     border-radius: var(--hypha-radius-control);
     color: var(--hypha-color-ink);
     background: var(--hypha-color-raised);
   }
 
-  /* Previous and next as Hypha's Read next. */
   .pagination-links {
     margin-top: 3rem;
   }
@@ -553,9 +564,10 @@
     color: var(--hypha-color-ink);
   }
 
+  /* Starlight's caret transition ignores reduced motion. */
   @media (prefers-reduced-motion: reduce) {
-    * {
-      transition-duration: 0ms !important;
+    .sidebar-content summary .caret {
+      transition: none;
     }
   }
 }

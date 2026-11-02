@@ -1,25 +1,19 @@
-/* Hypha's design system as Tailwind's theme, kept in step with Hypha's other
-   sites. Built under the theme's prefix, so a token is named by `--theme()`
-   and a utility applied by its prefixed name. Colours turn on
-   `--hypha-hue`, which the plugin sets in the page's head. Static, so every
-   token is on `:root`, as `--hypha-...`, for a project's sheet to change. */
+/* Hypha's design system, shared with Hypha's other sites. `static` puts every
+   token on :root, for a project's sheet to override. */
 
 @import "@fontsource/inter-tight/400.css";
 @import "@fontsource/inter-tight/500.css";
 @import "@fontsource-variable/roboto-slab/index.css";
 
 @theme static {
-  /* Role names: `ivory` is the ground, `ink` the text. `accent` is for
-     marks, never text: text is ink and graphite only. The night's, turned
-     by the hue, accent and tint the plugin sets in the head. */
+  /* `accent` is for marks, never text. */
   --color-ivory: hsl(var(--hypha-hue) calc(15% * var(--hypha-tint, 1)) 5%);
   --color-ink: hsl(var(--hypha-hue) calc(15% * var(--hypha-tint, 1)) 90%);
-  --color-graphite: hsl(var(--hypha-hue) calc(10% * var(--hypha-tint, 1)) 58%); /* over 4.5:1 on ivory, at any hue and tint */
+  --color-graphite: hsl(var(--hypha-hue) calc(10% * var(--hypha-tint, 1)) 58%); /* ≥4.5:1 on ivory at any hue and tint */
   --color-rule: hsl(var(--hypha-hue) calc(14% * var(--hypha-tint, 1)) 17%);
   --color-accent: hsl(var(--hypha-accent-hue, calc(var(--hypha-hue) + 6)) 72% 72%);
 
-  /* Surfaces lift the ground toward ink instead of using shadows. Mixed in
-     oklab: oklch loses the near-grey ground's hue. */
+  /* oklab, because oklch loses the near-grey ground's hue. */
   --color-panel: color-mix(in oklab, --theme(--color-ink) 4%, --theme(--color-ivory));
   --color-raised: color-mix(in oklab, --theme(--color-ink) 7%, --theme(--color-ivory));
 
@@ -47,8 +41,7 @@
   --default-transition-timing-function: --theme(--ease-state);
 }
 
-/* The day. The accent is set in
-   OKLCH for an even lightness at every hue. */
+/* Light scheme. The accent is in OKLCH for even lightness across hues. */
 @layer hypha {
   :root[data-theme="light"] {
     --hypha-color-ivory: hsl(var(--hypha-hue) calc(20% * var(--hypha-tint, 1)) 97.5%);
@@ -59,7 +52,6 @@
   }
 }
 
-/* The grid. */
 @layer hypha {
   :root {
     --hypha-gutter: 1rem;
@@ -67,7 +59,7 @@
     --hypha-measure: 42rem;
     --hypha-sidebar: 12rem;
     --hypha-column-gap: 2.5rem;
-    /* Where the navigation, the title and the contents start. */
+    /* Shared top offset of the sidebar, title and contents. */
     --hypha-page-top: 3.5rem;
   }
   @media (width >= 40rem) {
@@ -87,9 +79,7 @@
   }
 }
 
-/* Hypha's utilities. */
-
-/* Sized so a long lead title sets in two lines on a laptop. */
+/* A long title sets in two lines on a laptop. */
 @utility t-display {
   text-wrap: balance;
   font-family: --theme(--font-serif);
@@ -122,8 +112,7 @@
   line-height: 1.25;
 }
 
-/* Hypha's buttons. The clear border keeps its edge where forced
-   colours drop the fill. */
+/* The transparent border keeps an edge in forced-colors mode. */
 @utility btn-primary {
   @apply hypha:t-control hypha:rounded-control hypha:inline-flex hypha:h-10 hypha:pointer-coarse:h-11 hypha:cursor-pointer hypha:items-center hypha:gap-2 hypha:border hypha:border-transparent hypha:bg-ink hypha:px-5 hypha:text-ivory hypha:transition-opacity hypha:hover:opacity-85;
 }
@@ -132,13 +121,11 @@
   @apply hypha:t-control hypha:rounded-control hypha:inline-flex hypha:h-10 hypha:pointer-coarse:h-11 hypha:cursor-pointer hypha:items-center hypha:gap-2 hypha:border hypha:border-rule hypha:bg-panel hypha:px-5 hypha:text-graphite hypha:transition-colors hypha:hover:border-graphite hypha:hover:bg-raised hypha:hover:text-ink;
 }
 
-/* A standalone link: control height on touch, so it can be hit. */
 @utility link {
   @apply hypha:t-control hypha:pointer-coarse:min-h-11 hypha:cursor-pointer hypha:items-center hypha:text-graphite hypha:underline hypha:decoration-graphite/50 hypha:underline-offset-4 hypha:transition-colors hypha:pointer-coarse:inline-flex hypha:hover:text-ink hypha:hover:decoration-ink;
 }
 
-/* The ring goes inside, clear of rounded corners: outside, a frame's clip
-   or the next cell's ground would hide it. */
+/* Ring inside: outside, a clip or a neighbour's background would hide it. */
 @utility focus-inset {
   --hypha-ring-offset: -6px;
 }
@@ -147,10 +134,7 @@
   @apply hypha:t-control hypha:rounded-control hypha:pointer-coarse:min-h-11 hypha:flex hypha:items-center hypha:whitespace-nowrap hypha:text-graphite hypha:transition-colors hypha:aria-[current]:bg-raised hypha:aria-[current]:text-ink hypha:not-aria-[current]:hover:bg-panel hypha:not-aria-[current]:hover:text-ink;
 }
 
-/* The theme's own. */
-
-/* A link in the header, and in a phone's row under it, its ring inside the
-   row, which scrolls and would clip it. */
+/* Rings inside: the scrolling rows would clip them. */
 @utility bar-link {
   @apply hypha:t-control hypha:inline-flex hypha:items-center hypha:gap-2 hypha:whitespace-nowrap hypha:text-graphite hypha:no-underline hypha:transition-colors hypha:hover:text-ink;
 }

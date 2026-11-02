@@ -1,41 +1,21 @@
 ---
-// A landing page's opening, as Hypha's: a display title, its tagline
-// as the lede, what the page puts in the slot -- an install command, say --
-// and its actions as Hypha's buttons. Beside it, the page's `aside`,
-// or else its image as art; beside an aside, the image is the mark above
-// the title. An image pair shows each in its scheme; actions from the root
-// go under the site's base.
+// With an `aside`, the image is a mark above the title; else the art beside it.
 import { Image } from "astro:assets";
-import { Icon } from "@astrojs/starlight/components";
-import type { StarlightIcon } from "@astrojs/starlight/types";
+import type { ComponentProps } from "astro/types";
 import config from "virtual:starlight-theme-hypha/config";
-import { withBase } from "../libs/link";
-
-interface Action {
-  text: string;
-  link: string;
-  variant?: "primary" | "secondary" | "minimal";
-  icon?: StarlightIcon | { type: "icon"; name: StarlightIcon } | { type: "raw"; html: string };
-  attrs?: Record<string, string | number | boolean>;
-}
+import Actions from "./Actions.astro";
 
 interface Props {
   title: string;
   tagline?: string;
   image?: { file?: ImageMetadata; dark?: ImageMetadata; light?: ImageMetadata; html?: string; alt?: string };
-  actions?: Action[];
+  actions?: ComponentProps<typeof Actions>["actions"];
 }
 
-// Starlight's own title's id, which its table of contents links to.
+// Starlight's title id, which its table of contents links to.
 const PAGE_TITLE_ID = "_top";
 const { title, tagline, image, actions = [] } = Astro.props;
 const aside = Astro.slots.has("aside");
-
-const looks = {
-  primary: "hypha:btn-primary hypha:no-underline",
-  secondary: "hypha:btn hypha:no-underline",
-  minimal: "hypha:link hypha:inline-flex hypha:h-10 hypha:gap-2 hypha:px-2 hypha:pointer-coarse:h-11",
-};
 
 const pair = image?.dark && image.light && image.dark !== image.light;
 const arts = image?.file
@@ -79,16 +59,7 @@ const artLook = "hypha:h-auto hypha:w-[min(70%,20rem)] hypha:justify-self-center
     {
       actions.length > 0 && (
         <div class="hypha:mt-10 hypha:flex hypha:flex-wrap hypha:gap-3">
-          {actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant = "primary" }) => {
-            const drawn = typeof icon === "string" ? { type: "icon" as const, name: icon } : icon;
-            return (
-              <a href={withBase(link)} class:list={[looks[variant], className]} {...attrs}>
-                {text}
-                {drawn?.type === "icon" && <Icon name={drawn.name} size="1rem" />}
-                {drawn?.type === "raw" && <Fragment set:html={drawn.html} />}
-              </a>
-            );
-          })}
+          <Actions actions={actions} />
         </div>
       )
     }

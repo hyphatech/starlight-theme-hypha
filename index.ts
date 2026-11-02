@@ -7,15 +7,13 @@ import { groundHex } from "./libs/color";
 import { configSchema, type HyphaThemeConfig, type HyphaThemeUserConfig } from "./libs/config";
 import { adopt, named, paletteCss } from "./libs/palettes";
 import { vitePluginHyphaTheme } from "./libs/vite";
+import { en } from "./libs/words";
 
 export type { HyphaThemeUserConfig };
 
 const sheet = "starlight-theme-hypha/styles/theme.css";
-// The theme's own Tailwind build, prefixed, on every page: a project's build
-// beside it shares no name with it.
 const standalone = "starlight-theme-hypha/styles/standalone.css";
 
-// A project's own override of one wins.
 const components = {
   ContentPanel: "starlight-theme-hypha/components/ContentPanel.astro",
   Footer: "starlight-theme-hypha/components/Footer.astro",
@@ -35,25 +33,20 @@ const components = {
 
 const codeTheme = (file: string) => ExpressiveCodeTheme.fromJSONString(readFileSync(new URL(`./styles/${file}`, import.meta.url), "utf-8"));
 
-// The palette's code themes for the site's schemes; a named palette's are
-// Shiki's, by name.
 function codeThemes({ schemes, palette }: HyphaThemeConfig) {
   const of = (s: "dark" | "light") =>
     palette === "hypha" ? codeTheme(s === "dark" ? "code-theme.json" : "code-theme-day.json") : named[palette].code[s];
   return schemes.map(of);
 }
 
-// The browser's theme-color: the starting scheme's ground, or with `auto`,
-// each under its media query.
 function themeColors({ scheme, palette, hue, tint }: HyphaThemeConfig) {
   const ground = (s: "dark" | "light") => (palette === "hypha" ? groundHex(s, hue, tint) : adopt(palette, s).ivory);
   const meta = (s: "dark" | "light", media?: string) => ({ tag: "meta" as const, attrs: { name: "theme-color", content: ground(s), ...(media ? { media } : {}) } });
   return scheme === "auto" ? [meta("dark", "(prefers-color-scheme: dark)"), meta("light", "(prefers-color-scheme: light)")] : [meta(scheme)];
 }
 
-// Code as Hypha sets it: a panel on a rule, no shadow. Its styles stay
-// linked: inlined, MDX's static optimisation leaves the `<style>` empty, its
-// CSS in a literal `set:html` attribute.
+// Styles stay linked: inlined, MDX's static optimisation leaves the <style>
+// empty, its CSS in a literal `set:html` attribute.
 const expressiveCode = {
   useStarlightUiThemeColors: false,
   styleOverrides: {
@@ -78,7 +71,6 @@ const expressiveCode = {
       tooltipSuccessBackground: "var(--hypha-color-raised)",
       tooltipSuccessForeground: "var(--hypha-color-ink)",
     },
-    // Marked and changed lines: a wash of their tone, its rule before.
     textMarkers: {
       markBackground: "color-mix(in oklab, var(--hypha-tone-note) 14%, transparent)",
       markBorderColor: "var(--hypha-tone-note)",
@@ -92,7 +84,7 @@ const expressiveCode = {
   },
 };
 
-// Whether Vite's plugins, nested as a config may nest them, hold Tailwind's.
+// Vite's plugins may be nested arrays.
 function hasTailwind(plugins: unknown): boolean {
   if (Array.isArray(plugins)) return plugins.some(hasTailwind);
   const name = (plugins as { name?: unknown } | null)?.name;
@@ -109,17 +101,21 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
   return {
     name: "starlight-theme-hypha",
     hooks: {
+      "i18n:setup"({ injectTranslations }) {
+        injectTranslations({ en });
+      },
       "config:setup"({ config: starlight, astroConfig, updateConfig, addIntegration, addRouteMiddleware }) {
         if (config.tabs) addRouteMiddleware({ entrypoint: "starlight-theme-hypha/route-middleware" });
-        // A project on Tailwind builds the theme's sheet with its own plugin.
+        // A project on Tailwind builds the theme's sheet with its own plugin;
+        // a second would conflict.
         const onTailwind = hasTailwind(astroConfig.vite?.plugins);
         const own = starlight.customCss ?? [];
         const sheets = [standalone, sheet];
         const head = starlight.head ?? [];
         const hasThemeColor = head.some((entry) => entry.tag === "meta" && entry.attrs?.name === "theme-color");
         updateConfig({
-          // The theme's first, so the project's can change its tokens, or
-          // where the project names it.
+          // The theme's sheets first, so a project's can override them,
+          // unless the project places theme.css itself.
           customCss: own.includes(sheet) ? own.flatMap((path) => (path === sheet ? sheets : [path])) : [...sheets, ...own],
           components: { ...components, ...starlight.components },
           ...(config.search ? {} : { pagefind: false }),

@@ -1,0 +1,34 @@
+---
+import { Icon } from "@astrojs/starlight/components";
+import type { StarlightIcon } from "@astrojs/starlight/types";
+import { withBase } from "../libs/link";
+
+interface Props {
+  actions: {
+    text: string;
+    link: string;
+    variant?: "primary" | "secondary" | "minimal";
+    icon?: StarlightIcon | { type: "icon"; name: StarlightIcon } | { type: "raw"; html: string };
+    attrs?: Record<string, string | number | boolean>;
+  }[];
+}
+
+const looks = {
+  primary: "hypha:btn-primary hypha:no-underline",
+  secondary: "hypha:btn hypha:no-underline",
+  minimal: "hypha:link hypha:inline-flex hypha:h-10 hypha:gap-2 hypha:px-2 hypha:pointer-coarse:h-11",
+};
+---
+
+{
+  Astro.props.actions.map(({ attrs: { class: className, ...attrs } = {}, icon, link, text, variant = "primary" }) => {
+    const drawn = typeof icon === "string" ? { type: "icon" as const, name: icon } : icon;
+    return (
+      <a href={withBase(link)} class:list={[looks[variant], className]} {...attrs}>
+        {text}
+        {drawn?.type === "icon" && <Icon name={drawn.name} size="1rem" />}
+        {drawn?.type === "raw" && <Fragment set:html={drawn.html} />}
+      </a>
+    );
+  })
+}

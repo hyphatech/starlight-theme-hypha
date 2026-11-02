@@ -1,9 +1,9 @@
 ---
-// A landing page's opening, from its frontmatter's `hero`.
 import Landing from "./Landing.astro";
+import NotFound from "./NotFound.astro";
 
-const { data } = Astro.locals.starlightRoute.entry;
-const { title = data.title, tagline, image, actions = [] } = data.hero ?? {};
+const { id, entry } = Astro.locals.starlightRoute;
+const { title = entry.data.title, tagline, image, actions = [] } = entry.data.hero ?? {};
 ---
 
-<Landing title={title} tagline={tagline} image={image} actions={actions} />
+{id === "404" ? <NotFound title={entry.data.hero?.title} tagline={tagline} actions={actions} /> : <Landing title={title} tagline={tagline} image={image} actions={actions} />}

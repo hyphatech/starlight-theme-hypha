@@ -1,8 +1,6 @@
 ---
-// The second row: the sidebar's top-level groups as tabs, the open one
-// marked on the header's rule, and at its end the project's links, then the
-// repository past a rule. A phone has its own.
 import config from "virtual:starlight-theme-hypha/config";
+import { say } from "../libs/words";
 import GitHub from "./GitHub.astro";
 import Links from "./Links.astro";
 import NamedIcon from "./NamedIcon.astro";
@@ -16,7 +14,7 @@ const github = config.github !== undefined;
 {
   (tabs.length > 0 || links || github) && (
     <div class="site-tabs hypha:hidden hypha:border-t hypha:border-rule hypha:md:block hypha:print:hidden">
-      <nav class="hypha:mx-auto hypha:-mb-px hypha:max-w-page" aria-label="Sections">
+      <nav class="hypha:mx-auto hypha:-mb-px hypha:max-w-page" aria-label={say(Astro.locals.t, "hypha.nav.sections")}>
         <ul class="hypha:no-scrollbar hypha:m-0 hypha:flex hypha:list-none hypha:items-center hypha:gap-6 hypha:overflow-x-auto hypha:px-(--hypha-gutter) hypha:py-0">
           {tabs.map((tab) => (
             <li class="hypha:shrink-0">
