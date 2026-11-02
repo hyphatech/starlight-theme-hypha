@@ -12,7 +12,6 @@ interface Props {
 const ICON_PX = { xs: 12, sm: 16, md: 20, lg: 24 } as const;
 const { name, size = "sm" } = Astro.props;
 const drawn = lucide[componentName(name) as keyof typeof lucide];
-// A feature's icon reaches here unchecked by the options.
 if (name !== "starlight" && !drawn) throw new Error(`starlight-theme-hypha: no Lucide icon is named "${name}"`);
 ---
 

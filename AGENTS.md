@@ -144,10 +144,13 @@ test/               the plugin's config, contrast, and the docs' build
   the built links.
 - **The options are plain data.** A link names its icon, any of Lucide's
   or `starlight`, rather than passing a component, since the options reach
-  the components through a virtual module as JSON. The names are Lucide's
-  own files, read from the package; `NamedIcon` draws one by the component
-  Lucide exports for it. Test: `test/plugin.test.ts` checks each name
-  against Lucide's exports.
+  the components through a virtual module as JSON. `NamedIcon` draws one
+  by the component Lucide exports for it, and stops the build on a name
+  Lucide lacks; the options leave the name unchecked, since a package's
+  files are found from wherever the code runs, and a page's runs from the
+  build, where a project installed in isolation cannot see Lucide.
+  Test: `test/plugin.test.ts` checks the components' names against
+  Lucide's exports.
 
 ## Releases
 

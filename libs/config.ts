@@ -1,20 +1,15 @@
-import { readdirSync } from "node:fs";
-import { dirname } from "node:path";
-import { fileURLToPath } from "node:url";
 import { z } from "astro/zod";
 import { hypha, paletteNames } from "./palettes";
 
 // Options reach the components as JSON, so icons are named, not passed: any
-// of Lucide's, by its file's name, or `starlight`, Starlight's own mark.
-const lucide = dirname(fileURLToPath(import.meta.resolve("@lucide/astro/icons/zap")));
-export const icons = ["starlight", ...readdirSync(lucide).flatMap((file) => (file.endsWith(".ts") && file !== "index.ts" ? [file.slice(0, -3)] : []))];
+// of Lucide's, as lucide.dev names it, or `starlight`, Starlight's own mark.
+// NamedIcon stops the build on any other.
 export type IconName = string;
 
 // The name Lucide exports an icon's component by: "book-open" is BookOpen.
 export const componentName = (icon: string) => icon.replace(/(?:^|-)(\w)/g, (_, c: string) => c.toUpperCase());
 
-const known = new Set(icons);
-const icon = z.string().refine((name) => known.has(name), "a Lucide icon's name, as lucide.dev shows it, or starlight");
+const icon = z.string();
 
 const degrees = z.number().min(0).max(360);
 
