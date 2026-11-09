@@ -127,19 +127,36 @@
   }
   .sidebar-content ul ul {
     margin-top: 0.75rem;
-    border-inline-start: 1px solid var(--hypha-color-rule);
   }
   .sidebar-content ul ul li {
     margin-inline-start: 0;
     border-inline-start: none;
     padding-inline-start: 0;
   }
+  .sidebar-content ul ul summary {
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem 0;
+    pointer-events: none;
+  }
+  .sidebar-content ul ul summary .caret {
+    display: none;
+  }
+  .sidebar-content ul ul li + li > details {
+    margin-top: 1.25rem;
+  }
+  .sidebar-content ul ul ul {
+    margin-top: 0;
+    border-inline-start: none;
+  }
+  .sidebar-content ul ul li:has(> details) + li {
+    margin-top: 1.25rem;
+  }
   .sidebar-content a {
     margin-inline-start: -1px;
     border-inline-start: 1px solid transparent;
     border-radius: 0;
-    padding-block: 0.3rem;
-    padding-inline: 0.75rem 0;
+    padding-block: 0.25rem;
+    padding-inline: 0.5rem 0;
     color: var(--hypha-color-graphite);
     font-size: 0.875rem;
     line-height: 1.4;
@@ -181,11 +198,8 @@
     color: var(--hypha-color-graphite);
   }
   starlight-toc h2 {
-    margin-bottom: 1rem;
+    margin-bottom: 0.4rem;
     line-height: 1.4;
-  }
-  starlight-toc nav > ul {
-    border-inline-start: 1px solid var(--hypha-color-rule);
   }
   starlight-toc a {
     display: block;
@@ -194,7 +208,7 @@
     margin-inline-start: -1px;
     border-inline-start: 1px solid transparent;
     border-radius: 0;
-    padding-block: 0.3rem;
+    padding-block: 0.25rem;
     color: var(--hypha-color-graphite);
     font-size: 0.8125rem;
     line-height: 1.35;
@@ -213,6 +227,17 @@
   starlight-toc a[aria-current="true"]:hover {
     border-inline-start-color: var(--hypha-color-accent);
     color: var(--hypha-color-ink);
+  }
+  /* The list's box clips a mark hung outside it. */
+  starlight-toc h2 {
+    padding-inline-start: 0.5rem;
+  }
+  starlight-toc ul ul {
+    margin-inline-start: 0.5rem;
+    border-inline-start: 1px solid var(--hypha-color-rule);
+  }
+  starlight-toc ul ul a {
+    padding-inline: 0.75rem 0.5rem;
   }
 
   /* A size below Hypha's prose: a reference is scanned as much as read. */
