@@ -1,4 +1,5 @@
 import { z } from "astro/zod";
+import { skillName } from "./agents";
 import { hypha, paletteNames } from "./palettes";
 
 // Options reach the components as JSON, so icons are named, not passed: any
@@ -46,6 +47,33 @@ export const configSchema = z
         }),
       )
       .default([]),
+    // The pages as Markdown for agents, and llms.txt: in the built site
+    // unless `false`; with `dir`, also a folder a project commits and
+    // installs, with a skill.
+    agents: z
+      .union([
+        z.boolean(),
+        z.object({
+          dir: z.string().optional(),
+          preamble: z.string().optional(),
+          groups: z.record(z.string(), z.string()).default({}),
+          // Written with `dir`: the skill that sends an agent to the pages.
+          skill: z
+            .union([
+              z.literal(false),
+              z.object({
+                name: z.string().regex(skillName, "lower case letters, digits and dashes, at most 64").optional(),
+                package: z.string().optional(),
+                description: z.string().max(1024).optional(),
+                before: z.string().optional(),
+                instead: z.array(z.string()).default([]),
+              }),
+            ])
+            .default({ instead: [] }),
+        }),
+      ])
+      .default(true)
+      .transform((agents) => (agents === true ? { groups: {}, skill: { instead: [] } } : agents)),
   })
   .refine(({ palette, hue, accent, tint }) => palette === "hypha" || [hue, accent, tint].every((v) => v === undefined), {
     message: "hue, accent and tint turn the theme's own palette, hypha; a named palette has its own colours",

@@ -16,7 +16,7 @@ function setup(options: Parameters<typeof hypha>[0], starlight: Record<string, u
   const plugin = hypha(options);
   (plugin.hooks["config:setup"] as Function)({
     config: { title: "x", ...starlight },
-    astroConfig: { root: new URL("file:///nowhere/"), vite },
+    astroConfig: { root: new URL("file:///nowhere/"), base: "/", vite },
     logger: { warn: (m: string) => updates.warnings.push(m) },
     updateConfig: (u: object) => Object.assign(updates, u),
     addIntegration: () => {},
@@ -84,7 +84,7 @@ describe("the plugin", () => {
       let integration: any;
       (hypha({}).hooks["config:setup"] as Function)({
         config: { title: "x" },
-        astroConfig: { root: new URL("file:///nowhere/"), vite },
+        astroConfig: { root: new URL("file:///nowhere/"), base: "/", vite },
         logger: { warn: () => {} },
         updateConfig: () => {},
         addIntegration: (i: unknown) => (integration = i),
