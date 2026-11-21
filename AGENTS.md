@@ -9,7 +9,7 @@ human or agent. Users start at [README.md](README.md).
 ```sh
 make setup    # the dependencies, by Bun
 make test     # the plugin's options, the contrast in both schemes at every
-              # palette, the agents' Markdown, and the docs' build
+              # palette, and the docs' build
 make lint     # the plugin's types
 make build    # the docs site, built into _build/docs
 make serve    # the built docs, served as a host would, search included
@@ -48,8 +48,6 @@ libs/github-build   their cache at build time
 libs/trail          the sidebar's groups a page is in, for search's results
 libs/words          the theme's own words, in English, for a site's
                     translations to override; English where they do not
-libs/agents         each page as Markdown for agents, llms.txt and the skill;
-                    agents-build writes them, or checks a project's folder
 components/         the parts of Starlight's page the theme takes over, and
                     its own: Links, GitHub, Tabs, PhoneNav, Icon, NamedIcon;
                     Search, on Pagefind's index rather than its UI;
@@ -72,8 +70,7 @@ docs/               the theme's documentation, on the theme: published to
                     a change. `~/` is its `src/`; it imports the theme by
                     the package's name. Its Markdown links name the base
 .github/            the docs' Pages workflow, and the README's image
-test/               the plugin's config, contrast, the agents' Markdown, and
-                    the docs' build
+test/               the plugin's config, contrast, and the docs' build
 ```
 
 ## Rules that must hold
@@ -95,8 +92,8 @@ the code and the tests it names.
   below a project's**, never `!important`. Why: the theme wins over
   Starlight, and a project over the theme. Tests: the same.
 - **Nothing in the theme names a project**; a project chooses its
-  palette, schemes, mark, title and header. Symptom: `rg -n -i
-  'solidtype|heroui' index.ts libs components styles`.
+  palette, schemes, mark, title and header. Symptom: a project's name in
+  `index.ts`, `libs`, `components` or `styles`.
 - **The page's content is styled, and `not-content` left alone**, as
   Starlight's own rules do. Why: a project shows its own components there.
   Test: `test/plugin.test.ts`.
@@ -108,11 +105,6 @@ the code and the tests it names.
 - **The options are plain data**: a link names its icon, Lucide's or
   `starlight`, since the options reach the components as JSON. Test:
   `test/plugin.test.ts`.
-
-- **What agents read is generated from the pages a person reads.** The
-  Markdown, llms.txt and the skill come from the same source, and
-  `HYPHA_AGENTS=check` fails where a project's folder of them differs.
-  Why: the two must say the same. Tests: `test/agents.test.ts`.
 
 ## Releases
 

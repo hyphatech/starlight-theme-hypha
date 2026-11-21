@@ -50,7 +50,7 @@ export default defineConfig({
       ],
       sidebar: [
         { label: "Start here", items: ["getting-started"] },
-        { label: "Guides", items: ["colours", "header", "landing-pages", "customising", "agents"] },
+        { label: "Guides", items: ["colours", "header", "landing-pages", "customising"] },
         { label: "Reference", items: ["options", "tokens", "markdown"] },
       ],
     }),
