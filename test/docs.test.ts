@@ -88,15 +88,3 @@ test("the 404 page is the theme's own", async () => {
   expect(html).toMatch(/<h1 id="_top"[^>]*>Nothing is written here\.<\/h1>/);
   expect(html).toContain("Back to the start");
 });
-
-test("the build writes each page as Markdown, and llms.txt from the sidebar", async () => {
-  const llms = await built("/llms.txt");
-  expect(llms.startsWith("# starlight\n\n> Hypha's look for Starlight")).toBe(true);
-  expect(llms).toContain("## Guides\n\n- [Colours](https://hyphatech.github.io/starlight-theme-hypha/colours.md): ");
-  expect(llms).toContain("- [Pages for agents](https://hyphatech.github.io/starlight-theme-hypha/agents.md): ");
-  const page = await built("/markdown.md");
-  expect(page.startsWith("# Markdown\n\nWhat a page's Markdown and Starlight's components look like on the theme.\n\n")).toBe(true);
-  expect(page).toContain("```js\nexport const widget = () => 'one';\n```");
-  expect(page).toContain("[a link](https://hyphatech.github.io/starlight-theme-hypha/getting-started.md)");
-  expect(page).not.toMatch(/^import /m);
-});

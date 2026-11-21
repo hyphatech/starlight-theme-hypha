@@ -4,7 +4,7 @@ import { commands, copyCommands } from "../libs/console";
 const nl = "\u007f";
 
 test("the commands alone", () => {
-  expect(commands(["$ opam install wiretype", "Done.", "$ dune build"].join(nl))).toBe(["opam install wiretype", "dune build"].join(nl));
+  expect(commands(["$ npm install widgets", "Done.", "$ npm run build"].join(nl))).toBe(["npm install widgets", "npm run build"].join(nl));
 });
 
 test("a console block's copy button", () => {

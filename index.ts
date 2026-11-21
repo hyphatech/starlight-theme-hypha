@@ -3,7 +3,6 @@ import { fileURLToPath } from "node:url";
 import { ExpressiveCodeTheme } from "@astrojs/starlight/expressive-code";
 import tailwindcss from "@tailwindcss/vite";
 import type { StarlightPlugin } from "@astrojs/starlight/types";
-import { agentsBuild } from "./libs/agents-build";
 import { groundHex } from "./libs/color";
 import { configSchema, type HyphaThemeConfig, type HyphaThemeUserConfig } from "./libs/config";
 import { adopt, named, paletteCss } from "./libs/palettes";
@@ -135,13 +134,10 @@ export default function starlightThemeHypha(userConfig?: HyphaThemeUserConfig): 
                   ...(typeof starlight.expressiveCode === "object" ? starlight.expressiveCode : {}),
                 },
         });
-        const agents = config.agents ? agentsBuild(config.agents, starlight, astroConfig) : undefined;
         addIntegration({
           name: "starlight-theme-hypha-integration",
           hooks: {
-            ...(agents ? { "astro:build:done": agents["astro:build:done"] } : {}),
-            "astro:config:setup"({ updateConfig, logger }) {
-              agents?.["astro:config:setup"]({ logger });
+            "astro:config:setup"({ updateConfig }) {
               const cacheDir = fileURLToPath(new URL("starlight-theme-hypha/", astroConfig.cacheDir ?? new URL("node_modules/.astro/", astroConfig.root)));
               updateConfig({ vite: { plugins: [onTailwind ? [] : tailwindcss(), vitePluginHyphaTheme(config, cacheDir)] } });
             },

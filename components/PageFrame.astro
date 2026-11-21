@@ -17,7 +17,7 @@ const openIcon = open && typeof config.tabs === "object" ? config.tabs[open.labe
 ---
 
 <div>
-  {/* Not `.header`: a page's own styles may use it (HeroUI's do). */}
+  {/* Not `.header`: a page's own styles may use it (a component library's may). */}
   <header class="site-header hypha:sticky hypha:top-0 hypha:z-(--sl-z-index-navbar) hypha:[@media(height<30rem)]:static hypha:border-b hypha:border-rule hypha:bg-ivory"><slot name="header" /><Tabs /><PhoneNav /></header>
   <div
     class:list={[

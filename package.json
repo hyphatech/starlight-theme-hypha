@@ -1,6 +1,6 @@
 {
   "name": "starlight-theme-hypha",
-  "version": "0.7.0",
+  "version": "0.8.0",
   "description": "Hypha's look for Starlight.",
   "license": "MIT",
   "type": "module",
@@ -23,11 +23,7 @@
     "@fontsource/inter-tight": "^5.3.0",
     "@lucide/astro": "1.48.0",
     "@tailwindcss/vite": "^4.3.3",
-    "mdast-util-from-markdown": "^2.0.2",
-    "mdast-util-mdx": "^3.0.0",
-    "micromark-extension-mdxjs": "^3.0.0",
-    "tailwindcss": "^4.3.3",
-    "yaml": "^2.9.1"
+    "tailwindcss": "^4.3.3"
   },
   "peerDependencies": {
     "@astrojs/starlight": "~0.42.6",
